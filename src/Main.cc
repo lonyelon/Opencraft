@@ -113,7 +113,7 @@ void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
 
 void genChunks(std::vector<Chunk> *c) {
 	c->clear();
-	const int size = 10;
+	const int size = 20;
 	for ( int x = 0; x < size; x++ ) {
 		for ( int y = 0; y < size; y++ ) {
 			c->push_back(Chunk(x, 0, y));
@@ -160,9 +160,13 @@ int main()
 
 	genChunks(&c);
 	printf("World generation completed\n");
+	glUseProgram(shaderProgram);
+
+	glBindVertexArray(VAOTriangulo);
 
 	while (!glfwWindowShouldClose(window))
 	{
+		double t = glfwGetTime();
 		processInput(window);
 		k.keyHandler();
 
@@ -185,14 +189,16 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClear(GL_DEPTH_BUFFER_BIT);
 
-		for (int k = 0; k < 10*10; k++) {
+		for (int k = 0; k < 20*20; k++) {
 			c[k].draw();
 		}
 				
-		glBindVertexArray(0); // no need to unbind it every time 
+		//glBindVertexArray(0); // no need to unbind it every time 
 		 		
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+
+		printf("%fl\n", 1/(glfwGetTime() - t));
 	}
 
 	glDeleteVertexArrays(1, &VAO);

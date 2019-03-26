@@ -57,7 +57,6 @@ CubeType Cube::getType() {
 
 int Cube::draw() {
     if ( this->type == CubeType::air ) return -1;
-	//if ( c[k].isIllated(cube[i].getX(),cube[i].getY(),cube[i].getZ()) ) return;
 
     if (this->type == CubeType::water)
         glUniform1i(glGetUniformLocation(shaderProgram, "isWater"), 1);
@@ -66,9 +65,7 @@ int Cube::draw() {
 
     glm::mat4 model = *((glm::mat4*)this->m);
     glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
-	glUseProgram(shaderProgram);
 
-	glBindVertexArray(VAOTriangulo);
     glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
 
     return 0;

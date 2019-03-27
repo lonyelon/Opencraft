@@ -2,12 +2,10 @@
 
 ## Dev2.0
 * New render engine, over x1000 performance increase!
-* Brown dirt
-* Better world gen
-* This log
-
-*Known bugs*
-* 0x2: Water does not render
+* Brown dirt.
+* Better world gen.
+* This log.
+* Better memory management.
 
 ## Dev1.1 
 * Better performance
@@ -21,3 +19,4 @@
 
 *Known bugs*
 * 0x1: Cubes dont render when betwen chunks.
+* 0x2: Memory leak when generating world.

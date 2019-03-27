@@ -25,7 +25,7 @@ void Chunk::genTerrain() {
         for (int x = 0; x < this->W; x++) {
             for (int z = 0; z < this->Z; z++) {
                 this->getCube(x, y, z)->setPosition(this->x*this->W + x, this->H*this->y + y, this->z*this->Z + z);
-                if (y < (int)((p.GetValue((float)(this->x*this->W + x)/200, 0.5, (float)(this->z*this->Z + z)/200)+1)*50)) {
+                if (y < (int)((p.GetValue((float)(this->x*this->W + x)/200, (float)(this->y*this->H + y)/200, (float)(this->z*this->Z + z)/200)+1)*50)) {
                     this->getCube(x, y, z)->setType(CubeType::dirt);
                 } else if (this->H*this->y + y < 50) {
                     this->getCube(x, y, z)->setType(CubeType::water);
@@ -73,6 +73,31 @@ bool Chunk::isIllated(int x, int y, int z) {
     if (z != this->Z*this->z) if (this->getCube(x - this->W*this->x,y - this->H*this->y,z - this->Z*this->z-1)->getType() == CubeType::air) {
         return false;
     }
+    /*
+    if (x != this->W*this->x + this->W - 1) {
+        if (this->getCube(x - this->W*this->x+1,y - this->H*this->y,z - this->Z*this->z)->getType() == CubeType::water) {
+            return false;
+        }
+    }
+    if (x != this->W*this->x) if (this->getCube(x - this->W*this->x-1,y - this->H*this->y,z - this->Z*this->z)->getType() == CubeType::water) {
+        return false;
+    }
+
+    if (y != this->H*this->y + this->H - 1) if (this->getCube(x - this->W*this->x,y - this->H*this->y+1,z - this->Z*this->z)->getType() == CubeType::water) {
+        return false;
+    }
+
+    if (y != this->H*this->y) if (this->getCube(x - this->W*this->x,y - this->H*this->y-1,z - this->Z*this->z)->getType() == CubeType::water) {
+        return false;
+    }
+
+    if (z != this->Z*this->z + this->Z - 1) if (this->getCube(x - this->W*this->x,y - this->H*this->y,z - this->Z*this->z+1)->getType() == CubeType::water) {
+        return false;
+    }
+
+    if (z != this->Z*this->z) if (this->getCube(x - this->W*this->x,y - this->H*this->y,z - this->Z*this->z-1)->getType() == CubeType::water) {
+        return false;
+    }*/
     
     return true;
 }

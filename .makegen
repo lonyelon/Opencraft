@@ -1,0 +1,4 @@
+-lglfw -lGL -ldl -lm -lnoise
+cc
+./build/a.out
+g++

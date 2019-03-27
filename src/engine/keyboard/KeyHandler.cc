@@ -8,8 +8,8 @@
 
 extern Camera cam;
 
-extern void genChunks(std::vector<Chunk> *c);
-extern std::vector<Chunk> c;
+extern void genChunks(std::vector<Chunk*> *c);
+extern std::vector<Chunk*> c;
 extern int seed;
 
 

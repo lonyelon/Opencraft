@@ -4,6 +4,7 @@
 #include "game/Chunk.hpp"
 
 #include <string>
+#include <thread>
 
 Camera cam = Camera();
 
@@ -11,8 +12,8 @@ KeyHandler k = KeyHandler();
 
 void processInput(GLFWwindow *window);
 
-const unsigned int SCR_WIDTH = 1920;
-const unsigned int SCR_HEIGHT = 1080;
+unsigned int SCR_WIDTH = 1920;
+unsigned int SCR_HEIGHT = 1080;
 
 bool pressingW = false;
 bool pressingA = false;
@@ -21,7 +22,9 @@ bool pressingD = false;
 
 int seed = 123456789;
 
-std::vector<Chunk> c;
+int chunkCount = 0;
+
+std::vector<Chunk*> c;
 
 extern GLuint setShaders(const char *nVertx, const char *nFrag);
 GLuint shaderProgram;
@@ -39,16 +42,32 @@ void openGlInit() {
 	glCullFace(GL_BACK);
 }
 
-void genChunks(std::vector<Chunk> *c) {
-	c->clear();
-	const int size = 20;
+void genChunk(std::vector<Chunk*> *c, int jump, int size) {
 	for ( int x = 0; x < size; x++ ) {
-		for ( int y = 0; y < size; y++ ) {
-			c->push_back(Chunk(x, 0, y));
-			(*c)[x*size+y].genTerrain();
-			printf("Generating chunk %i/%i\n", y+size*x, size*size);
+		for ( int y = jump-1; y < size; y += jump ) {
+			c->push_back(new Chunk(x, 0, y));
+			(*c)[x*size+y]->genTerrain();
+			printf("Generating chunk %i/%i\n", y+size*x+1, size*size);
+			chunkCount++;
 		}
 	}
+}
+
+void genChunks(std::vector<Chunk*> *c) {
+	for (int i = 0; i < c->size(); i++) {
+		delete((*c)[i]);
+	}
+	c->clear();
+	const int size = 16;
+	const int threadCount = 1;
+	//std::thread t(genChunk, c, 1, size);
+	//t.join();
+	genChunk(c, 1, size);
+}
+
+void windowResize(GLFWwindow *window, int width, int height) {
+	SCR_WIDTH = width;
+	SCR_HEIGHT = height;
 }
 
 int main() {
@@ -73,6 +92,10 @@ int main() {
 	glfwSetCursorPosCallback(window, getMouseInput);
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
+	glfwSetWindowSizeCallback (window, windowResize);
+	glfwSetFramebufferSizeCallback (window, windowResize);
+
+
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 		std::cout << "Failed to initialize GLAD" << std::endl;
 		return -1;
@@ -87,6 +110,9 @@ int main() {
 	glUseProgram(shaderProgram);
 
 	glBindVertexArray(VAOTriangulo);
+
+	cam.setPos(0, 90, 0);
+	cam.setRotation( glm::half_pi<float>() , glm::half_pi<float>()/3 );
 
 	while (!glfwWindowShouldClose(window)) {
 		double t = glfwGetTime();
@@ -108,8 +134,8 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClear(GL_DEPTH_BUFFER_BIT);
 
-		for (int k = 0; k < 20*20; k++) {
-			c[k].draw();
+		for (int k = 0; k < chunkCount; k++) {
+			c[k]->draw();
 		}
 		 		
 		glfwSwapBuffers(window);

@@ -2,8 +2,9 @@
 
 ## Dev2.0
 * New render engine, over x1000 performance increase!
-* Camera object
-* This file
+* Brown dirt
+* Better world gen
+* This log
 
 *Known bugs*
 * 0x2: Water does not render

@@ -25,6 +25,8 @@ public:
     void getVisibleCubes();
 
     void draw();
+
+    ~Chunk();
 };
 
 #endif

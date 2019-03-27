@@ -55,6 +55,17 @@ public:
     float getRotY() {
         return this->camRotY;
     }
+
+    void setRotation(int x, int y) {
+        this->camRotX = x;
+        this->camRotY = y;
+    }
+
+    void setPos(int x, int y, int z) {
+        this->x = x;
+        this->y = y;
+        this->z = z;
+    }
 };
 
 #endif

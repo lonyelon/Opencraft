@@ -162,3 +162,12 @@ void Chunk::draw() {
     
     glDrawElements(GL_TRIANGLES, 36*this->renderedCubes.size(), GL_UNSIGNED_INT, 0);
 }
+
+Chunk::~Chunk() {
+    glDeleteVertexArrays(1, &(this->VAO));
+    /*for (int i = 0; i < this->W*this->H*this->Z; i++) {
+        delete(&(this->cubes[i]));
+    }*/
+    //delete(&(this->renderedCubes));
+    //free(this->cubes);
+}

@@ -57,14 +57,14 @@ CubeType Cube::getType() {
 
 void Cube::getVertex(std::vector<float> *v, std::vector<int> *i, int n) {
     float vertices[] = {
-		-0.5f, -0.5f, 0.5f, 	0.4,0.4,0.4, // back
-		0.5f, -0.5f, 0.5f,		0.6,0.6,0.6,
-		0.5f, 0.5f, 0.5f, 		0,1,0,
-		-0.5f, 0.5f, 0.5f, 		0,0.25,0,
-		-0.5f, 0.5f, -0.5f, 	0,0.5,0, // top
-		0.5f, 0.5f, -0.5f, 		0,0.75,0,
-		0.5f, -0.5f, -0.5f, 	1,1,1, // right
-		-0.5f, -0.5f, -0.5f, 	0.8,0.8,0.8, // right
+		-0.5f, -0.5f, 0.5f,
+		0.5f, -0.5f, 0.5f,
+		0.5f, 0.5f, 0.5f,
+		-0.5f, 0.5f, 0.5f,
+		-0.5f, 0.5f, -0.5f,
+		0.5f, 0.5f, -0.5f,
+		0.5f, -0.5f, -0.5f,
+		-0.5f, -0.5f, -0.5f,
 	};
 
 	unsigned int indices[] = {
@@ -76,15 +76,44 @@ void Cube::getVertex(std::vector<float> *v, std::vector<int> *i, int n) {
 		5, 6, 7, 4, 5, 7,
 	};
 
-    for ( int k = 0; k < 8*6; k += 3 ) {
-        if ( k % 2 == 0 ) {
-            v->push_back( vertices[k + 0] + this->x );
-            v->push_back( vertices[k + 1] + this->y );
-            v->push_back( vertices[k + 2] + this->z );
-        } else {
-            v->push_back( vertices[k + 0] );
-            v->push_back( vertices[k + 1] );
-            v->push_back( vertices[k + 2] );
+    float groundColor[] = {
+		0.66, 0.4, 0.125,
+		0.66*0.9, 0.4*0.9, 0.125*0.9,
+		0, 1, 0,
+		0, 0.9, 0,
+		0, 0.8, 0,
+		0, 0.7, 0,
+		0.66*0.8, 0.4*0.8, 0.125*0.8,
+		0.66*0.7, 0.4*0.7, 0.125*0.7,
+	};
+
+    float waterColor[] = {
+		0, 0, 1,
+        0, 0, 0.95,
+        0, 0, 0.9,
+        0, 0, 0.85,
+        0, 0, 0.8,
+        0, 0, 0.75,
+        0, 0, 0.7,
+        0, 0, 0.65,
+	};
+
+    for ( int k = 0; k < 8*3; k += 3 ) {
+        v->push_back( vertices[k + 0] + this->x );
+        v->push_back( vertices[k + 1] + this->y );
+        v->push_back( vertices[k + 2] + this->z );
+
+        switch (this->type) {
+            case CubeType::dirt:
+                v->push_back( groundColor[k + 0] );
+                v->push_back( groundColor[k + 1] );
+                v->push_back( groundColor[k + 2] );
+                break;
+            case CubeType::water:
+                v->push_back( waterColor[k + 0] );
+                v->push_back( waterColor[k + 1] );
+                v->push_back( waterColor[k + 2] );
+                break;
         }
     }
 

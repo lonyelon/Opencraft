@@ -2,10 +2,12 @@
 #define _CUBE_TYPES_HPP_
 
 enum CubeType {
-    air,
     dirt,
     stone,
-    water
+    water,
+    air,
 };
+
+bool isTransparent(CubeType t);
 
 #endif

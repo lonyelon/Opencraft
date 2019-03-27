@@ -2,9 +2,8 @@
 
 in vec3 col;
 
-out vec3 color;
+out vec4 color;
 
 void main(){
-
-    color = vec3(col.x, col.y, col.z);
+    color = vec4(col.x, col.y, col.z, 1);
 }

@@ -1,8 +1,11 @@
-./build/a.out: ./Chunk.o ./Cube.o ./Main.o ./KeyboardInput.o ./KeyHandler.o ./glad.o ./loadShader.o ./MouseInput.o 
-	g++ ./Chunk.o ./Cube.o ./Main.o ./KeyboardInput.o ./KeyHandler.o ./glad.o ./loadShader.o ./MouseInput.o -lglfw -lGL -ldl -lm -lnoise -o ./build/a.out
+./build/a.out: ./Chunk.o ./CubeTypes.o ./Cube.o ./Main.o ./KeyboardInput.o ./KeyHandler.o ./glad.o ./loadShader.o ./MouseInput.o 
+	g++ ./Chunk.o ./CubeTypes.o ./Cube.o ./Main.o ./KeyboardInput.o ./KeyHandler.o ./glad.o ./loadShader.o ./MouseInput.o -lglfw -lGL -ldl -lm -lnoise -o ./build/a.out
 
 ./Chunk.o: ./src/game/Chunk.cc 
 	g++ -c  ./src/game/Chunk.cc -lglfw -lGL -ldl -lm -lnoise
+
+./CubeTypes.o: ./src/game/CubeTypes.cc 
+	g++ -c  ./src/game/CubeTypes.cc -lglfw -lGL -ldl -lm -lnoise
 
 ./Cube.o: ./src/game/Cube.cc 
 	g++ -c  ./src/game/Cube.cc -lglfw -lGL -ldl -lm -lnoise

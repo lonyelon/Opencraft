@@ -9,5 +9,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "keyboard/KeyHandler.hpp"
+#include "mouse/MouseInput.hpp"
+#include "mouse/Camera.hpp"
 
 #endif

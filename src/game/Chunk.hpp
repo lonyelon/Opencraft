@@ -9,6 +9,7 @@
 class Chunk {
 private:
     int x, y, z;
+    unsigned int VAO;
     Cube *cubes;
     std::vector<Cube*> renderedCubes;
 
@@ -20,6 +21,8 @@ public:
     Cube *getCube(int x, int y, int z);
     Cube *getCubes();
     bool isIllated(int x, int y, int z);
+    void genVao();
+    void getVisibleCubes();
 
     void draw();
 };

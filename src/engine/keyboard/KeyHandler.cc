@@ -6,12 +6,7 @@
 #include <vector>
 #include "../../game/Chunk.hpp"
 
-extern float camX;
-extern float camY;
-extern float camZ;
-
-extern float camRotX;
-extern float camRotY;
+extern Camera cam;
 
 extern void genChunks(std::vector<Chunk> *c);
 extern std::vector<Chunk> c;
@@ -51,40 +46,40 @@ void KeyHandler::removeKey( int key ) {
 
 void KeyHandler::keyHandler () {
     for (int i = 0; i < this->keys.size(); i++) {
-        //if (this->keys[i].pressed) {
-            switch (this->keys[i].key) {
-                case GLFW_KEY_W:
-                    camX -= cos(camRotX)*cos(camRotY);
-                    camY += sin(camRotY);
-                    camZ += sin(camRotX)*cos(camRotY);
-                    break;
-                case GLFW_KEY_A:
-                    camX -= cos(camRotX+glm::half_pi<float>())*cos(camRotY);
-                    //camY += sin(camRotY);
-                    camZ += sin(camRotX+glm::half_pi<float>())*cos(camRotY);
-                    break;
-                case GLFW_KEY_S:
-                    camX += cos(camRotX)*cos(camRotY);
-                    camY -= sin(camRotY);
-                    camZ -= sin(camRotX)*cos(camRotY);
-                    break;
-                case GLFW_KEY_D:
-                    camX += cos(camRotX+glm::half_pi<float>())*cos(camRotY);
-                    //camY += sin(camRotY);
-                    camZ -= sin(camRotX+glm::half_pi<float>())*cos(camRotY);
-                    break;
-                case GLFW_KEY_Q:
-                    camY += 0.1;
-                    break;
-                case GLFW_KEY_E:
-                    camY -= 0.1;
-                    break;
-                case GLFW_KEY_SPACE:
-                    seed = rand() % 200000000;
-                    genChunks(&c);
-                    this->keys.erase(this->keys.begin() + i);
-                    break;
-            }
-        //}
+        switch (this->keys[i].key) {
+            case GLFW_KEY_W:
+                cam.move( 
+                    -cos(cam.getRotX())*cos(cam.getRotY()), 
+                    sin(cam.getRotY()), 
+                    sin(cam.getRotX())*cos(cam.getRotY()) 
+                );
+                break;
+            case GLFW_KEY_A:
+                cam.move( 
+                    -cos(glm::half_pi<float>()+cam.getRotX())*cos(cam.getRotY()), 
+                0, 
+                    sin(glm::half_pi<float>()+cam.getRotX())*cos(cam.getRotY()) 
+                );
+                break;
+            case GLFW_KEY_S:
+                cam.move( 
+                    cos(cam.getRotX())*cos(cam.getRotY()), 
+                    -sin(cam.getRotY()), 
+                    -sin(cam.getRotX())*cos(cam.getRotY()) 
+                );
+                break;
+            case GLFW_KEY_D:
+                cam.move( 
+                    cos(glm::half_pi<float>()+cam.getRotX())*cos(cam.getRotY()), 
+                    0, 
+                    -sin(glm::half_pi<float>()+cam.getRotX())*cos(cam.getRotY()) 
+                );
+                break;
+            case GLFW_KEY_SPACE:
+                seed = rand() % 200000000;
+                genChunks(&c);
+                this->keys.erase(this->keys.begin() + i);
+                break;
+        }
     }
 }

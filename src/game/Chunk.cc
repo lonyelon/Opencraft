@@ -7,6 +7,7 @@
 #include <cmath>
 
 extern int seed;
+extern GLuint shaderProgram;
 
 Chunk::Chunk ( int xpos, int ypos, int zpos ) {
     //this->world = w;
@@ -32,6 +33,9 @@ void Chunk::genTerrain() {
             }
         }
     }
+
+    this->getVisibleCubes();
+    this->genVao();
 }
 
 Cube *Chunk::getCube(int x, int y, int z) {
@@ -73,21 +77,63 @@ bool Chunk::isIllated(int x, int y, int z) {
     return true;
 }
 
-void Chunk::draw() {
+void Chunk::getVisibleCubes() {
     if (this->renderedCubes.size() == 0) {
         for (int i = 0; i < this->W*this->H*this->Z; i++) {
             if ( this->isIllated(this->cubes[i].getX(), this->cubes[i].getY(), this->cubes[i].getZ()) ) {
                 continue;
             }
 
-            if ( this->cubes[i].draw() == 0 ) {
+            if ( this->cubes[i].getType() != CubeType::air ) {
                 this->renderedCubes.push_back( &(this->cubes[i]) );
             }
         }
         return;
     }
+}
 
-    for ( int i = 0; i < this->renderedCubes.size(); i++ ) {
-        this->renderedCubes[i]->draw();
+void Chunk::genVao() {
+    unsigned int VBO, EBO;
+
+    std::vector<float> v;
+    std::vector<int> i;
+
+    for ( int k = 0; k < this->renderedCubes.size(); k++ ) {
+        this->renderedCubes[k]->getVertex( &v, &i, k );
     }
+
+    printf( "Vertices: %d\t%d\t%d\n\n", v.size(), v.size()/8/6, this->renderedCubes.size() );
+
+    float *vertices = &v[0];
+    int *indices = &i[0];
+
+	glGenVertexArrays( 1, &(this->VAO) );
+	glGenBuffers( 1, &VBO );
+	glGenBuffers( 1, &EBO );
+
+	glBindVertexArray( this->VAO );
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof( float ) * v.size(), vertices, GL_STATIC_DRAW);
+
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER,  sizeof( float ) * i.size(), indices, GL_STATIC_DRAW);
+	
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+
+	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &EBO);
+}
+
+void Chunk::draw() {
+    glBindVertexArray( this->VAO );
+    
+    glDrawElements(GL_TRIANGLES, 36*this->renderedCubes.size(), GL_UNSIGNED_INT, 0);
 }

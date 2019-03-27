@@ -13,59 +13,16 @@ private:
 
     float x, y, z;
 public:
-    Camera() {
-        this->speed = 1.0f/200.0f;
-        this->camRotX = 0;
-        this->camRotY = 0;
-    }
+    Camera();
 
-    void moveCoords( int xpos, int ypos ) {
-        camRotY -= ypos*this->speed;
-        camRotX -= xpos*this->speed;
+    void moveCoords( int xpos, int ypos );
+    void move(float x, float y, float z);
 
-        if ( camRotY <= -glm::half_pi<float>() ) {
-            camRotY = -glm::half_pi<float>() + this->correction;
-        }
-
-        if ( camRotY >= glm::half_pi<float>() ) {
-            camRotY = glm::half_pi<float>() - this->correction;
-        }
-    }
-
-    void move(float x, float y, float z) {
-        this->x += x;
-        this->y += y;
-        this->z += z;
-    }
-
-    glm::mat4 getViewMatrix() {
-        return glm::lookAt(
-            glm::vec3(this->x, this->y, this->z), 
-            glm::vec3(this->x - cos(this->camRotX)*cos(this->camRotY), 
-            this->y + sin(this->camRotY), 
-            this->z + sin(this->camRotX)*cos(this->camRotY)), 
-            glm::vec3(0,1,0)
-        );
-    }
-
-    float getRotX() {
-        return this->camRotX;
-    }
-
-    float getRotY() {
-        return this->camRotY;
-    }
-
-    void setRotation(int x, int y) {
-        this->camRotX = x;
-        this->camRotY = y;
-    }
-
-    void setPos(int x, int y, int z) {
-        this->x = x;
-        this->y = y;
-        this->z = z;
-    }
+    glm::mat4 getViewMatrix();
+    float getRotX();
+    float getRotY();
+    void setRotation(int x, int y);
+    void setPos(int x, int y, int z);
 };
 
 #endif

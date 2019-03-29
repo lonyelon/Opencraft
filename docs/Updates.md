@@ -1,5 +1,12 @@
 # Updates
 
+## Dev2.1
+* Crosshair
+* Multithread chunk generation (temporal)
+
+*Bugs Solved*
+* 0x1
+
 ## Dev2.0
 * New render engine, over x1000 performance increase!
 * Brown dirt.

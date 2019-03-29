@@ -9,7 +9,7 @@
 extern Camera cam;
 
 extern void genChunks(std::vector<Chunk*> *c);
-extern std::vector<Chunk*> c;
+extern std::vector<Chunk*> chunks;
 extern int seed;
 
 
@@ -77,7 +77,7 @@ void KeyHandler::keyHandler () {
                 break;
             case GLFW_KEY_SPACE:
                 seed = rand() % 200000000;
-                genChunks(&c);
+                genChunks(&chunks);
                 this->keys.erase(this->keys.begin() + i);
                 break;
         }

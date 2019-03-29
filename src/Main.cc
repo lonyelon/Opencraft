@@ -15,16 +15,11 @@ void processInput(GLFWwindow *window);
 unsigned int SCR_WIDTH = 1920;
 unsigned int SCR_HEIGHT = 1080;
 
-bool pressingW = false;
-bool pressingA = false;
-bool pressingS = false;
-bool pressingD = false;
-
-int seed = 123456789;
+int seed = 0;
 
 int chunkCount = 0;
 
-std::vector<Chunk*> c;
+std::vector<Chunk*> chunks;
 
 extern GLuint setShaders(const char *nVertx, const char *nFrag);
 GLuint shaderProgram;
@@ -42,13 +37,15 @@ void openGlInit() {
 	glCullFace(GL_BACK);
 }
 
-void genChunk(std::vector<Chunk*> *c, int jump, int size) {
+void genChunk(std::vector<Chunk*> *c, int threadNumber, int size, int threadCount) {
 	for ( int x = 0; x < size; x++ ) {
-		for ( int y = jump-1; y < size; y += jump ) {
-			c->push_back(new Chunk(x, 0, y));
+		for ( int y = threadNumber; y < size; y += threadCount ) {
+			//c->push_back(new Chunk(x - size/2, 0, y - size/2));
+			(*c)[x*size+y] = new Chunk(x - size/2, 0, y - size/2);
 			(*c)[x*size+y]->genTerrain();
-			printf("Generating chunk %i/%i\n", y+size*x+1, size*size);
-			chunkCount++;
+			(*c)[x*size+y]->getVisibleCubes();
+			printf("Generating chunk %i/%i (%i)\n", y+size*x+1, size*size, c->size());
+			(*c)[x*size+y]->genVao();
 		}
 	}
 }
@@ -58,11 +55,19 @@ void genChunks(std::vector<Chunk*> *c) {
 		delete((*c)[i]);
 	}
 	c->clear();
+
 	const int size = 16;
-	const int threadCount = 1;
-	//std::thread t(genChunk, c, 1, size);
-	//t.join();
-	genChunk(c, 1, size);
+	const int threadCount = 8;
+
+	*c = std::vector<Chunk*>(size*size);
+	
+	std::thread t[threadCount];
+	for (int i = 0; i < threadCount; i++) {
+		t[i] = std::thread(genChunk, c, i, size, threadCount);
+	}
+	for (int i = 0; i < threadCount; i++) {
+		t[i].join();
+	}
 }
 
 void windowResize(GLFWwindow *window, int width, int height) {
@@ -105,7 +110,7 @@ int main() {
 	
 	openGlInit();
 
-	genChunks(&c);
+	genChunks(&chunks);
 	printf("World generation completed\n");
 	glUseProgram(shaderProgram);
 
@@ -113,6 +118,9 @@ int main() {
 
 	cam.setPos(0, 90, 0);
 	cam.setRotation( glm::half_pi<float>() , glm::half_pi<float>()/3 );
+
+	unsigned int windowSizeLoc = glGetUniformLocation(shaderProgram, "windowSize");
+	glUniform2f(windowSizeLoc, SCR_WIDTH, SCR_HEIGHT);
 
 	while (!glfwWindowShouldClose(window)) {
 		double t = glfwGetTime();
@@ -134,8 +142,9 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClear(GL_DEPTH_BUFFER_BIT);
 
-		for (int k = 0; k < chunkCount; k++) {
-			c[k]->draw();
+		for (int k = 0; k < chunks.size(); k++) {
+			chunks[k]->genVao();
+			chunks[k]->draw();
 		}
 		 		
 		glfwSwapBuffers(window);

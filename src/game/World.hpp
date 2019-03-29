@@ -13,10 +13,6 @@ private:
 public:
     World();
     Chunk *getChunk(int x, int y, int z);
-    void addCube(Cube *c) {
-        //this->
-    }
-
     void draw();
 };
 

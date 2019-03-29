@@ -15,6 +15,8 @@ Chunk::Chunk ( int xpos, int ypos, int zpos ) {
     this->y = ypos;
     this->z = zpos;
     this->cubes = new Cube[this->W * this->H * this->Z];
+    
+    this->VAO = 0;
 }
 
 void Chunk::genTerrain() {
@@ -34,8 +36,8 @@ void Chunk::genTerrain() {
         }
     }
 
-    this->getVisibleCubes();
-    this->genVao();
+    //this->getVisibleCubes();
+    //this->genVao();
 }
 
 Cube *Chunk::getCube(int x, int y, int z) {
@@ -73,32 +75,7 @@ bool Chunk::isIllated(int x, int y, int z) {
     if (z != this->Z*this->z) if (this->getCube(x - this->W*this->x,y - this->H*this->y,z - this->Z*this->z-1)->getType() == CubeType::air) {
         return false;
     }
-    /*
-    if (x != this->W*this->x + this->W - 1) {
-        if (this->getCube(x - this->W*this->x+1,y - this->H*this->y,z - this->Z*this->z)->getType() == CubeType::water) {
-            return false;
-        }
-    }
-    if (x != this->W*this->x) if (this->getCube(x - this->W*this->x-1,y - this->H*this->y,z - this->Z*this->z)->getType() == CubeType::water) {
-        return false;
-    }
 
-    if (y != this->H*this->y + this->H - 1) if (this->getCube(x - this->W*this->x,y - this->H*this->y+1,z - this->Z*this->z)->getType() == CubeType::water) {
-        return false;
-    }
-
-    if (y != this->H*this->y) if (this->getCube(x - this->W*this->x,y - this->H*this->y-1,z - this->Z*this->z)->getType() == CubeType::water) {
-        return false;
-    }
-
-    if (z != this->Z*this->z + this->Z - 1) if (this->getCube(x - this->W*this->x,y - this->H*this->y,z - this->Z*this->z+1)->getType() == CubeType::water) {
-        return false;
-    }
-
-    if (z != this->Z*this->z) if (this->getCube(x - this->W*this->x,y - this->H*this->y,z - this->Z*this->z-1)->getType() == CubeType::water) {
-        return false;
-    }*/
-    
     return true;
 }
 
@@ -118,6 +95,8 @@ void Chunk::getVisibleCubes() {
 }
 
 void Chunk::genVao() {
+    if ( this->VAO != 0 ) return;
+
     unsigned int VBO, EBO;
 
     std::vector<float> v;

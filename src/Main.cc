@@ -44,8 +44,9 @@ void genChunk(std::vector<Chunk*> *c, int threadNumber, int size, int threadCoun
 			(*c)[x*size+y] = new Chunk(x - size/2, 0, y - size/2);
 			(*c)[x*size+y]->genTerrain();
 			(*c)[x*size+y]->getVisibleCubes();
-			printf("Generating chunk %i/%i (%i)\n", y+size*x+1, size*size, c->size());
 			(*c)[x*size+y]->genVao();
+			chunkCount++;
+			printf("Generating world: %d\%\n", (chunkCount*100)/(size*size));
 		}
 	}
 }
@@ -56,10 +57,10 @@ void genChunks(std::vector<Chunk*> *c) {
 	}
 	c->clear();
 
-	const int size = 16;
+	const int size = 20;
 	const int threadCount = 8;
 
-	*c = std::vector<Chunk*>(size*size);
+	*c = std::vector<Chunk*>(size*size, NULL);
 	
 	std::thread t[threadCount];
 	for (int i = 0; i < threadCount; i++) {
@@ -100,7 +101,6 @@ int main() {
 	glfwSetWindowSizeCallback (window, windowResize);
 	glfwSetFramebufferSizeCallback (window, windowResize);
 
-
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 		std::cout << "Failed to initialize GLAD" << std::endl;
 		return -1;
@@ -109,7 +109,6 @@ int main() {
 	shaderProgram = setShaders("./bin/shaders/shader.vert", "./bin/shaders/shader.frag");
 	
 	openGlInit();
-
 	genChunks(&chunks);
 	printf("World generation completed\n");
 	glUseProgram(shaderProgram);

@@ -2,6 +2,7 @@
 #define _CUBE_TYPES_HPP_
 
 enum CubeType {
+    grassyDirt,
     dirt,
     stone,
     water,

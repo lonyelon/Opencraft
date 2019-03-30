@@ -3,9 +3,11 @@
 ## Dev2.1
 * Crosshair
 * Multithread chunk generation (temporal)
+* Chunk customization (biomes?)
 
 *Bugs Solved*
-* 0x1
+* 0x2.
+* 0x3.
 
 ## Dev2.0
 * New render engine, over x1000 performance increase!
@@ -13,6 +15,9 @@
 * Better world gen.
 * This log.
 * Better memory management.
+
+*Known bugs*
+* 0x3: Cubes below water don't render.
 
 ## Dev1.1 
 * Better performance

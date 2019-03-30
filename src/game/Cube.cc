@@ -6,28 +6,12 @@
 #include "../engine/glfw.hpp"
 
 extern GLuint shaderProgram;
-extern unsigned int VAOTriangulo;
-
-void Cube::recalcModelMatrix() {
-    glm::mat4 model;
-
-    if (this->m == NULL) {
-        this->m = malloc(sizeof(glm::mat4));
-    }
-
-	model = glm::mat4(1.0f);
-	model = glm::translate(model, glm::vec3(this->x, this->y, this->z));
-
-    *((glm::mat4*)this->m) = model;
-}
 
 Cube::Cube(int xpos, int ypos, int zpos) {
     Cube::x = xpos;
     Cube::y = ypos;
     Cube::z = zpos;
     Cube::type = CubeType::air;
-
-    Cube::recalcModelMatrix();
 }
 
 Cube::Cube() {
@@ -35,16 +19,12 @@ Cube::Cube() {
     Cube::y = 0;
     Cube::z = 0;
     Cube::type = CubeType::air;
-
-    Cube::recalcModelMatrix();
 }
 
 void Cube::setPosition(int x, int y, int z) {
     Cube::x = x;
     Cube::y = y;
     Cube::z = z;
-
-    Cube::recalcModelMatrix();
 }
 
 void Cube::setType(CubeType t) {
@@ -76,7 +56,7 @@ void Cube::getVertex(std::vector<float> *v, std::vector<int> *i, int n) {
 		5, 6, 7, 4, 5, 7,
 	};
 
-    float groundColor[] = {
+    float grassColor[] = {
 		0.66, 0.4, 0.125,
 		0.66*0.9, 0.4*0.9, 0.125*0.9,
 		0, 1, 0,
@@ -84,6 +64,17 @@ void Cube::getVertex(std::vector<float> *v, std::vector<int> *i, int n) {
 		0, 0.8, 0,
 		0, 0.7, 0,
 		0.66*0.8, 0.4*0.8, 0.125*0.8,
+		0.66*0.7, 0.4*0.7, 0.125*0.7,
+	};
+
+    float dirtColor[] = {
+		0.66*1.0, 0.4*1.0, 0.125*1.0,
+		0.66*0.95, 0.4*0.95, 0.125*0.95,
+		0.66*0.9, 0.4*0.9, 0.125*0.9,
+		0.66*0.85, 0.4*0.85, 0.125*0.85,
+		0.66*0.8, 0.4*0.8, 0.125*0.8,
+		0.66*0.75, 0.4*0.75, 0.125*0.75,
+		0.66*0.65, 0.4*0.65, 0.125*0.65,
 		0.66*0.7, 0.4*0.7, 0.125*0.7,
 	};
 
@@ -104,10 +95,15 @@ void Cube::getVertex(std::vector<float> *v, std::vector<int> *i, int n) {
         v->push_back( vertices[k + 2] + this->z );
 
         switch (this->type) {
+            case CubeType::grassyDirt:
+                v->push_back( grassColor[k + 0] );
+                v->push_back( grassColor[k + 1] );
+                v->push_back( grassColor[k + 2] );
+                break;
             case CubeType::dirt:
-                v->push_back( groundColor[k + 0] );
-                v->push_back( groundColor[k + 1] );
-                v->push_back( groundColor[k + 2] );
+                v->push_back( dirtColor[k + 0] );
+                v->push_back( dirtColor[k + 1] );
+                v->push_back( dirtColor[k + 2] );
                 break;
             case CubeType::water:
                 v->push_back( waterColor[k + 0] );
@@ -124,18 +120,6 @@ void Cube::getVertex(std::vector<float> *v, std::vector<int> *i, int n) {
     }
 }
 
-int Cube::draw() {
-    if ( this->type == CubeType::air ) return -1;
-
-    if (this->type == CubeType::water)
-        glUniform1i(glGetUniformLocation(shaderProgram, "isWater"), 1);
-    else 
-        glUniform1i(glGetUniformLocation(shaderProgram, "isWater"), 0);
-
-    glm::mat4 model = *((glm::mat4*)this->m);
-    glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
-
-    glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
-
-    return 0;
+Cube::~Cube() {
+    
 }

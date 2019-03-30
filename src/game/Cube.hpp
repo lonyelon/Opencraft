@@ -10,10 +10,7 @@ class Cube {
 private:
     CubeType type;
     int x, y, z;
-    void *m;
-
-    void recalcModelMatrix();
-
+    
 public:
     Cube (); 
     Cube ( int xpos, int ypos, int zpos );
@@ -28,7 +25,7 @@ public:
     int getY() { return this->y; };
     int getZ() { return this->z; };
 
-    int draw();
+    ~Cube();
 };
 
 #endif

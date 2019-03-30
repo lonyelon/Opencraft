@@ -10,7 +10,7 @@ class Chunk {
 private:
     int x, y, z;
     unsigned int VAO;
-    Cube *cubes;
+    std::vector<Cube*> cubes;
     std::vector<Cube*> renderedCubes;
 
 public:
@@ -19,7 +19,7 @@ public:
     Chunk ( int posX, int posY, int posZ );
     void genTerrain();
     Cube *getCube(int x, int y, int z);
-    Cube *getCubes();
+    std::vector<Cube*> getCubes();
     bool isIllated(int x, int y, int z);
     void genVao();
     void getVisibleCubes();

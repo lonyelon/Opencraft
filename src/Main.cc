@@ -1,12 +1,15 @@
 #include "engine/glfw.hpp"
 
 #include "engine/keyboard/KeyboardInput.hpp"
-#include "game/Chunk.hpp"
+#include "game/world/Chunk.hpp"
+#include "game/world/World.hpp"
 
 #include <string>
 #include <thread>
 
 Camera cam = Camera();
+
+World *world;
 
 KeyHandler k = KeyHandler();
 
@@ -37,50 +40,19 @@ void openGlInit() {
 	glCullFace(GL_BACK);
 }
 
-void genChunk(std::vector<Chunk*> *c, int threadNumber, int size, int threadCount) {
-	for ( int x = 0; x < size; x++ ) {
-		for ( int y = threadNumber; y < size; y += threadCount ) {
-			//c->push_back(new Chunk(x - size/2, 0, y - size/2));
-			(*c)[x*size+y] = new Chunk(x - size/2, 0, y - size/2);
-			(*c)[x*size+y]->genTerrain();
-			(*c)[x*size+y]->getVisibleCubes();
-			(*c)[x*size+y]->genVao();
-			chunkCount++;
-			printf("Generating world: %d\%\n", (chunkCount*100)/(size*size));
-		}
-	}
-}
-
-void genChunks(std::vector<Chunk*> *c) {
-	for (int i = 0; i < c->size(); i++) {
-		delete((*c)[i]);
-	}
-	c->clear();
-
-	const int size = 20;
-	const int threadCount = 8;
-
-	*c = std::vector<Chunk*>(size*size, NULL);
-	
-	std::thread t[threadCount];
-	for (int i = 0; i < threadCount; i++) {
-		t[i] = std::thread(genChunk, c, i, size, threadCount);
-	}
-	for (int i = 0; i < threadCount; i++) {
-		t[i].join();
-	}
-}
-
 void windowResize(GLFWwindow *window, int width, int height) {
 	SCR_WIDTH = width;
 	SCR_HEIGHT = height;
 }
 
 int main() {
+	printf("%d\n", sizeof(Cube*));
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+	world = new World(  );
 
 	float temp = 0;
 														
@@ -109,7 +81,7 @@ int main() {
 	shaderProgram = setShaders("./bin/shaders/shader.vert", "./bin/shaders/shader.frag");
 	
 	openGlInit();
-	genChunks(&chunks);
+	world->genChunks();
 	printf("World generation completed\n");
 	glUseProgram(shaderProgram);
 
@@ -141,10 +113,7 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClear(GL_DEPTH_BUFFER_BIT);
 
-		for (int k = 0; k < chunks.size(); k++) {
-			chunks[k]->genVao();
-			chunks[k]->draw();
-		}
+		world->draw();
 		 		
 		glfwSwapBuffers(window);
 		glfwPollEvents();

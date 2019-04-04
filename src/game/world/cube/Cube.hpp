@@ -3,17 +3,21 @@
 
 #include <vector>
 
-#include "CubeTypes.hpp"
-#include "../engine/glfw.hpp"
+#include "Cube.hpp"
+#include "../CubeTypes.hpp"
+#include "../../../engine/glfw.hpp"
+
+class Chunk;
 
 class Cube {
 private:
+    Chunk *chunk;
     CubeType type;
     int x, y, z;
-    
+
 public:
     Cube (); 
-    Cube ( int xpos, int ypos, int zpos );
+    Cube ( Chunk *c, int xpos, int ypos, int zpos );
 
     void setPosition( int x, int y, int z );
     void setType( CubeType t );

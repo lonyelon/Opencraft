@@ -4,13 +4,12 @@
 #include <iostream>
 #include <cmath>
 #include <vector>
-#include "../../game/Chunk.hpp"
+#include "../../game/world/World.hpp"
 
 extern Camera cam;
 
-extern void genChunks(std::vector<Chunk*> *c);
 extern std::vector<Chunk*> chunks;
-extern int seed;
+extern World *world;
 
 
 KeyHandler::KeyHandler() {
@@ -76,8 +75,8 @@ void KeyHandler::keyHandler () {
                 );
                 break;
             case GLFW_KEY_SPACE:
-                seed = rand() % 200000000;
-                genChunks(&chunks);
+                world->setSeed( rand() % 2000000 );
+                world->genChunks();
                 this->keys.erase(this->keys.begin() + i);
                 break;
         }

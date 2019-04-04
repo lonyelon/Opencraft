@@ -3,25 +3,25 @@
 #include <cstdio>
 #include <cstdlib>
 
-#include "../engine/glfw.hpp"
-
 extern GLuint shaderProgram;
 
-Cube::Cube(int xpos, int ypos, int zpos) {
+Cube::Cube( Chunk *c, int xpos, int ypos, int zpos ) {
     Cube::x = xpos;
     Cube::y = ypos;
     Cube::z = zpos;
     Cube::type = CubeType::air;
+    Cube::chunk = c;
 }
 
-Cube::Cube() {
+Cube::Cube(  ) {
     Cube::x = 0;
     Cube::y = 0;
     Cube::z = 0;
     Cube::type = CubeType::air;
+    Cube::chunk = NULL;
 }
 
-void Cube::setPosition(int x, int y, int z) {
+void Cube::setPosition( int x, int y, int z ) {
     Cube::x = x;
     Cube::y = y;
     Cube::z = z;
@@ -89,6 +89,17 @@ void Cube::getVertex(std::vector<float> *v, std::vector<int> *i, int n) {
         0, 0, 0.65,
 	};
 
+    float stoneColor[] = {
+		0.4, 0.4, 0.4,
+        0.375, 0.375, 0.375,
+        0.35, 0.35, 0.35,
+        0.325, 0.325, 0.325,
+        0.3, 0.3, 0.3,
+        0.275, 0.275, 0.275,
+        0.25, 0.25, 0.25,
+        0.225, 0.225, 0.225,
+	};
+
     for ( int k = 0; k < 8*3; k += 3 ) {
         v->push_back( vertices[k + 0] + this->x );
         v->push_back( vertices[k + 1] + this->y );
@@ -109,6 +120,11 @@ void Cube::getVertex(std::vector<float> *v, std::vector<int> *i, int n) {
                 v->push_back( waterColor[k + 0] );
                 v->push_back( waterColor[k + 1] );
                 v->push_back( waterColor[k + 2] );
+                break;
+            case CubeType::stone:
+                v->push_back( stoneColor[k + 0] );
+                v->push_back( stoneColor[k + 1] );
+                v->push_back( stoneColor[k + 2] );
                 break;
         }
     }

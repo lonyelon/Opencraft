@@ -1,14 +1,17 @@
-./build/a.out: ./Chunk.o ./CubeTypes.o ./Cube.o ./Main.o ./KeyboardInput.o ./KeyHandler.o ./glad.o ./loadShader.o ./Camera.o ./MouseInput.o 
-	g++ ./Chunk.o ./CubeTypes.o ./Cube.o ./Main.o ./KeyboardInput.o ./KeyHandler.o ./glad.o ./loadShader.o ./Camera.o ./MouseInput.o -lglfw -lGL -ldl -lm -lnoise -lpthread -o ./build/a.out
+./build/a.out: ./Chunk.o ./CubeTypes.o ./Cube.o ./World.o ./Main.o ./KeyboardInput.o ./KeyHandler.o ./glad.o ./loadShader.o ./Camera.o ./MouseInput.o 
+	g++ ./Chunk.o ./CubeTypes.o ./Cube.o ./World.o ./Main.o ./KeyboardInput.o ./KeyHandler.o ./glad.o ./loadShader.o ./Camera.o ./MouseInput.o -lglfw -lGL -ldl -lm -lnoise -lpthread -o ./build/a.out
 
-./Chunk.o: ./src/game/Chunk.cc 
-	g++ -c  ./src/game/Chunk.cc -lglfw -lGL -ldl -lm -lnoise -lpthread
+./Chunk.o: ./src/game/world/Chunk.cc 
+	g++ -c  ./src/game/world/Chunk.cc -lglfw -lGL -ldl -lm -lnoise -lpthread
 
-./CubeTypes.o: ./src/game/CubeTypes.cc 
-	g++ -c  ./src/game/CubeTypes.cc -lglfw -lGL -ldl -lm -lnoise -lpthread
+./CubeTypes.o: ./src/game/world/CubeTypes.cc 
+	g++ -c  ./src/game/world/CubeTypes.cc -lglfw -lGL -ldl -lm -lnoise -lpthread
 
-./Cube.o: ./src/game/Cube.cc 
-	g++ -c  ./src/game/Cube.cc -lglfw -lGL -ldl -lm -lnoise -lpthread
+./Cube.o: ./src/game/world/cube/Cube.cc 
+	g++ -c  ./src/game/world/cube/Cube.cc -lglfw -lGL -ldl -lm -lnoise -lpthread
+
+./World.o: ./src/game/world/World.cc 
+	g++ -c  ./src/game/world/World.cc -lglfw -lGL -ldl -lm -lnoise -lpthread
 
 ./Main.o: ./src/Main.cc 
 	g++ -c  ./src/Main.cc -lglfw -lGL -ldl -lm -lnoise -lpthread

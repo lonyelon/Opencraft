@@ -4,7 +4,10 @@
 #include <vector>
 
 //#include "World.hpp"
-#include "Cube.hpp"
+#include "Chunk.hpp"
+#include "cube/Cube.hpp"
+
+class World;
 
 class Chunk {
 private:
@@ -12,17 +15,22 @@ private:
     unsigned int VAO;
     std::vector<Cube*> cubes;
     std::vector<Cube*> renderedCubes;
+    World *world;
 
 public:
     static const int W=16, H=256, Z=16;
 
-    Chunk ( int posX, int posY, int posZ );
+    Chunk ( World *w, int posX, int posY, int posZ );
     void genTerrain();
     Cube *getCube(int x, int y, int z);
     std::vector<Cube*> getCubes();
     bool isIllated(int x, int y, int z);
     void genVao();
     void getVisibleCubes();
+
+    int getX() { return this->x; };
+    int getY() { return this->y; };
+    int getZ() { return this->z; };
 
     void draw();
 

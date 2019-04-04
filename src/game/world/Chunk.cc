@@ -54,11 +54,16 @@ void Chunk::genTerrain() {
         }
     }
     
+    p.SetSeed( this->world->getSeed(  )*2 );
+
     for (int x = 0; x < this->W; x++) {
         for (int z = 0; z < this->Z; z++) {
             int dirtCount = 0;
             for (int y = this->H-1; y > 0; y--) {    
                 Cube *c = this->getCube( x, y, z );
+
+                float noiseX = (float)(this->x*this->W + x)/xCoordRed*10;
+                float noiseZ = (float)(this->z*this->Z + z)/zCoordRed*10;
 
                 if ( c->getType() == CubeType::air ) {
                     if ( y < waterHeight ) {
@@ -68,7 +73,9 @@ void Chunk::genTerrain() {
                     }
                 } else {
                     if (dirtCount < 3) {
-                        if (dirtCount == 0 && y >= waterHeight-1) {
+                        if ( (p.GetValue(noiseX, 1, noiseZ)*5 + waterHeight)/y > 1) {
+                            c->setType(CubeType::sand);
+                        } else if (dirtCount == 0 && y >= waterHeight-1) {
                             c->setType(CubeType::grassyDirt);
                         } else {
                             c->setType(CubeType::dirt);
@@ -218,6 +225,8 @@ void Chunk::genVao() {
 }
 
 void Chunk::draw() {
+    if ( this->VAO == 0 ) return;
+
     glBindVertexArray( this->VAO );
     
     glDrawElements(GL_TRIANGLES, 36*this->renderedCubes.size(), GL_UNSIGNED_INT, 0);

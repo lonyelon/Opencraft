@@ -111,3 +111,11 @@ void World::setSeed( int seed ) {
 int World::getSeed(  ) {
     return this->seed;
 }
+
+int World::getChunkCount(  ) {
+    return this->chunks.size();
+}
+
+std::vector<Chunk*> World::getChunks() {
+    return this->chunks;
+}

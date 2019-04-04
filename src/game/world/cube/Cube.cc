@@ -78,6 +78,17 @@ void Cube::getVertex(std::vector<float> *v, std::vector<int> *i, int n) {
 		0.66*0.7, 0.4*0.7, 0.125*0.7,
 	};
 
+    float sandColor[] = {
+		0.9*1.0, 0.8*1.0, 0.2*1.0,
+		0.9*0.95, 0.8*0.95, 0.2*0.95,
+		0.9*0.9, 0.8*0.9, 0.2*0.9,
+		0.9*0.85, 0.8*0.85, 0.2*0.85,
+		0.9*0.8, 0.8*0.8, 0.2*0.8,
+		0.9*0.75, 0.8*0.75, 0.2*0.75,
+		0.9*0.65, 0.8*0.65, 0.2*0.65,
+		0.9*0.7, 0.8*0.7, 0.2*0.7,
+	};
+
     float waterColor[] = {
 		0, 0, 1,
         0, 0, 0.95,
@@ -125,6 +136,11 @@ void Cube::getVertex(std::vector<float> *v, std::vector<int> *i, int n) {
                 v->push_back( stoneColor[k + 0] );
                 v->push_back( stoneColor[k + 1] );
                 v->push_back( stoneColor[k + 2] );
+                break;
+            case CubeType::sand:
+                v->push_back( sandColor[k + 0] );
+                v->push_back( sandColor[k + 1] );
+                v->push_back( sandColor[k + 2] );
                 break;
         }
     }

@@ -20,6 +20,8 @@ public:
     Cube *getCube( int x, int y, int z );
     void setSeed( int seed );
     int getSeed(  );
+    int getChunkCount(  );
+    std::vector<Chunk*> getChunks();
 
     void draw(  );
 };

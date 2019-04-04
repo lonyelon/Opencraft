@@ -102,6 +102,40 @@ bool Chunk::isIllated(int x, int y, int z) {
         return false;
     }
 
+    c = this->world->getCube( x, y ,z );
+
+    if ( c != NULL && c->getType() != CubeType::water ) {
+        c = this->world->getCube(x + 1,y ,z );
+        if ( c != NULL && c->getType() == CubeType::water) {
+            return false;
+        }
+
+        c = this->world->getCube(x - 1,y ,z );
+        if ( c != NULL && c->getType() == CubeType::water) {
+            return false;
+        }
+
+        c = this->world->getCube(x ,y + 1 ,z );
+        if ( c != NULL && c->getType() == CubeType::water) {
+            return false;
+        }
+
+        c = this->world->getCube(x, y - 1 ,z );
+        if ( c != NULL && c->getType() == CubeType::water) {
+            return false;
+        }
+
+        c = this->world->getCube(x,y ,z + 1 );
+        if ( c != NULL && c->getType() == CubeType::water) {
+            return false;
+        }
+
+        c = this->world->getCube(x ,y ,z - 1 );
+        if ( c != NULL && c->getType() == CubeType::water) {
+            return false;
+        }
+    }
+
     return true;
 }
 

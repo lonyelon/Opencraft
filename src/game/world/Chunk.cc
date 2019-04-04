@@ -26,9 +26,9 @@ void Chunk::genTerrain() {
     const float xCoordRed = 200;
     const float yCoordRed = 200;
     const float zCoordRed = 200;
-    const float ystrech = 50;
+    const float ystrech = 75;
 
-    const int waterHeight = 63;
+    const int waterHeight = 74;
 
     noise::module::Perlin p;
 

@@ -1,6 +1,15 @@
 # Updates
 
 ## Dev2.1
+* Better world generation
+  * Dirt
+  * Stone
+* Better sky color
+
+*Bugs Solved*
+* 0x1, the firts bug
+  
+## Dev2.1
 * Crosshair
 * Multithread chunk generation (temporal)
 * Chunk customization (biomes?)

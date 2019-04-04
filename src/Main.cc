@@ -32,7 +32,7 @@ unsigned int VAOTriangulo;
 
 void openGlInit() {
 	glClearDepth(1.0f);
-	glClearColor(0.3f, 0.3f, 1.0f, 1.0f); 
+	glClearColor(0.2f, 0.2f, 1.0f, 1.0f); 
 
 	glEnable(GL_DEPTH_TEST); 
 	glEnable(GL_CULL_FACE);
@@ -53,6 +53,8 @@ int main() {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 	world = new World(  );
+
+	srand(time(NULL));
 
 	float temp = 0;
 														

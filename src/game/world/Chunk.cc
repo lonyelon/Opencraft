@@ -26,7 +26,7 @@ void Chunk::genTerrain() {
     const float xCoordRed = 200;
     const float yCoordRed = 200;
     const float zCoordRed = 200;
-    const float ystrech = 75;
+    const float ystrech = 50;
 
     const int waterHeight = 63;
 
@@ -47,12 +47,34 @@ void Chunk::genTerrain() {
                 
                 this->cubes[x + y*this->W + z*this->W*this->H] = new Cube( this, this->x*this->W + x, this->H*this->y + y, this->z*this->Z + z );
 
-                if ( y < noiseValue - 3 ) {
+                if ( y < noiseValue ) {
                     this->getCube( x, y, z )->setType( CubeType::stone );
-                } else if (y < noiseValue) {
-                    this->getCube(x, y, z)->setType(CubeType::grassyDirt);
-                }else if (this->H*this->y + y < waterHeight) {
-                    this->getCube(x, y, z)->setType(CubeType::water);
+                }
+            }
+        }
+    }
+    
+    for (int x = 0; x < this->W; x++) {
+        for (int z = 0; z < this->Z; z++) {
+            int dirtCount = 0;
+            for (int y = this->H-1; y > 0; y--) {    
+                Cube *c = this->getCube( x, y, z );
+
+                if ( c->getType() == CubeType::air ) {
+                    if ( y < waterHeight ) {
+                        c->setType(CubeType::water);
+                    } else {
+                        dirtCount = 0;
+                    }
+                } else {
+                    if (dirtCount < 3) {
+                        if (dirtCount == 0 && y >= waterHeight-1) {
+                            c->setType(CubeType::grassyDirt);
+                        } else {
+                            c->setType(CubeType::dirt);
+                        }
+                        dirtCount++;
+                    }
                 }
             }
         }

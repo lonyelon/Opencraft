@@ -4,7 +4,7 @@
 
 World::World() {
     this->seed = 0;
-    this->size = 20;
+    this->size = 10;
     this->chunkCount = 0;
 }
 
@@ -23,6 +23,7 @@ void genChunk( std::vector<Chunk*> *chunks, int *chunkCount, int size, World *w,
 void genVAOs( std::vector<Chunk*> *chunks, int threadNumber, int threadCount ) {
     for ( int i = threadNumber; i < (*chunks).size(); i += threadCount ) {
         (*chunks)[i]->getVisibleCubes();
+        printf("Rendering chunk %d\n", i);
     }
 }
 

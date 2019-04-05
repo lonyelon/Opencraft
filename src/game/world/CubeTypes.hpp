@@ -7,7 +7,8 @@ enum CubeType {
     stone,
     water,
     air,
-    sand
+    sand,
+    lava
 };
 
 bool isTransparent(CubeType t);

@@ -89,6 +89,17 @@ void Cube::getVertex(std::vector<float> *v, std::vector<int> *i, int n) {
 		0.9*0.7, 0.8*0.7, 0.2*0.7,
 	};
 
+    float lavaColor[] = {
+		0.9*1.0, 0.4*1.0, 0.1*1.0,
+		0.9*0.95, 0.4*0.95, 0.1*0.95,
+		0.9*0.9, 0.4*0.9, 0.1*0.9,
+		0.9*0.85, 0.4*0.85, 0.1*0.85,
+		0.9*0.8, 0.4*0.8, 0.1*0.8,
+		0.9*0.75, 0.4*0.75, 0.1*0.75,
+		0.9*0.65, 0.4*0.65, 0.1*0.65,
+		0.9*0.7, 0.4*0.7, 0.1*0.7,
+	};
+
     float waterColor[] = {
 		0, 0, 1,
         0, 0, 0.95,
@@ -141,6 +152,11 @@ void Cube::getVertex(std::vector<float> *v, std::vector<int> *i, int n) {
                 v->push_back( sandColor[k + 0] );
                 v->push_back( sandColor[k + 1] );
                 v->push_back( sandColor[k + 2] );
+                break;
+            case CubeType::lava:
+                v->push_back( lavaColor[k + 0] );
+                v->push_back( lavaColor[k + 1] );
+                v->push_back( lavaColor[k + 2] );
                 break;
         }
     }

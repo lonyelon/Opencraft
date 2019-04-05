@@ -26,15 +26,22 @@ void Chunk::genTerrain() {
     const float xCoordRed = 200;
     const float yCoordRed = 200;
     const float zCoordRed = 200;
+    const float noiseFreq = 1;
     const float ystrech = 75;
 
-    const int waterHeight = 74;
+    const int waterHeight = 64;
 
     noise::module::Perlin p;
 
+    int heights[this->W*this->Z];
+    for (int i = 0; i < this->W*this->Z; i++) {
+        heights[i] = -1;
+    }
 
     p.SetSeed( this->world->getSeed(  ) );
-    p.SetFrequency(1);
+    p.SetFrequency( noiseFreq );
+
+    // Generate stone world and water
 
     for (int y = 0; y < this->H; y++) {
         for (int x = 0; x < this->W; x++) {
@@ -73,6 +80,9 @@ void Chunk::genTerrain() {
                     }
                 } else {
                     if (dirtCount < 3) {
+                        if ( y < heights[x + z*this->W] || heights[x + z*this->W] == -1 ) {
+                            heights[x + z*this->W] = y;
+                        }
                         if ( (p.GetValue(noiseX, 1, noiseZ)*5 + waterHeight)/y > 1) {
                             c->setType(CubeType::sand);
                         } else if (dirtCount == 0 && y >= waterHeight-1) {
@@ -83,6 +93,39 @@ void Chunk::genTerrain() {
                         dirtCount++;
                     }
                 }
+            }
+        }
+    }
+
+    p.SetSeed( this->world->getSeed(  )*3 );
+    p.SetFrequency(0.5);
+
+    for (int x = 0; x < this->W; x++) {
+        for (int z = 0; z < this->Z; z++) {
+            int dirtCount = 0;
+            for (int y = this->H-1; y > 0; y--) {    
+                Cube *c = this->getCube( x, y, z );
+
+                float noiseX = (float)(this->x*this->W + x)/xCoordRed*10;
+                float noiseY = (float)(this->y*this->H + y)/yCoordRed*10;
+                float noiseZ = (float)(this->z*this->Z + z)/zCoordRed*10;
+
+                if ( (p.GetValue( noiseX, noiseY, noiseZ )*(heights[x + z*this->W]-50))/y < -0.5 && c->getType() != CubeType::water ) {
+                    c->setType( CubeType::air );
+                }
+            }
+        }
+    }
+
+    for (int x = 0; x < this->W; x++) {
+        for (int z = 0; z < this->Z; z++) {
+            int dirtCount = 0;
+            for (int y = this->H-1; y > 0; y--) {    
+                Cube *c = this->getCube( x, y, z );
+
+                if ( y < 12 && c->getType() == CubeType::air ) {
+                    c->setType( CubeType::lava );
+                } 
             }
         }
     }
@@ -100,6 +143,11 @@ std::vector<Cube*> Chunk::getCubes() {
 
 bool Chunk::isIllated(int x, int y, int z) {
     Cube *c = NULL;
+
+    c = this->world->getCube(x ,y + 1 ,z );
+    if ( c != NULL && c->getType() == CubeType::air) {
+        return false;
+    }
     
     c = this->world->getCube(x + 1,y ,z );
     if ( c != NULL && c->getType() == CubeType::air) {
@@ -107,11 +155,6 @@ bool Chunk::isIllated(int x, int y, int z) {
     }
 
     c = this->world->getCube(x - 1,y ,z );
-    if ( c != NULL && c->getType() == CubeType::air) {
-        return false;
-    }
-
-    c = this->world->getCube(x ,y + 1 ,z );
     if ( c != NULL && c->getType() == CubeType::air) {
         return false;
     }

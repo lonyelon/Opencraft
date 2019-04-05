@@ -4,7 +4,7 @@
 
 World::World() {
     this->seed = 0;
-    this->size = 10;
+    this->size = 15;
     this->chunkCount = 0;
 }
 

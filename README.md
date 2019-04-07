@@ -1,7 +1,7 @@
 # Minecraft
 
 
-### Versions 
+### Ideas 
 
 ~**First version**~
 * ~Blocks~
@@ -9,7 +9,7 @@
 * ~Chunks~
 
 **Extra additions**
-* Negative coordinates
+* ~Negative coordinates~
 
 **Gameplay**
 * Remove blocks
@@ -21,7 +21,7 @@
 * Lighting
 
 **World gen**
-* Stone
+* ~Stone~
 * Infinite world
 * Trees
 * Grass

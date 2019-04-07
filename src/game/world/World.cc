@@ -15,7 +15,6 @@ void genChunk( std::vector<Chunk*> *chunks, int *chunkCount, int size, World *w,
 			(*chunks)[x*size+y] = new Chunk( w, x - size/2, 0, y - size/2 );
 			(*chunks)[x*size+y]->genTerrain();
 			(*chunkCount)++;
-			printf("Generating world: %d\%\n", ( (*chunkCount)*100)/(size*size));
 		}
 	}
 }
@@ -23,11 +22,11 @@ void genChunk( std::vector<Chunk*> *chunks, int *chunkCount, int size, World *w,
 void genVAOs( std::vector<Chunk*> *chunks, int threadNumber, int threadCount ) {
     for ( int i = threadNumber; i < (*chunks).size(); i += threadCount ) {
         (*chunks)[i]->getVisibleCubes();
-        printf("Rendering chunk %d\n", i);
     }
 }
 
 void World::genChunks(  ) {
+    printf("Reserving memory for the world...\n");
     for (int i = 0; i < this->chunks.size(); i++) {
 		delete(this->chunks[i]);
 	}
@@ -37,6 +36,8 @@ void World::genChunks(  ) {
 
 	this->chunks = std::vector<Chunk*>(size*size, NULL);
 	
+    printf("Generating world...\n");
+
 	std::thread t[threadCount];
 	for (int i = 0; i < threadCount; i++) {
 		t[i] = std::thread( genChunk, &(this->chunks), &(this->chunkCount), this->size, this, i, threadCount );
@@ -46,7 +47,7 @@ void World::genChunks(  ) {
 		t[i].join();
 	}
 
-    printf( "Rendering..\n" );
+    printf( "Rendering chunks...\n" );
 
     for (int i = 0; i < threadCount; i++) {
 		t[i] = std::thread( genVAOs, &(this->chunks), i, threadCount );
@@ -103,6 +104,48 @@ Cube *World::getCube( int x, int y, int z ) {
     
     return c->getCube( x - c->getX()*16, y, z - c->getZ()*16 );
 }
+
+Cube *World::getCube( Chunk *k, int x, int y, int z ) {
+    Chunk *c = NULL;
+
+    int chunkX = x/16;
+    int chunkZ = z/16;
+
+    if ( x < 0 ) {
+        chunkX = -((-x-1)/16 + 1);
+    }
+
+    if ( z < 0 ) {
+        chunkZ = -((-z-1)/16 + 1);
+    }
+
+    if ( y >= 256 || y <= 0  ) {
+        return NULL;
+    }
+    
+    if ( k->getX() == chunkX && k->getZ() == chunkZ ) {
+        Cube *cube = k->getCube( x - k->getX()*16, y, z - k->getZ()*16 );
+        return cube;
+    }
+
+    for ( int i = 0; i < this->chunks.size(); i++ ) {
+        if ( this->chunks[i]->getX() == chunkX && this->chunks[i]->getZ() == chunkZ ) {
+            c = this->chunks[i];
+            break;
+        }
+    }
+
+    if ( c == NULL ) {
+        return NULL;
+    }
+
+    if ( c->getZ() >= this->size || c->getX() >= this->size || y >= 256 || y <= 0  ) {
+        return NULL;
+    }
+    
+    return c->getCube( x - c->getX()*16, y, z - c->getZ()*16 );
+}
+
 
 void World::setSeed( int seed ) {
     this->seed = seed;

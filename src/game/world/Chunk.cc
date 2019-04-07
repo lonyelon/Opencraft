@@ -8,7 +8,6 @@
 #include <cmath>
 #include <vector>
 
-extern int seed;
 extern GLuint shaderProgram;
 
 Chunk::Chunk ( World *w, int xpos, int ypos, int zpos ) {
@@ -28,8 +27,9 @@ void Chunk::genTerrain() {
     const float zCoordRed = 200;
     const float noiseFreq = 1;
     const float ystrech = 75;
+    const int heightIncrease = 60;
 
-    const int waterHeight = 64;
+    const int waterHeight = 64+heightIncrease;
 
     noise::module::Perlin p;
 
@@ -50,7 +50,7 @@ void Chunk::genTerrain() {
                 float noiseY = (float)(this->y*this->H + y)/yCoordRed;
                 float noiseZ = (float)(this->z*this->Z + z)/zCoordRed;
 
-                int noiseValue = (int)((p.GetValue(noiseX, noiseY, noiseZ) + 1.1)*ystrech);
+                int noiseValue = (int)((p.GetValue(noiseX, noiseY, noiseZ) + 1.1)*ystrech)+heightIncrease;
                 
                 this->cubes[x + y*this->W + z*this->W*this->H] = new Cube( this, this->x*this->W + x, this->H*this->y + y, this->z*this->Z + z );
 
@@ -96,7 +96,7 @@ void Chunk::genTerrain() {
             }
         }
     }
-
+    
     p.SetSeed( this->world->getSeed(  )*3 );
     p.SetFrequency(0.5);
 
@@ -110,13 +110,13 @@ void Chunk::genTerrain() {
                 float noiseY = (float)(this->y*this->H + y)/yCoordRed*10;
                 float noiseZ = (float)(this->z*this->Z + z)/zCoordRed*10;
 
-                if ( (p.GetValue( noiseX, noiseY, noiseZ )*(heights[x + z*this->W]-50))/y < -0.5 && c->getType() != CubeType::water ) {
+                if ( (p.GetValue( noiseX, noiseY, noiseZ )*( heights[x + z*this->W] - 30 ) )/y < -0.8 && c->getType() != CubeType::water ) {
                     c->setType( CubeType::air );
                 }
             }
         }
     }
-
+    
     for (int x = 0; x < this->W; x++) {
         for (int z = 0; z < this->Z; z++) {
             int dirtCount = 0;
@@ -132,6 +132,9 @@ void Chunk::genTerrain() {
 }
 
 Cube *Chunk::getCube(int x, int y, int z) {
+    if ( x + y*this->W + z*this->W*this->H > this->W*this->H*this->Z ) {
+        return NULL;
+    }
     return this->cubes[x + y*this->W + z*this->W*this->H];
     //return NULL;
 }
@@ -143,69 +146,40 @@ std::vector<Cube*> Chunk::getCubes() {
 
 bool Chunk::isIllated(int x, int y, int z) {
     Cube *c = NULL;
+    Cube *k = this->world->getCube( this, x, y, z );
 
-    c = this->world->getCube(x ,y + 1 ,z );
-    if ( c != NULL && c->getType() == CubeType::air) {
+    if ( k == NULL ) {
+        return true;
+    }
+
+    c = this->world->getCube(this, x ,y + 1 ,z );
+    if ( c != NULL && isTransparent( c ) && k->getType() != c->getType() ) {
         return false;
     }
     
-    c = this->world->getCube(x + 1,y ,z );
-    if ( c != NULL && c->getType() == CubeType::air) {
+    c = this->world->getCube(this, x + 1,y ,z );
+    if ( c != NULL && isTransparent( c ) && k->getType() != c->getType() ) {
         return false;
     }
 
-    c = this->world->getCube(x - 1,y ,z );
-    if ( c != NULL && c->getType() == CubeType::air) {
+    c = this->world->getCube(this, x - 1,y ,z );
+    if ( c != NULL && isTransparent( c ) && k->getType() != c->getType() ) {
         return false;
     }
 
-    c = this->world->getCube(x, y - 1 ,z );
-    if ( c != NULL && c->getType() == CubeType::air) {
+    c = this->world->getCube(this, x, y - 1 ,z );
+    if ( c != NULL && isTransparent( c ) && k->getType() != c->getType() ) {
         return false;
     }
 
-    c = this->world->getCube(x,y ,z + 1 );
-    if ( c != NULL && c->getType() == CubeType::air) {
+    c = this->world->getCube(this, x,y ,z + 1 );
+    if ( c != NULL && isTransparent( c ) && k->getType() != c->getType() ) {
         return false;
     }
 
-    c = this->world->getCube(x ,y ,z - 1 );
-    if ( c != NULL && c->getType() == CubeType::air) {
+    c = this->world->getCube(this, x ,y ,z - 1 );
+    if ( c != NULL && isTransparent( c ) && k->getType() != c->getType() ) {
         return false;
-    }
-
-    c = this->world->getCube( x, y ,z );
-
-    if ( c != NULL && c->getType() != CubeType::water ) {
-        c = this->world->getCube(x + 1,y ,z );
-        if ( c != NULL && c->getType() == CubeType::water) {
-            return false;
-        }
-
-        c = this->world->getCube(x - 1,y ,z );
-        if ( c != NULL && c->getType() == CubeType::water) {
-            return false;
-        }
-
-        c = this->world->getCube(x ,y + 1 ,z );
-        if ( c != NULL && c->getType() == CubeType::water) {
-            return false;
-        }
-
-        c = this->world->getCube(x, y - 1 ,z );
-        if ( c != NULL && c->getType() == CubeType::water) {
-            return false;
-        }
-
-        c = this->world->getCube(x,y ,z + 1 );
-        if ( c != NULL && c->getType() == CubeType::water) {
-            return false;
-        }
-
-        c = this->world->getCube(x ,y ,z - 1 );
-        if ( c != NULL && c->getType() == CubeType::water) {
-            return false;
-        }
     }
 
     return true;
@@ -213,13 +187,13 @@ bool Chunk::isIllated(int x, int y, int z) {
 
 void Chunk::getVisibleCubes() {
     if (this->renderedCubes.size() == 0) {
-        for (int i = 0; i < this->W*this->H*this->Z; i++) {
-            if ( this->isIllated(this->cubes[i]->getX(), this->cubes[i]->getY(), this->cubes[i]->getZ()) ) {
-                //delete(&(this->cubes[i]));
-                continue;
-            }
+        for ( int i = 0; i < this->W*this->H*this->Z; i++ ) {
+            if ( this->cubes[i]->getType(  ) != CubeType::air ) {
+                if ( this->isIllated(this->cubes[i]->getX(), this->cubes[i]->getY(), this->cubes[i]->getZ()) ) {
+                    //delete(this->cubes[i]);
+                    continue;
+                }
 
-            if ( this->cubes[i]->getType() != CubeType::air ) {
                 this->renderedCubes.push_back( this->cubes[i] );
             }
         }

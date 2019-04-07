@@ -18,6 +18,7 @@ public:
 
     void genChunks(  );
     Cube *getCube( int x, int y, int z );
+    Cube *getCube( Chunk *c, int x, int y, int z );
     void setSeed( int seed );
     int getSeed(  );
     int getChunkCount(  );

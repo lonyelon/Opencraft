@@ -11,6 +11,8 @@ enum CubeType {
     lava
 };
 
-bool isTransparent(CubeType t);
+class Cube;
+
+bool isTransparent(Cube *c);
 
 #endif

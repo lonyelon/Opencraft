@@ -2,6 +2,8 @@
 
 ## Dev2.4
 * Caves
+  * Lava
+* x6 faster chunk rendering
 
 ## Dev2.3
 * Sand

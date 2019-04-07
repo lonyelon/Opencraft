@@ -171,3 +171,4 @@ void Cube::getVertex(std::vector<float> *v, std::vector<int> *i, int n) {
 Cube::~Cube() {
     
 }
+

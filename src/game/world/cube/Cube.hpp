@@ -32,4 +32,5 @@ public:
     ~Cube();
 };
 
+
 #endif

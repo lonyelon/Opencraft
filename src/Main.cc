@@ -8,7 +8,6 @@
 #include <thread>
 
 Camera cam = Camera();
-
 World *world;
 
 KeyHandler k = KeyHandler();
@@ -20,15 +19,8 @@ unsigned int SCR_HEIGHT = 1080;
 
 int seed = 0;
 
-int chunkCount = 0;
-
-std::vector<Chunk*> chunks;
-
 extern GLuint setShaders(const char *nVertx, const char *nFrag);
 GLuint shaderProgram;
-
-unsigned int VAO;
-unsigned int VAOTriangulo;
 
 void openGlInit() {
 	glClearDepth(1.0f);
@@ -46,17 +38,13 @@ void windowResize(GLFWwindow *window, int width, int height) {
 }
 
 int main() {
-	printf("%d\n", sizeof(Cube*));
+	world = new World(  );
+	srand(time(NULL));
+
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-	world = new World(  );
-
-	srand(time(NULL));
-
-	float temp = 0;
 														
 	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Clases", NULL, NULL);
 	if (window == NULL) {
@@ -81,13 +69,12 @@ int main() {
 	}
 
 	shaderProgram = setShaders("./bin/shaders/shader.vert", "./bin/shaders/shader.frag");
+	glUseProgram(shaderProgram);
 	
 	openGlInit();
+	
 	world->genChunks();
 	printf("World generation completed\n");
-	glUseProgram(shaderProgram);
-
-	glBindVertexArray(VAOTriangulo);
 
 	cam.setPos(0, 90, 0);
 	cam.setRotation( glm::half_pi<float>() , glm::half_pi<float>()/3 );
@@ -120,8 +107,6 @@ int main() {
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
-
-	glDeleteVertexArrays(1, &VAO);
 	
 	glfwTerminate();
 	return 0;

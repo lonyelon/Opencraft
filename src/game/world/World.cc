@@ -87,6 +87,7 @@ Cube *World::getCube( int x, int y, int z ) {
         chunkZ = -((-z-1)/16 + 1);
     }
 
+
     for ( int i = 0; i < this->chunks.size(); i++ ) {
         if ( this->chunks[i]->getX() == chunkX && this->chunks[i]->getZ() == chunkZ ) {
             c = this->chunks[i];
@@ -101,7 +102,7 @@ Cube *World::getCube( int x, int y, int z ) {
     if ( c->getZ() >= this->size || c->getX() >= this->size || y >= 256 || y <= 0  ) {
         return NULL;
     }
-    
+
     return c->getCube( x - c->getX()*16, y, z - c->getZ()*16 );
 }
 
@@ -123,12 +124,14 @@ Cube *World::getCube( Chunk *k, int x, int y, int z ) {
         return NULL;
     }
     
-    if ( k->getX() == chunkX && k->getZ() == chunkZ ) {
+    if ( k != NULL && k->getX() == chunkX && k->getZ() == chunkZ ) {
         Cube *cube = k->getCube( x - k->getX()*16, y, z - k->getZ()*16 );
         return cube;
     }
 
     for ( int i = 0; i < this->chunks.size(); i++ ) {
+        if ( k==NULL )
+            printf("getcube %d\n", i);
         if ( this->chunks[i]->getX() == chunkX && this->chunks[i]->getZ() == chunkZ ) {
             c = this->chunks[i];
             break;

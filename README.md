@@ -1,31 +1,34 @@
 # Minecraft
 
 
-### Ideas 
+### Ideas for Alpha
 
-~**First version**~
-* ~Blocks~
-* ~Camera~
-* ~Chunks~
+- [x] **First version**
+  - [x] Blocks
+  - [x] Camera
+  - [x] Chunks
 
-**Extra additions**
-* ~Negative coordinates~
+- [x] **Extra additions**
+  - [x] Negative coordinates
 
-**Gameplay**
-* Remove blocks
-* Place blocks
-* Player camera
+- [x] **Gameplay**
+  - [ ] Remove blocks
+  - [ ] Place blocks
+  - [ ] Player camera
+  - [x] Floating camera 
 
-**Graphics**
-* Textures
-* Lighting
+- [ ] **Graphics**
+  - [ ] Textures
+  - [ ] Lighting
 
-**World gen**
-* ~Stone~
-* Infinite world
-* Trees
-* Grass
+- [ ] **World gen**
+  - [x] Stone
+  - [x] Sand
+  - [ ] Infinite world
+  - [ ] Trees
+  - [ ] Grass
 
-**UI**
-* Game menu
-* World saving
+- [x] **UI**
+  - [ ] Game menu
+  - [ ] World saving
+  - [ ] (Creative) Inventory 

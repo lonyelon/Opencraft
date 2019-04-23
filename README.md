@@ -14,11 +14,11 @@
 - [x] **Gameplay**
   - [ ] Remove blocks
   - [ ] Place blocks
-  - [ ] Player camera
+  - [ ] Player camera [Work in progress]
   - [x] Floating camera 
 
 - [ ] **Graphics**
-  - [ ] Textures
+  - [ ] Textures [Work in progress]
   - [ ] Lighting
 
 - [ ] **World gen**
@@ -31,4 +31,4 @@
 - [ ] **UI**
   - [ ] Game menu
   - [ ] World saving
-  - [ ] (Creative) Inventory 
+  - [ ] (Creative) Inventory  

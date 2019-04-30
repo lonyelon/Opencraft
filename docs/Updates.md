@@ -1,5 +1,9 @@
 # Updates
 
+## Dev 3.0
+* Config file
+* Textures23
+
 ## Dev2.4
 * Caves
   * Lava

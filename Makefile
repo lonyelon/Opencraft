@@ -1,5 +1,6 @@
-./build/a.out: ./Player.o ./Chunk.o ./CubeTypes.o ./Cube.o ./World.o ./Main.o ./KeyboardInput.o ./KeyHandler.o ./glad.o ./loadShader.o ./Camera.o ./MouseInput.o 
-	g++ ./Player.o ./Chunk.o ./CubeTypes.o ./Cube.o ./World.o ./Main.o ./KeyboardInput.o ./KeyHandler.o ./glad.o ./loadShader.o ./Camera.o ./MouseInput.o -lglfw -lGL -ldl -lm -lnoise -pthread -o ./build/a.out
+./build/a.out: ./Player.o ./Chunk.o ./CubeTypes.o ./Cube.o ./World.o ./Main.o ./KeyboardInput.o ./KeyHandler.o ./ConfigLoader.o ./glad.o ./loadShader.o ./Camera.o ./MouseInput.o 
+	cp -r ./asset/* ./build/bin/
+	g++ ./Player.o ./Chunk.o ./CubeTypes.o ./Cube.o ./World.o ./Main.o ./KeyboardInput.o ./KeyHandler.o ./ConfigLoader.o ./glad.o ./loadShader.o ./Camera.o ./MouseInput.o -lglfw -lGL -ldl -lm -lnoise -pthread -o ./build/a.out
 
 ./Player.o: ./src/game/Player.cc 
 	g++ -c  ./src/game/Player.cc -lglfw -lGL -ldl -lm -lnoise -pthread
@@ -24,6 +25,9 @@
 
 ./KeyHandler.o: ./src/engine/keyboard/KeyHandler.cc 
 	g++ -c  ./src/engine/keyboard/KeyHandler.cc -lglfw -lGL -ldl -lm -lnoise -pthread
+
+./ConfigLoader.o: ./src/engine/config/ConfigLoader.cc 
+	g++ -c  ./src/engine/config/ConfigLoader.cc -lglfw -lGL -ldl -lm -lnoise -pthread
 
 ./glad.o: ./src/engine/glad/glad.cc 
 	g++ -c  ./src/engine/glad/glad.cc -lglfw -lGL -ldl -lm -lnoise -pthread

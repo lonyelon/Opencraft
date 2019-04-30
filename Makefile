@@ -1,4 +1,5 @@
-./build/a.out: ./Player.o ./Chunk.o ./CubeTypes.o ./Cube.o ./World.o ./Main.o ./KeyboardInput.o ./KeyHandler.o ./glad.o ./loadShader.o ./Camera.o ./MouseInput.o 
+./build/a.out: ./Player.o ./Chunk.o ./CubeTypes.o ./Cube.o ./World.o ./Main.o ./KeyboardInput.o ./KeyHandler.o ./glad.o ./loadShader.o ./Camera.o ./MouseInput.o ./asset/shaders/shader.vert ./asset/shaders/shader.frag ./asset/game.conf
+	cp -r ./asset/* ./build/bin/
 	g++ ./Player.o ./Chunk.o ./CubeTypes.o ./Cube.o ./World.o ./Main.o ./KeyboardInput.o ./KeyHandler.o ./glad.o ./loadShader.o ./Camera.o ./MouseInput.o -lglfw -lGL -ldl -lm -lnoise -pthread -o ./build/a.out
 
 ./Player.o: ./src/game/Player.cc 

@@ -4,6 +4,8 @@
 #include "game/world/Chunk.hpp"
 #include "game/world/World.hpp"
 #include "game/Player.hpp"
+#include "engine/loadTexture.h"
+#include "engine/config/ConfigLoader.hpp"
 
 #include <string>
 #include <thread>
@@ -27,8 +29,10 @@ void openGlInit() {
 	glClearDepth(1.0f);
 	glClearColor(0.2f, 0.2f, 1.0f, 1.0f); 
 
-	glEnable(GL_DEPTH_TEST); 
-	glEnable(GL_CULL_FACE);
+	glEnable( GL_DEPTH_TEST ); 
+	glEnable( GL_CULL_FACE );
+	glEnable( GL_TEXTURE_2D );
+	glEnable( GL_ALPHA );
 
 	glCullFace(GL_BACK);
 }
@@ -41,6 +45,17 @@ void windowResize(GLFWwindow *window, int width, int height) {
 int main() {
 	world = new World(  );
 	p = Player( world );
+	ConfigLoader cf = ConfigLoader( "./bin/game.conf" );
+
+	float fov = stof(cf.getString( "render.fov" ));
+	float renderDistance = stof(cf.getString( "render.distance" ));
+	int worldSize = stoi(cf.getString( "world.size" ));
+
+	world->setSize( worldSize );
+
+	GLuint dirtTex;
+	GLuint stoneTex;
+	GLuint grassTex;
 	
 	srand(time(NULL));
 
@@ -85,6 +100,8 @@ int main() {
 	unsigned int windowSizeLoc = glGetUniformLocation(shaderProgram, "windowSize");
 	glUniform2f(windowSizeLoc, SCR_WIDTH, SCR_HEIGHT);
 
+	dirtTex = loadTexture( "textures.png" );
+
 	while (!glfwWindowShouldClose(window)) {
 		double t = glfwGetTime();
 		processInput(window);
@@ -94,7 +111,7 @@ int main() {
 		glm::mat4 projection; // Se calcula
 
 		view = p.getCam()->getViewMatrix();
-		projection = glm::perspective(glm::radians(90.0f), (float)SCR_WIDTH/(float)SCR_HEIGHT, 0.1f, 1000.0f);
+		projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH/(float)SCR_HEIGHT, 0.1f, renderDistance);
 
 		unsigned int viewLoc = glGetUniformLocation(shaderProgram, "view");
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
@@ -104,6 +121,8 @@ int main() {
 
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClear(GL_DEPTH_BUFFER_BIT);
+
+		glBindTexture( GL_TEXTURE_2D, dirtTex );
 
 		world->draw();
 		p.move();

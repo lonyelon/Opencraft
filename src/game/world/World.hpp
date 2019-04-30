@@ -17,6 +17,7 @@ public:
     World(  );
 
     void genChunks(  );
+    void setSize(const int size );
     Cube *getCube( int x, int y, int z );
     Cube *getCube( Chunk *c, int x, int y, int z );
     void setSeed( int seed );

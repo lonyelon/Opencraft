@@ -1,4 +1,4 @@
--lglfw -lGL -ldl -lm -lnoise
+-lglfw -lGL -ldl -lm -lnoise -pthread
 cc
 ./build/a.out
 g++

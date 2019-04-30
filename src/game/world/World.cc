@@ -2,10 +2,14 @@
 
 #include <thread>
 
-World::World() {
+World::World(  ) {
     this->seed = 0;
     this->size = 15;
     this->chunkCount = 0;
+}
+
+void World::setSize( const int size ) {
+    this->size = size;
 }
 
 void genChunk( std::vector<Chunk*> *chunks, int *chunkCount, int size, World *w, int threadNumber, int threadCount) {

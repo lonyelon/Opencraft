@@ -2,6 +2,9 @@
 
 in vec3 col;
 in vec2 wSize;
+in vec2 texCoord;
+
+uniform sampler2D textureSampler;
 
 out vec4 color;
 
@@ -25,8 +28,8 @@ void main(){
             ) 
     ) {
         float c = (col.x + col.y + col.z)/3;
-        color = vec4(c, c, c, 1);
+        color = texture( textureSampler, texCoord );    //vec4(c, c, c, 1);
     } else {
-        color = vec4(col.x, col.y, col.z, 1);
+        color = texture( textureSampler, texCoord );    //vec4(col.x, col.y, col.z, 1);
     }
 }

@@ -36,16 +36,41 @@ CubeType Cube::getType() {
 }
 
 void Cube::getVertex(std::vector<float> *v, std::vector<int> *i, int n) {
-    float vertices[] = {
-		-0.5f, -0.5f, 0.5f,
-		0.5f, -0.5f, 0.5f,
-		0.5f, 0.5f, 0.5f,
-		-0.5f, 0.5f, 0.5f,
-		-0.5f, 0.5f, -0.5f,
-		0.5f, 0.5f, -0.5f,
-		0.5f, -0.5f, -0.5f,
-		-0.5f, -0.5f, -0.5f,
+    const int texFileSize = 256/32;
+
+/*
+      5--6
+    0--1 -
+    - 4--7
+    2--3
+
+*/
+
+    float vertices[  ] = {
+		-0.5f, -0.5f, 0.5f, // 2
+		0.5f, -0.5f, 0.5f, // 3
+		0.5f, 0.5f, 0.5f, // 1
+
+		-0.5f, 0.5f, 0.5f, // 0
+		-0.5f, 0.5f, -0.5f, // 5
+		0.5f, 0.5f, -0.5f, // 6
+        
+		0.5f, -0.5f, -0.5f, // 7
+		-0.5f, -0.5f, -0.5f, // 4
 	};
+
+    float texCoords[] = {
+		0, 0,
+        0, 1,
+        1, 0,
+        1, 1,
+        0, 1,
+        0, 0,
+        1, 1,
+        1, 0
+	};
+
+
 
 	unsigned int indices[] = {
 		0, 1, 2, 0, 2, 3, 
@@ -127,36 +152,57 @@ void Cube::getVertex(std::vector<float> *v, std::vector<int> *i, int n) {
         v->push_back( vertices[k + 1] + this->y );
         v->push_back( vertices[k + 2] + this->z );
 
-        switch (this->type) {
+        float texCoordX = texCoords[ 2*(k/3) ];
+        float texCoordY = texCoords[ 2*(k/3) + 1 ];
+
+        switch ( this->type ) {
             case CubeType::grassyDirt:
                 v->push_back( grassColor[k + 0] );
                 v->push_back( grassColor[k + 1] );
                 v->push_back( grassColor[k + 2] );
+
+                v->push_back( texCoordX/(float)texFileSize + (float)1/(float)texFileSize );
+                v->push_back( texCoordY/(float)texFileSize + (float)1/(float)texFileSize );
                 break;
             case CubeType::dirt:
                 v->push_back( dirtColor[k + 0] );
                 v->push_back( dirtColor[k + 1] );
                 v->push_back( dirtColor[k + 2] );
+
+                v->push_back( texCoordX/(float)texFileSize );
+                v->push_back( texCoordY/(float)texFileSize );
                 break;
             case CubeType::water:
                 v->push_back( waterColor[k + 0] );
                 v->push_back( waterColor[k + 1] );
                 v->push_back( waterColor[k + 2] );
+
+                v->push_back( texCoordX/(float)texFileSize + 3/(float)texFileSize );
+                v->push_back( texCoordY/(float)texFileSize + 1/(float)texFileSize );
                 break;
             case CubeType::stone:
                 v->push_back( stoneColor[k + 0] );
                 v->push_back( stoneColor[k + 1] );
                 v->push_back( stoneColor[k + 2] );
+
+                v->push_back( texCoordX/(float)texFileSize + 1/(float)texFileSize );
+                v->push_back( texCoordY/(float)texFileSize );
                 break;
             case CubeType::sand:
                 v->push_back( sandColor[k + 0] );
                 v->push_back( sandColor[k + 1] );
                 v->push_back( sandColor[k + 2] );
+
+                v->push_back( texCoordX/(float)texFileSize );
+                v->push_back( texCoordY/(float)texFileSize + 1/(float)texFileSize );
                 break;
             case CubeType::lava:
                 v->push_back( lavaColor[k + 0] );
                 v->push_back( lavaColor[k + 1] );
                 v->push_back( lavaColor[k + 2] );
+
+                v->push_back( texCoordX/(float)texFileSize + 3/(float)texFileSize );
+                v->push_back( texCoordY/(float)texFileSize );
                 break;
         }
     }
@@ -172,3 +218,14 @@ Cube::~Cube() {
     
 }
 
+/*
+    0   0 
+    3   2 
+    6   4 
+    9   6 
+    12  8 
+    15  10
+    18  12
+    21  14
+    24  12
+*/

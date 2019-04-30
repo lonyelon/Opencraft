@@ -20,6 +20,7 @@
 - [ ] **Graphics**
   - [ ] Textures *Work in progress*
   - [ ] Lighting
+  - [x] Skybox
 
 - [ ] **World gen**
   - [x] Stone

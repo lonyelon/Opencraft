@@ -3,12 +3,13 @@
 #include "engine/keyboard/KeyboardInput.hpp"
 #include "game/world/Chunk.hpp"
 #include "game/world/World.hpp"
+#include "game/Player.hpp"
 
 #include <string>
 #include <thread>
 
-Camera cam = Camera();
 World *world;
+Player p;
 
 KeyHandler k = KeyHandler();
 
@@ -39,6 +40,8 @@ void windowResize(GLFWwindow *window, int width, int height) {
 
 int main() {
 	world = new World(  );
+	p = Player( world );
+	
 	srand(time(NULL));
 
 	glfwInit();
@@ -76,8 +79,8 @@ int main() {
 	world->genChunks();
 	printf("World generation completed\n");
 
-	cam.setPos(0, 90, 0);
-	cam.setRotation( glm::half_pi<float>() , glm::half_pi<float>()/3 );
+	p.getCam()->setPos(0, 90, 0);
+	p.getCam()->setRotation( glm::half_pi<float>() , glm::half_pi<float>()/3 );
 
 	unsigned int windowSizeLoc = glGetUniformLocation(shaderProgram, "windowSize");
 	glUniform2f(windowSizeLoc, SCR_WIDTH, SCR_HEIGHT);
@@ -90,7 +93,7 @@ int main() {
 		glm::mat4 view; // Se Calcula
 		glm::mat4 projection; // Se calcula
 
-		view = cam.getViewMatrix();
+		view = p.getCam()->getViewMatrix();
 		projection = glm::perspective(glm::radians(90.0f), (float)SCR_WIDTH/(float)SCR_HEIGHT, 0.1f, 1000.0f);
 
 		unsigned int viewLoc = glGetUniformLocation(shaderProgram, "view");
@@ -103,6 +106,7 @@ int main() {
 		glClear(GL_DEPTH_BUFFER_BIT);
 
 		world->draw();
+		p.move();
 		 		
 		glfwSwapBuffers(window);
 		glfwPollEvents();

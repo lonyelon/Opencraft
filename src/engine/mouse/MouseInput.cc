@@ -1,9 +1,10 @@
 #include "MouseInput.hpp"
+#include "../../game/Player.hpp"
 
-extern Camera cam;
+extern Player p;
 
 void getMouseInput(GLFWwindow* window, double xpos, double ypos) {
-	cam.moveCoords(xpos, ypos);
+	p.getCam()->moveCoords(xpos, ypos);
 	 
 	glfwSetCursorPos(window, 0, 0);
 }

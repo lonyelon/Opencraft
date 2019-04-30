@@ -5,8 +5,9 @@
 #include <cmath>
 #include <vector>
 #include "../../game/world/World.hpp"
+#include "../../game/Player.hpp"
 
-extern Camera cam;
+extern Player p;
 
 extern std::vector<Chunk*> chunks;
 extern World *world;
@@ -47,31 +48,31 @@ void KeyHandler::keyHandler () {
     for (int i = 0; i < this->keys.size(); i++) {
         switch (this->keys[i].key) {
             case GLFW_KEY_W:
-                cam.move( 
-                    -cos(cam.getRotX())*cos(cam.getRotY()), 
-                    sin(cam.getRotY()), 
-                    sin(cam.getRotX())*cos(cam.getRotY()) 
+                p.getCam()->move( 
+                    -cos(p.getCam()->getRotX())*cos(p.getCam()->getRotY()), 
+                    sin(p.getCam()->getRotY()), 
+                    sin(p.getCam()->getRotX())*cos(p.getCam()->getRotY()) 
                 );
                 break;
             case GLFW_KEY_A:
-                cam.move( 
-                    -cos(glm::half_pi<float>()+cam.getRotX())*cos(cam.getRotY()), 
+                p.getCam()->move( 
+                    -cos(glm::half_pi<float>()+p.getCam()->getRotX())*cos(p.getCam()->getRotY()), 
                 0, 
-                    sin(glm::half_pi<float>()+cam.getRotX())*cos(cam.getRotY()) 
+                    sin(glm::half_pi<float>()+p.getCam()->getRotX())*cos(p.getCam()->getRotY()) 
                 );
                 break;
             case GLFW_KEY_S:
-                cam.move( 
-                    cos(cam.getRotX())*cos(cam.getRotY()), 
-                    -sin(cam.getRotY()), 
-                    -sin(cam.getRotX())*cos(cam.getRotY()) 
+                p.getCam()->move( 
+                    cos(p.getCam()->getRotX())*cos(p.getCam()->getRotY()), 
+                    -sin(p.getCam()->getRotY()), 
+                    -sin(p.getCam()->getRotX())*cos(p.getCam()->getRotY()) 
                 );
                 break;
             case GLFW_KEY_D:
-                cam.move( 
-                    cos(glm::half_pi<float>()+cam.getRotX())*cos(cam.getRotY()), 
+                p.getCam()->move( 
+                    cos(glm::half_pi<float>()+p.getCam()->getRotX())*cos(p.getCam()->getRotY()), 
                     0, 
-                    -sin(glm::half_pi<float>()+cam.getRotX())*cos(cam.getRotY()) 
+                    -sin(glm::half_pi<float>()+p.getCam()->getRotX())*cos(p.getCam()->getRotY()) 
                 );
                 break;
             case GLFW_KEY_SPACE:

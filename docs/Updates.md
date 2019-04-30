@@ -3,10 +3,14 @@
 ## Dev 3.0
 * Config file
 * Textures
+  * Grass, Dirt, Water, Lava, Stone and Sand
 * Skybox
 
 *Bugs Solved*
-*0x4
+* 0x4
+
+*Known Bugs*
+* 0x5: Textures seem badly placed
 
 ## Dev2.4
 * Caves

@@ -1,9 +1,11 @@
-./build/a.out: ./Player.o ./Chunk.o ./CubeTypes.o ./Cube.o ./World.o ./Main.o ./KeyboardInput.o ./KeyHandler.o ./ConfigLoader.o ./glad.o ./loadShader.o ./Camera.o ./MouseInput.o 
-	cp -r ./asset/* ./build/bin/
-	g++ ./Player.o ./Chunk.o ./CubeTypes.o ./Cube.o ./World.o ./Main.o ./KeyboardInput.o ./KeyHandler.o ./ConfigLoader.o ./glad.o ./loadShader.o ./Camera.o ./MouseInput.o -lglfw -lGL -ldl -lm -lnoise -pthread -o ./build/a.out
+./build/a.out: ./Player.o ./Sphere.o ./Chunk.o ./CubeTypes.o ./Cube.o ./World.o ./Main.o ./KeyboardInput.o ./KeyHandler.o ./ConfigLoader.o ./glad.o ./loadShader.o ./Camera.o ./MouseInput.o 
+	g++ ./Player.o ./Sphere.o ./Chunk.o ./CubeTypes.o ./Cube.o ./World.o ./Main.o ./KeyboardInput.o ./KeyHandler.o ./ConfigLoader.o ./glad.o ./loadShader.o ./Camera.o ./MouseInput.o -lglfw -lGL -ldl -lm -lnoise -pthread -o ./build/a.out
 
 ./Player.o: ./src/game/Player.cc 
 	g++ -c  ./src/game/Player.cc -lglfw -lGL -ldl -lm -lnoise -pthread
+
+./Sphere.o: ./src/game/Sphere.cc 
+	g++ -c  ./src/game/Sphere.cc -lglfw -lGL -ldl -lm -lnoise -pthread
 
 ./Chunk.o: ./src/game/world/Chunk.cc 
 	g++ -c  ./src/game/world/Chunk.cc -lglfw -lGL -ldl -lm -lnoise -pthread

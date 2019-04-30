@@ -2,7 +2,11 @@
 
 ## Dev 3.0
 * Config file
-* Textures23
+* Textures
+* Skybox
+
+*Bugs Solved*
+*0x4
 
 ## Dev2.4
 * Caves
@@ -27,18 +31,21 @@
 * Chunk customization (biomes?)
 
 *Bugs Solved*
-* 0x2.
-* 0x3.
+* 0x2
+* 0x3
+
+*Known Bugs*
+* 0x4: Crosshair cant be seen in the sky
 
 ## Dev2.0
 * New render engine, over x1000 performance increase!
-* Brown dirt.
-* Better world gen.
-* This log.
-* Better memory management.
+* Brown dirt
+* Better world gen
+* This log
+* Better memory management
 
 *Known bugs*
-* 0x3: Cubes below water don't render.
+* 0x3: Cubes below water don't render
 
 ## Dev1.1 
 * Better performance
@@ -51,5 +58,5 @@
   * Water
 
 *Known bugs*
-* 0x1: Cubes dont render when betwen chunks.
-* 0x2: Memory leak when generating world.
+* 0x1: Cubes dont render when betwen chunks
+* 0x2: Memory leak when generating world

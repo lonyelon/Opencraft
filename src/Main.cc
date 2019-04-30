@@ -6,6 +6,7 @@
 #include "game/Player.hpp"
 #include "engine/loadTexture.h"
 #include "engine/config/ConfigLoader.hpp"
+#include "game/world/Sphere.h"
 
 #include <string>
 #include <thread>
@@ -56,6 +57,9 @@ int main() {
 	GLuint dirtTex;
 	GLuint stoneTex;
 	GLuint grassTex;
+	GLuint skyTex;
+
+	Sphere skyBox = Sphere( -renderDistance, 36, 18, true );
 	
 	srand(time(NULL));
 
@@ -101,6 +105,7 @@ int main() {
 	glUniform2f(windowSizeLoc, SCR_WIDTH, SCR_HEIGHT);
 
 	dirtTex = loadTexture( "textures.png" );
+	skyTex = loadTexture( "sky.png" );
 
 	while (!glfwWindowShouldClose(window)) {
 		double t = glfwGetTime();
@@ -124,8 +129,15 @@ int main() {
 
 		glBindTexture( GL_TEXTURE_2D, dirtTex );
 
+		glm::mat4 model = glm::mat4(1.0f);
+		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
 		world->draw();
 		p.move();
+
+		glBindTexture( GL_TEXTURE_2D, skyTex );
+		model = glm::translate( glm::mat4(1.0f), glm::vec3( p.getCam()->getX(), p.getCam()->getY(), p.getCam()->getZ() ) );
+		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
+		skyBox.draw();
 		 		
 		glfwSwapBuffers(window);
 		glfwPollEvents();

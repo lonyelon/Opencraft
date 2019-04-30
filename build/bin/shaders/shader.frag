@@ -11,7 +11,9 @@ void main(){
     const int chWidth = 1;
     const int chLength = 12;
 
-    /*if ( 
+    vec4 fragCol = texture( textureSampler, texCoord );
+
+    if ( 
         ( 
             gl_FragCoord.x < wSize.x/2 + chWidth &&
             gl_FragCoord.x > wSize.x/2 - chWidth && 
@@ -26,10 +28,9 @@ void main(){
             gl_FragCoord.x > wSize.x/2 - chLength 
             ) 
     ) {
-        float c = (col.x + col.y + col.z)/3;
-        color = texture( textureSampler, texCoord );    //vec4(c, c, c, 1);
+        float median = (fragCol.x + fragCol.y + fragCol.z)/3;
+        color = vec4( 1 - median, 1 - median, 1 - median, 1 );
     } else {
-        color = texture( textureSampler, texCoord );    //vec4(col.x, col.y, col.z, 1);
-    }*/
-    color = texture( textureSampler, texCoord );
+        color = fragCol;
+    }
 }

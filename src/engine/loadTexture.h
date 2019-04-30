@@ -13,7 +13,6 @@ GLuint loadTexture( const std::string path ) {
 	// -------------------------
 	GLuint texture;
 	glGenTextures(1, &texture);
-	printf("no.\n");
 	glBindTexture(GL_TEXTURE_2D, texture); // all upcoming GL_TEXTURE_2D operations now have effect on this texture object
 
 	// set the texture wrapping parameters

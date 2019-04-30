@@ -1,6 +1,5 @@
 #version 330 core
 
-in vec3 col;
 in vec2 wSize;
 in vec2 texCoord;
 
@@ -12,7 +11,7 @@ void main(){
     const int chWidth = 1;
     const int chLength = 12;
 
-    if ( 
+    /*if ( 
         ( 
             gl_FragCoord.x < wSize.x/2 + chWidth &&
             gl_FragCoord.x > wSize.x/2 - chWidth && 
@@ -31,5 +30,6 @@ void main(){
         color = texture( textureSampler, texCoord );    //vec4(c, c, c, 1);
     } else {
         color = texture( textureSampler, texCoord );    //vec4(col.x, col.y, col.z, 1);
-    }
+    }*/
+    color = texture( textureSampler, texCoord );
 }

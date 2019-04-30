@@ -47,9 +47,9 @@ int main() {
 	p = Player( world );
 	ConfigLoader cf = ConfigLoader( "./bin/game.conf" );
 
-	float fov = stof(cf.getString( "render.fov" ));
-	float renderDistance = stof(cf.getString( "render.distance" ));
-	int worldSize = stoi(cf.getString( "world.size" ));
+	float fov = cf.getFloat( "render.fov" );
+	float renderDistance = cf.getFloat( "render.distance" );
+	int worldSize = cf.getInt( "world.size" );
 
 	world->setSize( worldSize );
 

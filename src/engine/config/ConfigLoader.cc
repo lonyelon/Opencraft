@@ -1,6 +1,7 @@
-#include "ConfigLoader.h"
+#include "ConfigLoader.hpp"
 
 #include <string>
+#include <exception>
 
 void ConfigLoader::loadConfigPair( std::string input, std::string *name, std::string *value ) {
     int i;
@@ -44,8 +45,8 @@ int ConfigLoader::getInt( std::string name ) {
     std::string result = this->getString( name );
 
     try {
-        return atoi( result );
-    } catch ( exception e ) {
+        return std::stof( result.c_str() );
+    } catch ( std::exception e ) {
         return 0;
     }
 }
@@ -54,8 +55,8 @@ float ConfigLoader::getFloat( std::string name ) {
     std::string result = this->getString( name );
 
     try {
-        return atof( result );
-    } catch ( exception e ) {
+        return atof( result.c_str() );
+    } catch ( std::exception e ) {
         return 0.0f;
     }
 }

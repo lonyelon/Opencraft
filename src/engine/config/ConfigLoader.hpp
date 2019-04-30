@@ -21,6 +21,7 @@ public:
     ConfigLoader( std::string path );
     std::string getString( std::string name );
     int getInt( std::string name );
+    float getFloat( std::string name );
 };
 
 #endif

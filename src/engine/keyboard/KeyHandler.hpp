@@ -2,16 +2,19 @@
 #define _KEY_HANDLER_HPP_
 
 #include <vector>
+#include <string>
 
-#include "KeyType.hpp"
+#include "KeyConverter.hpp"
 
 struct KeyPair {
+    std::string name;
     int key;
     bool pressed;
 };
 
 class KeyHandler {
 private:
+    KeyConverter *kc;
     std::vector<KeyPair> keys;
     bool isKeyPresent(int key);
 
@@ -20,6 +23,8 @@ public:
     void addKey (int key);
     void removeKey (int key);
     void keyHandler ();
+
+    KeyConverter *getKeyConverter();
 };
 
 #endif

@@ -1,6 +1,18 @@
 # Updates
 
-## Dev 3.0
+# Dev
+* Keybindigs
+* Mipmaps
+
+The windows port needs:
+
+1. The DLLs for glfw.
+2. _The boost thread lib._ Done.
+  
+*Known Bugs*
+* 0x6: Mipmap fails at cube borders
+
+## Dev3.0
 * Config file
 * Textures
   * Grass, Dirt, Water, Lava, Stone and Sand

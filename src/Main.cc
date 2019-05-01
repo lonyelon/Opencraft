@@ -4,17 +4,18 @@
 #include "game/world/Chunk.hpp"
 #include "game/world/World.hpp"
 #include "game/Player.hpp"
-#include "engine/loadTexture.h"
+#include "engine/LoadTexture.hpp"
 #include "engine/config/ConfigLoader.hpp"
 #include "game/world/Sphere.h"
 
 #include <string>
-#include <thread>
+#include <boost/thread.hpp>
 
 World *world;
 Player p;
+int useMipmap = 1;
 
-KeyHandler k = KeyHandler();
+KeyHandler k;
 
 void processInput(GLFWwindow *window);
 
@@ -47,10 +48,13 @@ int main() {
 	world = new World(  );
 	p = Player( world );
 	ConfigLoader cf = ConfigLoader( "./bin/game.conf" );
+	ConfigLoader keyBindings = ConfigLoader( "./bin/keyboard.conf" );
+	k = KeyHandler();
 
 	float fov = cf.getFloat( "render.fov" );
 	float renderDistance = cf.getFloat( "render.distance" );
 	int worldSize = cf.getInt( "world.size" );
+	useMipmap = cf.getInt( "render.mipmap" );
 
 	world->setSize( worldSize );
 
@@ -67,7 +71,7 @@ int main() {
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-														
+													
 	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Clases", NULL, NULL);
 	if (window == NULL) {
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -114,7 +118,7 @@ int main() {
 
 		glm::mat4 view; // Se Calcula
 		glm::mat4 projection; // Se calcula
-
+		
 		view = p.getCam()->getViewMatrix();
 		projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH/(float)SCR_HEIGHT, 0.1f, renderDistance);
 

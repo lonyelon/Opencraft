@@ -11,6 +11,7 @@ uniform vec2 windowSize;
 
 out vec2 wSize;
 out vec2 texCoord;
+out vec3 pos;
 
 void main() {
    gl_Position = projection*view*model*vec4(aPos, 1.0f);
@@ -18,4 +19,5 @@ void main() {
    wSize = windowSize;
 
    texCoord = vec2( aTexCoord.x, aTexCoord.y );
+   pos = aPos;
 }

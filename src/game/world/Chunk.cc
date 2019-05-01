@@ -26,7 +26,7 @@ void Chunk::genTerrain() {
     const float yCoordRed = 200;
     const float zCoordRed = 200;
     const float noiseFreq = 1;
-    const float ystrech = 100;
+    const float ystrech = 75;
     const int heightIncrease = 60;
 
     const int waterHeight = 64+heightIncrease;
@@ -97,8 +97,12 @@ void Chunk::genTerrain() {
         }
     }
     
+    float caveFreq = 0.5;
+    int caveDistance = 20;
+    float caveProb = -0.7;
+
     p.SetSeed( this->world->getSeed(  )*3 );
-    p.SetFrequency(0.5);
+    p.SetFrequency(caveFreq);
 
     for (int x = 0; x < this->W; x++) {
         for (int z = 0; z < this->Z; z++) {
@@ -110,7 +114,7 @@ void Chunk::genTerrain() {
                 float noiseY = (float)(this->y*this->H + y)/yCoordRed*10;
                 float noiseZ = (float)(this->z*this->Z + z)/zCoordRed*10;
 
-                if ( (p.GetValue( noiseX, noiseY, noiseZ )*( heights[x + z*this->W] - 30 ) )/y < -0.8 && c->getType() != CubeType::water ) {
+                if ( (p.GetValue( noiseX, noiseY, noiseZ )*( heights[x + z*this->W] - caveDistance ) )/y < caveProb && c->getType() != CubeType::water ) {
                     c->setType( CubeType::air );
                 }
             }

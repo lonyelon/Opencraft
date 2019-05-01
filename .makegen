@@ -1,4 +1,4 @@
--lglfw -lGL -ldl -lm -lnoise -pthread
+-lglfw -lGLU -lGL -ldl -lm -lnoise -lboost_thread -pthread
 cc
 ./build/a.out
 g++

@@ -1,6 +1,6 @@
 #include "World.hpp"
 
-#include <thread>
+#include <boost/thread.hpp>
 
 World::World(  ) {
     this->seed = 0;
@@ -42,9 +42,9 @@ void World::genChunks(  ) {
 	
     printf("Generating world...\n");
 
-	std::thread t[threadCount];
+	boost::thread t[threadCount];
 	for (int i = 0; i < threadCount; i++) {
-		t[i] = std::thread( genChunk, &(this->chunks), &(this->chunkCount), this->size, this, i, threadCount );
+		t[i] = boost::thread( genChunk, &(this->chunks), &(this->chunkCount), this->size, this, i, threadCount );
 	}
 
 	for (int i = 0; i < threadCount; i++) {
@@ -54,7 +54,7 @@ void World::genChunks(  ) {
     printf( "Rendering chunks...\n" );
 
     for (int i = 0; i < threadCount; i++) {
-		t[i] = std::thread( genVAOs, &(this->chunks), i, threadCount );
+		t[i] = boost::thread( genVAOs, &(this->chunks), i, threadCount );
 	}
 
 	for (int i = 0; i < threadCount; i++) {

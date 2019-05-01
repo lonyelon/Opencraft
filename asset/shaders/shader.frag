@@ -2,6 +2,7 @@
 
 in vec2 wSize;
 in vec2 texCoord;
+in vec3 pos;
 
 uniform sampler2D textureSampler;
 
@@ -10,6 +11,8 @@ out vec4 color;
 void main(){
     const int chWidth = 1;
     const int chLength = 12;
+    float augment = pos.y/70;
+    if ( augment > 1 ) augment = 1;
 
     vec4 fragCol = texture( textureSampler, texCoord );
 

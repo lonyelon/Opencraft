@@ -99,7 +99,7 @@ void Chunk::genTerrain() {
     
     float caveFreq = 0.5;
     int caveDistance = 20;
-    float caveProb = -0.7;
+    float caveProb = -0.9;
 
     p.SetSeed( this->world->getSeed(  )*3 );
     p.SetFrequency(caveFreq);

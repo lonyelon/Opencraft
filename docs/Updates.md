@@ -3,7 +3,8 @@
 # Dev
 * Keybindigs
 * Mipmaps
-
+* CMake
+  
 The windows port needs:
 
 1. The DLLs for glfw.

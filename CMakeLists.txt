@@ -29,7 +29,6 @@ add_executable(
     ./src/game/world/CubeTypes.hpp
     ./src/game/world/Chunk.hpp
     ./src/game/Player.hpp
-    ./src/engine/keyboard/KeyConverter.hpp
     ./src/engine/keyboard/KeyboardInput.hpp
     ./src/engine/keyboard/KeyHandler.hpp
     ./src/engine/config/ConfigLoader.hpp
@@ -39,6 +38,9 @@ add_executable(
     ./src/engine/mouse/MouseInput.hpp
     ./src/engine/mouse/Camera.hpp
     ./src/game/Sphere.h
+
+    ./src/engine/keyboard/KeyConverter.cc
+    ./src/engine/keyboard/KeyConverter.hpp
 )
 
 target_link_libraries (Minecraft glfw GL GLU dl m boost_thread pthread noise)

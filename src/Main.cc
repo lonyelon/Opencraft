@@ -48,7 +48,6 @@ int main() {
 	world = new World(  );
 	p = Player( world );
 	ConfigLoader cf = ConfigLoader( "./bin/game.conf" );
-	ConfigLoader keyBindings = ConfigLoader( "./bin/keyboard.conf" );
 	k = KeyHandler();
 
 	float fov = cf.getFloat( "render.fov" );

@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include "../config/ConfigLoader.hpp"
+
 typedef struct kns {
     std::string name;
     int key;
@@ -14,37 +16,11 @@ private:
     std::vector<KeyName> kn;
 
 public:
-    KeyConverter(  ) {
-        
-    }
+    KeyConverter(  );
     
-    std::string getKeyName( int key ) {
-        for ( int i = 0; i < this->kn.size(); i++ ) {
-            if ( this->kn[i].key == key ) {
-                return this->kn[i].name;
-            }
-        }
-
-        return "";
-    }
-
-    int getKeyId( std::string name ) {
-        for ( int i = 0; i < this->kn.size(); i++ ) {
-            if ( name.compare( this->kn[i].name ) == 0 ) {
-                return this->kn[i].key;
-            }
-        }
-
-        return 0;
-    }
-
-    void addKey( std::string name, int key ) {
-        KeyName k;
-        k.key = key;
-        k.name = name;
-
-        this->kn.push_back( k );
-    }
+    std::string getKeyName( int key );
+    int getKeyId( std::string name );
+    void addKey( std::string name, int key );
 };
 
 #endif

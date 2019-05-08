@@ -15,9 +15,8 @@ Chunk::Chunk ( World *w, int xpos, int ypos, int zpos ) {
     this->x = xpos;
     this->y = ypos;
     this->z = zpos;
-
-    this->cubes = std::vector<Cube*>(this->W*this->H*this->Z);
     
+    this->cubes = std::vector<Cube*>(this->W*this->H*this->Z);
     this->VAO = 0;
 }
 

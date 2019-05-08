@@ -52,40 +52,46 @@ KeyConverter *KeyHandler::getKeyConverter() {
 
 void KeyHandler::keyHandler( ) {
     for (int i = 0; i < this->keys.size(); i++) {
-        switch ( this->keys[i].key ) {
-            case GLFW_KEY_W:
-                p.getCam()->move( 
-                    -cos(p.getCam()->getRotX())*cos(p.getCam()->getRotY()), 
-                    sin(p.getCam()->getRotY()), 
-                    sin(p.getCam()->getRotX())*cos(p.getCam()->getRotY()) 
-                );
-                break;
-            case GLFW_KEY_A:
-                p.getCam()->move( 
-                    -cos(glm::half_pi<float>()+p.getCam()->getRotX())*cos(p.getCam()->getRotY()), 
+        std::string keyname = this->kc->getKeyName( this->keys[i].key );
+        if ( keyname.compare("") == 0 || kc == NULL ) {
+            continue;
+        }
+
+        if ( keyname.compare( "move.forward" ) == 0 ) {
+            p.getCam()->move( 
+                -cos(p.getCam()->getRotX())*cos(p.getCam()->getRotY()), 
+                sin(p.getCam()->getRotY()), 
+                sin(p.getCam()->getRotX())*cos(p.getCam()->getRotY()) 
+            );
+            break;
+        }
+
+        if ( keyname.compare( "move.left" )  == 0) {
+            p.getCam()->move( 
+                -cos(glm::half_pi<float>()+p.getCam()->getRotX())*cos(p.getCam()->getRotY()), 
                 0, 
-                    sin(glm::half_pi<float>()+p.getCam()->getRotX())*cos(p.getCam()->getRotY()) 
-                );
-                break;
-            case GLFW_KEY_S:
-                p.getCam()->move( 
-                    cos(p.getCam()->getRotX())*cos(p.getCam()->getRotY()), 
-                    -sin(p.getCam()->getRotY()), 
-                    -sin(p.getCam()->getRotX())*cos(p.getCam()->getRotY()) 
-                );
-                break;
-            case GLFW_KEY_D:
-                p.getCam()->move( 
-                    cos(glm::half_pi<float>()+p.getCam()->getRotX())*cos(p.getCam()->getRotY()), 
-                    0, 
-                    -sin(glm::half_pi<float>()+p.getCam()->getRotX())*cos(p.getCam()->getRotY()) 
-                );
-                break;
-            case GLFW_KEY_SPACE:
-                world->setSeed( rand() % 2000000 );
-                world->genChunks();
-                this->keys.erase(this->keys.begin() + i);
-                break;
+                sin(glm::half_pi<float>()+p.getCam()->getRotX())*cos(p.getCam()->getRotY()) 
+            );
+        }
+        
+        if ( keyname.compare( "move.backward" ) == 0 ) {
+            p.getCam()->move( 
+                cos(p.getCam()->getRotX())*cos(p.getCam()->getRotY()), 
+                -sin(p.getCam()->getRotY()), 
+                -sin(p.getCam()->getRotX())*cos(p.getCam()->getRotY()) 
+            );
+        }
+        if ( keyname.compare( "move.right" ) == 0 ) {
+            p.getCam()->move( 
+                cos(glm::half_pi<float>()+p.getCam()->getRotX())*cos(p.getCam()->getRotY()), 
+                0, 
+                -sin(glm::half_pi<float>()+p.getCam()->getRotX())*cos(p.getCam()->getRotY()) 
+            );
+        }
+        if ( keyname.compare( "special.worldgen" ) == 0 ) {
+            world->setSeed( rand() % 2000000 );
+            world->genChunks();
+            this->keys.erase(this->keys.begin() + i);
         }
     }
 }

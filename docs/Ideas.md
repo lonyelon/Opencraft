@@ -1,12 +1,12 @@
 # List of ideas for the game by relevance
 ## Alpha
-- [x] Textures
-- [ ] Animations
+- [x] Texture
+- [ ] Animated textures
 - [ ] Player Camera
 - [ ] Place and remove blocks
 - [ ] Trees
+- [ ] Grass
 - [ ] Cube shading
-- [ ] Cube shadows
 - [x] Skybox
 - [ ] Ores
 - [ ] Basic UI

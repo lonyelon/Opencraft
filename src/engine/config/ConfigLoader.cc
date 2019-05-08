@@ -60,3 +60,11 @@ float ConfigLoader::getFloat( std::string name ) {
         return 0.0f;
     }
 }
+
+std::vector<std::string> ConfigLoader::getVariables(  ) {
+    std::vector<std::string> result;
+    for ( int i = 0; i < this->data.size(); i++ ) {
+        result.push_back( this->data[i].variable );
+    }
+    return result;
+}

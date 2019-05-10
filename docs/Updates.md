@@ -1,5 +1,14 @@
 # Updates
 
+# Dev3.2
+* Textures rework
+  * New grass texture
+  * Block sides
+* Vignette
+
+*Bugs Solved*
+* 0x5
+
 # Dev3.1
 * Keybindigs
 * Mipmaps
@@ -7,8 +16,9 @@
   
 The windows port needs:
 
-1. The DLLs for glfw.
-2. _The boost thread lib._ Done.
+1. The DLLs for glfw
+2. _The boost thread lib._ Done
+3. _CMake_ Done
   
 *Known Bugs*
 * 0x6: Mipmap fails at cube borders

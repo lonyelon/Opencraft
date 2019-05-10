@@ -8,6 +8,16 @@ uniform sampler2D textureSampler;
 
 out vec4 color;
 
+float vignette() {
+    vec2 c = vec2(wSize.x/2, wSize.y/2);
+    float x = gl_FragCoord.x;
+    float y = gl_FragCoord.y;
+
+    float d = pow(1.3*sqrt( pow(x-c.x, 2) + pow(y-c.y, 2) )/wSize.x, 2);
+
+    return 1-d;
+}
+
 void main(){
     const int chWidth = 1;
     const int chLength = 12;
@@ -34,6 +44,6 @@ void main(){
         float median = (fragCol.x + fragCol.y + fragCol.z)/3;
         color = vec4( 1 - median, 1 - median, 1 - median, 1 );
     } else {
-        color = fragCol;
+        color = vec4(fragCol.x*vignette(), fragCol.y*vignette(), fragCol.z*vignette(), 1.0);
     }
 }

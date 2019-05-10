@@ -47,14 +47,53 @@ void Cube::getVertex(std::vector<float> *v, std::vector<int> *i, int n) {
 */
 
     float vertices[  ] = {
-		-0.5f, -0.5f, 0.5f, // 2
+        // Front
+        -0.5f, -0.5f, 0.5f, // 2
 		0.5f, -0.5f, 0.5f, // 3
 		0.5f, 0.5f, 0.5f, // 1
+        -0.5f, -0.5f, 0.5f, // 2
+        0.5f, 0.5f, 0.5f, // 1
 		-0.5f, 0.5f, 0.5f, // 0
+
+        // Top
+        -0.5f, 0.5f, 0.5f, // 0
+        0.5f, 0.5f, 0.5f, // 1
+        -0.5f, 0.5f, -0.5f, // 5
+        -0.5f, 0.5f, -0.5f, // 5
+        0.5f, 0.5f, 0.5f, // 1
+        0.5f, 0.5f, -0.5f, // 6
+
+        // Left
+        0.5f, -0.5f, 0.5f, // 3
+        0.5f, 0.5f, -0.5f, // 6
+        0.5f, 0.5f, 0.5f, // 1
+        0.5f, -0.5f, 0.5f, // 3
+        0.5f, -0.5f, -0.5f, // 7
+        0.5f, 0.5f, -0.5f, // 6
+
+        // Right
+        -0.5f, -0.5f, 0.5f, // 2
+        -0.5f, 0.5f, 0.5f, // 0
 		-0.5f, 0.5f, -0.5f, // 5
-		0.5f, 0.5f, -0.5f, // 6
+        -0.5f, -0.5f, 0.5f, // 2
+        -0.5f, 0.5f, -0.5f, // 5
+        -0.5f, -0.5f, -0.5f, // 4
+
+        // Bot
+        0.5f, -0.5f, 0.5f, // 3
+        -0.5f, -0.5f, 0.5f, // 2
+        -0.5f, -0.5f, -0.5f, // 4
+        0.5f, -0.5f, 0.5f, // 3
+        -0.5f, -0.5f, -0.5f, // 4
+        0.5f, -0.5f, -0.5f, // 7
+
+        // Back
+        0.5f, 0.5f, -0.5f, // 6
 		0.5f, -0.5f, -0.5f, // 7
 		-0.5f, -0.5f, -0.5f, // 4
+        -0.5f, 0.5f, -0.5f, // 5
+        0.5f, 0.5f, -0.5f, // 6
+        -0.5f, -0.5f, -0.5f, // 4
 	};
 
     unsigned int indices[] = {
@@ -67,17 +106,50 @@ void Cube::getVertex(std::vector<float> *v, std::vector<int> *i, int n) {
 	};
 
     float texCoords[] = {
-		0, 0,
-        0, 1,
-        1, 0,
+		1, 1,
+        2, 1,
+        2, 0,
         1, 1,
+        2, 0,
+        1, 0,
+
         0, 1,
+        1, 1,
+        0, 0,
         0, 0,
         1, 1,
-        1, 0
+        1, 0,
+
+        3, 1,
+        2, 0,
+        3, 0,
+        3, 1,
+        2, 1,
+        2, 0,
+
+        4, 1,
+        4, 0,
+        3, 0,
+        4, 1,
+        3, 0,
+        3, 1,
+
+        5, 1,
+        6, 1,
+        6, 0,
+        5, 1,
+        6, 0,
+        5, 0,
+
+        5, 0,
+        5, 1,
+        4, 1,
+        4, 0,
+        5, 0,
+        4, 1,
 	};
 
-    for ( int k = 0; k < 8*3; k += 3 ) {
+    for ( int k = 0; k < 6*2*3*3; k += 3 ) {
         v->push_back( vertices[k + 0] + this->x );
         v->push_back( vertices[k + 1] + this->y );
         v->push_back( vertices[k + 2] + this->z );
@@ -87,36 +159,34 @@ void Cube::getVertex(std::vector<float> *v, std::vector<int> *i, int n) {
 
         switch ( this->type ) {
             case CubeType::grassyDirt:
-                v->push_back( texCoordX/(float)texFileSize + (float)1/(float)texFileSize );
-                v->push_back( texCoordY/(float)texFileSize + (float)1/(float)texFileSize );
+                v->push_back( texCoordX/(float)texFileSize );
+                v->push_back( texCoordY/(float)texFileSize + 0/(float)texFileSize );
                 break;
             case CubeType::dirt:
                 v->push_back( texCoordX/(float)texFileSize );
-                v->push_back( texCoordY/(float)texFileSize );
-                break;
-            case CubeType::water:
-                v->push_back( texCoordX/(float)texFileSize + 3/(float)texFileSize );
                 v->push_back( texCoordY/(float)texFileSize + 1/(float)texFileSize );
                 break;
+            case CubeType::water:
+                v->push_back( texCoordX/(float)texFileSize );
+                v->push_back( texCoordY/(float)texFileSize + 4/(float)texFileSize );
+                break;
             case CubeType::stone:
-                v->push_back( texCoordX/(float)texFileSize + 1/(float)texFileSize );
-                v->push_back( texCoordY/(float)texFileSize );
+                v->push_back( texCoordX/(float)texFileSize );
+                v->push_back( texCoordY/(float)texFileSize + 3/(float)texFileSize );
                 break;
             case CubeType::sand:
                 v->push_back( texCoordX/(float)texFileSize );
-                v->push_back( texCoordY/(float)texFileSize + 1/(float)texFileSize );
+                v->push_back( texCoordY/(float)texFileSize + 2/(float)texFileSize );
                 break;
             case CubeType::lava:
-                v->push_back( texCoordX/(float)texFileSize + 3/(float)texFileSize );
-                v->push_back( texCoordY/(float)texFileSize );
+                v->push_back( texCoordX/(float)texFileSize );
+                v->push_back( texCoordY/(float)texFileSize + 5/(float)texFileSize );
                 break;
         }
     }
 
-    for ( int k = 0; k < 6*6; k += 3 ) {
-        i->push_back( indices[k + 0] + 8*n );
-        i->push_back( indices[k + 1] + 8*n );
-        i->push_back( indices[k + 2] + 8*n );
+    for ( int k = 0; k < 6*6; k++ ) {
+        i->push_back( k + 36*n );
     }
 }
 

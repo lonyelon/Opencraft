@@ -78,7 +78,7 @@ void Chunk::genTerrain() {
                         dirtCount = 0;
                     }
                 } else {
-                    if (dirtCount < 3) {
+                    if (dirtCount < 4) {
                         if ( y < heights[x + z*this->W] || heights[x + z*this->W] == -1 ) {
                             heights[x + z*this->W] = y;
                         }
@@ -98,7 +98,7 @@ void Chunk::genTerrain() {
     
     float caveFreq = 0.5;
     int caveDistance = 20;
-    float caveProb = -0.9;
+    float caveProb = -0.8;
 
     p.SetSeed( this->world->getSeed(  )*3 );
     p.SetFrequency(caveFreq);

@@ -15,6 +15,7 @@ out vec2 wSize;
 out vec2 texCoord;
 out vec3 pos;
 out vec2 select;
+out vec2 dist;
 
 void main() {
    gl_Position = projection*view*model*vec4(aPos, 1.0f);
@@ -30,9 +31,7 @@ void main() {
       && (round(selectedCube.z) == round(aPos.z - 0.5) || round(selectedCube.z) == round(aPos.z + 0.5))
    ) {
       select.x = 1;
-      select.y = 0;
    } else {
       select.x = 0;
-      select.y = 0;
    }
 }

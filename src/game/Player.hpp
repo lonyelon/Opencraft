@@ -4,6 +4,7 @@
 #include "../engine/glfw.hpp"
 
 class World;
+class Cube;
 
 class Player {
 private:
@@ -13,8 +14,11 @@ private:
 public:
     Player(  );
     Player( World *world );
+
     void move(  );
     Camera *getCam();
+    Cube* getPointedCube();
+    void breakCube();
 };
 
 #endif

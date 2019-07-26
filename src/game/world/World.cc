@@ -26,6 +26,7 @@ void genChunk( std::vector<Chunk*> *chunks, int *chunkCount, int size, World *w,
 void genVAOs( std::vector<Chunk*> *chunks, int threadNumber, int threadCount ) {
     for ( int i = threadNumber; i < (*chunks).size(); i += threadCount ) {
         (*chunks)[i]->getVisibleCubes();
+        (*chunks)[i]->genVao();
     }
 }
 
@@ -60,11 +61,16 @@ void World::genChunks(  ) {
 	for (int i = 0; i < threadCount; i++) {
 		t[i].join();
 	}
+
+    for (int i = 0; i < this->chunkCount; i++) {
+        this->chunks[i]->getVisibleCubes();
+        this->chunks[i]->genVao();
+    }
 }
 
 void World::draw() {
     for ( int k = 0; k < this->chunks.size(); k++ ) {
-		this->chunks[k]->genVao();
+		//this->chunks[k]->genVao();
 		this->chunks[k]->draw();
 	}
 }

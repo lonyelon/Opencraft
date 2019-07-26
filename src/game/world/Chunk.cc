@@ -189,23 +189,24 @@ bool Chunk::isIllated(int x, int y, int z) {
 }
 
 void Chunk::getVisibleCubes() {
-    if (this->renderedCubes.size() == 0) {
-        for ( int i = 0; i < this->W*this->H*this->Z; i++ ) {
-            if ( this->cubes[i]->getType(  ) != CubeType::air ) {
-                if ( this->isIllated(this->cubes[i]->getX(), this->cubes[i]->getY(), this->cubes[i]->getZ()) ) {
-                    //delete(this->cubes[i]);
-                    continue;
-                }
-
-                this->renderedCubes.push_back( this->cubes[i] );
+    this->renderedCubes.clear();
+    for ( int i = 0; i < this->W*this->H*this->Z; i++ ) {
+        if ( this->cubes[i]->getType(  ) != CubeType::air ) {
+            if ( this->isIllated(this->cubes[i]->getX(), this->cubes[i]->getY(), this->cubes[i]->getZ()) ) {
+                //delete(this->cubes[i]);
+                continue;
             }
+
+            this->renderedCubes.push_back( this->cubes[i] );
         }
-        return;
     }
+    return;
 }
 
 void Chunk::genVao() {
-    if ( this->VAO != 0 ) return;
+    if ( this->VAO != 0 ) {
+        glDeleteVertexArrays(1, &(this->VAO));
+    }
 
     unsigned int VBO, EBO;
 

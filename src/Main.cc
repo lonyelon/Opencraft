@@ -88,6 +88,8 @@ int main() {
 	glfwSetWindowSizeCallback (window, windowResize);
 	glfwSetFramebufferSizeCallback (window, windowResize);
 
+	glfwSetMouseButtonCallback(window, getMouseButton);
+
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 		std::cout << "Failed to initialize GLAD" << std::endl;
 		return -1;

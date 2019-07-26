@@ -16,57 +16,38 @@ Player::Player( World *world ) {
     this->vspd = 0;
 }
 
-void Player::move(  ) {
-    /*float hboxSize = 0.6;
-    Cube *c0 = this->world->getCube( NULL, (int)(this->cam->getX() + hboxSize), (int)this->cam->getY()-1, (int)(this->cam->getZ() + hboxSize) );
-    Cube *c1 = this->world->getCube( NULL, (int)(this->cam->getX() - hboxSize), (int)this->cam->getY()-1, (int)(this->cam->getZ() + hboxSize) );
-    Cube *c2 = this->world->getCube( NULL, (int)(this->cam->getX() + hboxSize), (int)this->cam->getY()-1, (int)(this->cam->getZ() - hboxSize) );
-    Cube *c3 = this->world->getCube( NULL, (int)(this->cam->getX() - hboxSize), (int)this->cam->getY()-1, (int)(this->cam->getZ() - hboxSize) );
+void Player::move() {
+}
 
-    Cube *c4 = this->world->getCube( NULL, (int)(this->cam->getX() + hboxSize), (int)this->cam->getY()+1, (int)(this->cam->getZ() + hboxSize) );
-    Cube *c5 = this->world->getCube( NULL, (int)(this->cam->getX() - hboxSize), (int)this->cam->getY()+1, (int)(this->cam->getZ() + hboxSize) );
-    Cube *c6 = this->world->getCube( NULL, (int)(this->cam->getX() + hboxSize), (int)this->cam->getY()+1, (int)(this->cam->getZ() - hboxSize) );
-    Cube *c7 = this->world->getCube( NULL, (int)(this->cam->getX() - hboxSize), (int)this->cam->getY()+1, (int)(this->cam->getZ() - hboxSize) );
+Cube *Player::getPointedCube() {
+    const int iter = 1000;
+    const int maxdist = 8;
 
-    this->vspd -= 0.01;
+    float rx = this->cam->getRotX();
+    float ry = this->cam->getRotY();
 
-    if ( c0 != NULL && (float)c0->getY() - this->cam->getY() <= 0.1 && !isTransparent(c0) ) {
-        this->vspd = 0;
+    for (int i = 0; i < iter*maxdist; i++) {
+        int x = round(this->cam->getX()-i*cos(rx)*cos(ry)/iter); 
+        int y = round(this->cam->getY()+i*sin(ry)/iter); 
+        int z = round(this->cam->getZ()+i*sin(rx)*cos(ry)/iter);
+        
+        Cube *c = this->world->getCube(x, y, z);
+        if (c != NULL && c->getType() != CubeType::air) {
+            return c;
+        }
+    }
+    return NULL;
+}
+
+void Player::breakCube() {
+    Cube *c = this->getPointedCube();
+    if (c == NULL) {
+        return;
     }
 
-    if ( c1 != NULL && (float)c1->getY() - this->cam->getY() <= 0.1 && !isTransparent(c1) ) {
-        this->vspd = 0;
-    }
-
-    if ( c2 != NULL && (float)c2->getY() - this->cam->getY() <= 0.1 && !isTransparent(c2) ) {
-        this->vspd = 0;
-    }
-
-    if ( c3 != NULL && (float)c3->getY() - this->cam->getY() <= 0.1 && !isTransparent(c3) ) {
-        this->vspd = 0;
-    }
-
-    if ( c4 != NULL && (float)c4->getY() - this->cam->getY() <= 0.1 && !isTransparent(c4) ) {
-        this->vspd = 0;
-        this->cam->move( 0, -0.1, 0 );
-    }
-
-    if ( c5 != NULL && (float)c5->getY() - this->cam->getY() <= 0.1 && !isTransparent(c5) ) {
-        this->vspd = 0;
-        this->cam->move( 0, -0.1, 0 );
-    }
-
-    if ( c6 != NULL && (float)c6->getY() - this->cam->getY() <= 0.1 && !isTransparent(c6) ) {
-        this->vspd = 0;
-        this->cam->move( 0, -0.1, 0 );
-    }
-
-    if ( c7 != NULL && (float)c7->getY() - this->cam->getY() <= 0.1 && !isTransparent(c7) ) {
-        this->vspd = 0;
-        this->cam->move( 0, -0.1, 0 );
-    }
-
-    this->cam->move( 0, vspd, 0 );*/
+    c->setType(CubeType::air);
+    c->getChunk()->getVisibleCubes();
+    c->getChunk()->genVao();
 }
 
 Camera *Player::getCam() {

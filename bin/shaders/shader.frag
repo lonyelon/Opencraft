@@ -3,6 +3,7 @@
 in vec2 wSize;
 in vec2 texCoord;
 in vec3 pos;
+in vec2 select;
 
 uniform sampler2D textureSampler;
 
@@ -45,5 +46,22 @@ void main(){
         color = vec4( 1 - median, 1 - median, 1 - median, 1 );
     } else {
         color = vec4(fragCol.x*vignette(), fragCol.y*vignette(), fragCol.z*vignette(), 1.0);
+        if (select.x == 1) {
+            color.x *= 1.2;
+            color.y *= 1.2;
+            color.z *= 1.2;
+        }
+    }
+
+    if (color.x > 1) {
+        color.x = 1;
+    }
+
+    if (color.y > 1) {
+        color.y = 1;
+    }
+
+    if (color.z > 1) {
+        color.z = 1;
     }
 }

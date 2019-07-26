@@ -129,6 +129,14 @@ int main() {
 		unsigned int projectionLoc = glGetUniformLocation(shaderProgram, "projection");
 		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
+		unsigned int selCubeLoc = glGetUniformLocation(shaderProgram, "selectedCube");
+		Cube *cs = p.getPointedCube();
+		if (cs != NULL) {
+			glUniform3f(selCubeLoc, cs->getX(), cs->getY(), cs->getZ());
+		} else {
+			glUniform3f(selCubeLoc, 0, 0, 0);
+		}
+
 		glClear(GL_COLOR_BUFFER_BIT);
 		glClear(GL_DEPTH_BUFFER_BIT);
 

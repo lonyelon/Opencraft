@@ -36,6 +36,7 @@ void World::genChunks(  ) {
 		delete(this->chunks[i]);
 	}
 	this->chunks.clear();
+    this->chunkCount = 0;
 
 	const int threadCount = 8;
 
@@ -54,18 +55,20 @@ void World::genChunks(  ) {
 
     printf( "Rendering chunks...\n" );
 
-    for (int i = 0; i < threadCount; i++) {
+    /*for (int i = 0; i < threadCount; i++) {
 		t[i] = boost::thread( genVAOs, &(this->chunks), i, threadCount );
 	}
 
 	for (int i = 0; i < threadCount; i++) {
 		t[i].join();
-	}
+    }*/
 
     for (int i = 0; i < this->chunkCount; i++) {
+        printf("%d/%d\n", i, this->chunkCount);
         this->chunks[i]->getVisibleCubes();
         this->chunks[i]->genVao();
     }
+    printf("Complete!\n");
 }
 
 void World::draw() {

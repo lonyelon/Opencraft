@@ -189,7 +189,10 @@ bool Chunk::isIllated(int x, int y, int z) {
 }
 
 void Chunk::getVisibleCubes() {
-    this->renderedCubes.clear();
+    if (this->renderedCubes.size() != 0) {
+        this->renderedCubes.clear();
+    }
+    
     for ( int i = 0; i < this->W*this->H*this->Z; i++ ) {
         if ( this->cubes[i]->getType(  ) != CubeType::air ) {
             if ( this->isIllated(this->cubes[i]->getX(), this->cubes[i]->getY(), this->cubes[i]->getZ()) ) {

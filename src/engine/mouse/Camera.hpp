@@ -3,9 +3,13 @@
 
 #include "../glfw.hpp"
 
+class Player;
+
 class Camera {
 private:
     const float correction = 0.01f;
+
+    Player *player;
 
     float speed;
     float camRotX;
@@ -13,7 +17,7 @@ private:
 
     float x, y, z;
 public:
-    Camera();
+    Camera(Player *p);
 
     void moveCoords( int xpos, int ypos );
     void move(float x, float y, float z);

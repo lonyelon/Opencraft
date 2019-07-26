@@ -29,6 +29,8 @@ public:
     int getY() { return this->y; };
     int getZ() { return this->z; };
 
+    Chunk * getChunk() { return this->chunk; };
+
     ~Cube();
 };
 

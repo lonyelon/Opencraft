@@ -7,11 +7,15 @@ uniform mat4 view;
 uniform mat4 projection;
 uniform mat4 model;
 
+uniform vec3 selectedCube;
+
 uniform vec2 windowSize;
 
 out vec2 wSize;
 out vec2 texCoord;
 out vec3 pos;
+out vec2 select;
+out vec2 dist;
 
 void main() {
    gl_Position = projection*view*model*vec4(aPos, 1.0f);
@@ -20,4 +24,14 @@ void main() {
 
    texCoord = vec2( aTexCoord.x, aTexCoord.y );
    pos = aPos;
+
+   if (
+      (round(selectedCube.x) == round(aPos.x - 0.5) || round(selectedCube.x) == round(aPos.x + 0.5))
+      && (round(selectedCube.y) == round(aPos.y - 0.5) || round(selectedCube.y) == round(aPos.y + 0.5))
+      && (round(selectedCube.z) == round(aPos.z - 0.5) || round(selectedCube.z) == round(aPos.z + 0.5))
+   ) {
+      select.x = 1;
+   } else {
+      select.x = 0;
+   }
 }

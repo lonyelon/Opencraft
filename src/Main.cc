@@ -3,16 +3,16 @@
 #include "engine/keyboard/KeyboardInput.hpp"
 #include "game/world/Chunk.hpp"
 #include "game/world/World.hpp"
-#include "game/Player.hpp"
 #include "engine/LoadTexture.hpp"
 #include "engine/config/ConfigLoader.hpp"
 #include "game/world/Sphere.h"
+#include "game/Player.hpp"
 
 #include <string>
 #include <boost/thread.hpp>
 
 World *world;
-Player p;
+Player *p;
 int useMipmap = 1;
 
 KeyHandler k;
@@ -46,7 +46,7 @@ void windowResize(GLFWwindow *window, int width, int height) {
 
 int main() {
 	world = new World(  );
-	p = Player( world );
+	p = new Player( world );
 	ConfigLoader cf = ConfigLoader( "./bin/game.conf" );
 	k = KeyHandler();
 
@@ -103,14 +103,16 @@ int main() {
 	world->genChunks();
 	printf("World generation completed\n");
 
-	p.getCam()->setPos(0, 90, 0);
-	p.getCam()->setRotation( glm::half_pi<float>() , glm::half_pi<float>()/3 );
+	p->getCam()->setPos(0, 90, 0);
+	p->getCam()->setRotation( glm::half_pi<float>() , glm::half_pi<float>()/3 );
 
 	unsigned int windowSizeLoc = glGetUniformLocation(shaderProgram, "windowSize");
 	glUniform2f(windowSizeLoc, SCR_WIDTH, SCR_HEIGHT);
 
 	dirtTex = loadTexture( "textures.png" );
 	skyTex = loadTexture( "sky.png" );
+
+	printf("Textures loaded!\n");
 
 	while (!glfwWindowShouldClose(window)) {
 		double t = glfwGetTime();
@@ -120,7 +122,7 @@ int main() {
 		glm::mat4 view; // Se Calcula
 		glm::mat4 projection; // Se calcula
 		
-		view = p.getCam()->getViewMatrix();
+		view = p->getCam()->getViewMatrix();
 		projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH/(float)SCR_HEIGHT, 0.1f, renderDistance);
 
 		unsigned int viewLoc = glGetUniformLocation(shaderProgram, "view");
@@ -130,7 +132,8 @@ int main() {
 		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
 		unsigned int selCubeLoc = glGetUniformLocation(shaderProgram, "selectedCube");
-		Cube *cs = p.getPointedCube();
+		Cube *cs = p->getPointedCube();
+		
 		if (cs != NULL) {
 			glUniform3f(selCubeLoc, cs->getX(), cs->getY(), cs->getZ());
 		} else {
@@ -145,13 +148,13 @@ int main() {
 		glm::mat4 model = glm::mat4(1.0f);
 		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
 		world->draw();
-		p.move();
+		p->move();
 
 		glBindTexture( GL_TEXTURE_2D, skyTex );
-		model = glm::translate( glm::mat4(1.0f), glm::vec3( p.getCam()->getX(), p.getCam()->getY(), p.getCam()->getZ() ) );
+		model = glm::translate( glm::mat4(1.0f), glm::vec3( p->getCam()->getX(), p->getCam()->getY(), p->getCam()->getZ() ) );
 		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
 		skyBox.draw();
-		 		
+		
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}

@@ -1,9 +1,12 @@
 #include "Camera.hpp"
 
-Camera::Camera() {
+#include "../../game/Player.hpp"
+
+Camera::Camera( Player * p ) {
     this->speed = 1.0f/200.0f;
     this->camRotX = 0;
     this->camRotY = 0;
+    this->player = p;
 }
 
 void Camera::moveCoords( int xpos, int ypos ) {
@@ -20,9 +23,9 @@ void Camera::moveCoords( int xpos, int ypos ) {
 }
 
 void Camera::move(float x, float y, float z) {
-    this->x += x;
-    this->y += y;
-    this->z += z;
+    this->x += x*this->player->getSpeed();
+    this->y += y*this->player->getSpeed();
+    this->z += z*this->player->getSpeed();
 }
 
 glm::mat4 Camera::getViewMatrix() {

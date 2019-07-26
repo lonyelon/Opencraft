@@ -3,17 +3,13 @@
 
 #include <cstdio>
 
-Player::Player(  ) {
-    this->cam = NULL;
-    this->world = NULL;
-    this->vspd = 0;
-}
-
 Player::Player( World *world ) {
-    this->cam = new Camera();
+    this->cam = new Camera(this);
     this->cam->setPos( 0, 100, 0 );
     this->world = world;
     this->vspd = 0;
+
+    this->setSprint( false );
 }
 
 void Player::move() {
@@ -52,4 +48,16 @@ void Player::breakCube() {
 
 Camera *Player::getCam() {
     return this->cam;
+}
+
+void Player::setSprint(bool sprint) {
+    float sprintSpeed = 0.8f;
+    float normalSpeed = 0.1f;
+    printf("Set!\n");
+
+    if (sprint == true) {
+        this->movementSpeed = sprintSpeed;
+    } else {
+        this->movementSpeed = normalSpeed;
+    }
 }

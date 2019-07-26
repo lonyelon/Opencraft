@@ -11,13 +11,17 @@ private:
     World *world;
     Camera *cam;
     float vspd;
+    float movementSpeed;
 public:
-    Player(  );
     Player( World *world );
 
     void move(  );
+    void setSprint(bool sprint);
+
     Camera *getCam();
     Cube* getPointedCube();
+    float getSpeed() { return this->movementSpeed; };
+
     void breakCube();
 };
 

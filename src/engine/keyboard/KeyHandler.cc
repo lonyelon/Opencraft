@@ -79,9 +79,9 @@ void KeyHandler::keyHandler( ) {
 
         if ( keyname.compare( "move.left" )  == 0) {
             p->getCam()->move( 
-                -cos(glm::half_pi<float>()+p->getCam()->getRotX())*cos(p->getCam()->getRotY()), 
+                -cos(glm::half_pi<float>()+p->getCam()->getRotX()), 
                 0, 
-                sin(glm::half_pi<float>()+p->getCam()->getRotX())*cos(p->getCam()->getRotY()) 
+                sin(glm::half_pi<float>()+p->getCam()->getRotX())
             );
         }
         
@@ -94,9 +94,9 @@ void KeyHandler::keyHandler( ) {
         }
         if ( keyname.compare( "move.right" ) == 0 ) {
             p->getCam()->move( 
-                cos(glm::half_pi<float>()+p->getCam()->getRotX())*cos(p->getCam()->getRotY()), 
+                cos(glm::half_pi<float>()+p->getCam()->getRotX()), 
                 0, 
-                -sin(glm::half_pi<float>()+p->getCam()->getRotX())*cos(p->getCam()->getRotY()) 
+                -sin(glm::half_pi<float>()+p->getCam()->getRotX()) 
             );
         }
         if ( keyname.compare( "special.worldgen" ) == 0 ) {

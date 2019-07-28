@@ -12,13 +12,6 @@ Player::Player( World *world ) {
     this->setSprint( false );
 }
 
-float sign ( float n ) {
-    if ( n < 0 ) {
-        return -1;
-    } 
-    return 1;
-}
-
 void Player::move(float mx, float my, float mz) {
     const float top = 0.05;
     const float bot = 1.70;
@@ -42,13 +35,13 @@ void Player::move(float mx, float my, float mz) {
         this->vspd = 0;
         this->cam->setPos(this->cam->getX(), c->getY() + 0.5 + bot, this->cam->getZ());
     }
-    c = this->world->getCube( this->cam->getX() + right, this->cam->getY() - bot + my, this->cam->getZ() + front );
+    c = this->world->getCube( this->cam->getX() + right, this->cam->getY() - bot + my, this->cam->getZ() - back );
     if ( c != NULL && !isTransparent(c) && my < 0 ) { 
         my = 0; 
         this->vspd = 0;
         this->cam->setPos(this->cam->getX(), c->getY() + 0.5 + bot, this->cam->getZ());
     }
-    c = this->world->getCube( this->cam->getX() - left, this->cam->getY() - bot + my, this->cam->getZ() - back );
+    c = this->world->getCube( this->cam->getX() - left, this->cam->getY() - bot + my, this->cam->getZ() + front );
     if ( c != NULL && !isTransparent(c) && my < 0 ) { 
         my = 0; 
         this->vspd = 0;
@@ -65,22 +58,22 @@ void Player::move(float mx, float my, float mz) {
     c = this->world->getCube( this->cam->getX() + right, this->cam->getY() + top + my, this->cam->getZ() + front );
     if ( c != NULL && !isTransparent(c) && my > 0 ) { 
         my = 0; 
-        this->vspd = 0;
+        if (this->vspd > 0) this->vspd = 0;
     }
     c = this->world->getCube( this->cam->getX() + right, this->cam->getY() + top + my, this->cam->getZ() + front );
     if ( c != NULL && !isTransparent(c) && my > 0 ) { 
         my = 0; 
-        this->vspd = 0;
+        if (this->vspd > 0) this->vspd = 0;
     }
     c = this->world->getCube( this->cam->getX() - left, this->cam->getY() +top + my, this->cam->getZ() - back );
     if ( c != NULL && !isTransparent(c) && my > 0 ) { 
         my = 0; 
-        this->vspd = 0;
+        if (this->vspd > 0) this->vspd = 0;
     }
     c = this->world->getCube( this->cam->getX() - left, this->cam->getY() + top + my, this->cam->getZ() - back );
     if ( c != NULL && !isTransparent(c) && my > 0 ) { 
         my = 0; 
-        this->vspd = 0;
+        if (this->vspd > 0) this->vspd = 0;
     }
 
     //? Positive Z
@@ -174,7 +167,7 @@ void Player::move(float mx, float my, float mz) {
     this->cam->move(mx, my, mz);
 }
 
-Cube *Player::getPointedCube() {
+Cube *Player::getPointer( float *x, float *y, float *z ) {
     const int iter = 1000;
     const int maxdist = 8;
 
@@ -182,16 +175,32 @@ Cube *Player::getPointedCube() {
     float ry = this->cam->getRotY();
 
     for (int i = 0; i < iter*maxdist; i++) {
-        int x = round(this->cam->getX()-i*cos(rx)*cos(ry)/iter); 
-        int y = round(this->cam->getY()+i*sin(ry)/iter); 
-        int z = round(this->cam->getZ()+i*sin(rx)*cos(ry)/iter);
+        int xx = round(this->cam->getX()-i*cos(rx)*cos(ry)/iter); 
+        int yy = round(this->cam->getY()+i*sin(ry)/iter); 
+        int zz = round(this->cam->getZ()+i*sin(rx)*cos(ry)/iter);
         
-        Cube *c = this->world->getCube(x, y, z);
+        Cube *c = this->world->getCube(xx, yy, zz);
         if (c != NULL && c->getType() != CubeType::air) {
+            *x = this->cam->getX()-(i-1)*cos(rx)*cos(ry)/iter;
+            *y = this->cam->getY()+(i-1)*sin(ry)/iter;
+            *z = this->cam->getZ()+(i-1)*sin(rx)*cos(ry)/iter;
+
             return c;
         }
     }
     return NULL;
+}
+
+Cube *Player::getPointedCube() {
+    float x, y, z;
+    return this->getPointer( &x, &y, &z );
+}
+
+bool Player::getPointedPosition( float *x, float *y, float *z ) {
+    if (this->getPointer( x, y, z ) == NULL) {
+        return false;
+    }
+    return true;
 }
 
 void Player::breakCube() {
@@ -205,13 +214,34 @@ void Player::breakCube() {
     c->getChunk()->genVao();
 }
 
+void Player::placeCube() {
+    Cube *c = this->getPointedCube();
+    if (c == NULL) {
+        return;
+    }
+
+    float x, y, z;
+    if (this->getPointedPosition(&x, &y, &z) == 0) {
+        return;
+    }
+
+    Cube *c0 = this->world->getCube(x, y, z);
+    if (c0 == NULL) {
+        return;
+    }
+
+    c0->setType(CubeType::stone);
+    c0->getChunk()->getVisibleCubes();
+    c0->getChunk()->genVao();
+}
+
 Camera *Player::getCam() {
     return this->cam;
 }
 
 void Player::setSprint(bool sprint) {
-    float sprintSpeed = 0.8f;
-    float normalSpeed = 0.1f;
+    float sprintSpeed = 0.125f;
+    float normalSpeed = 0.07f;
 
     if (sprint == true) {
         this->movementSpeed = sprintSpeed;

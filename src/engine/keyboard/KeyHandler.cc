@@ -74,6 +74,9 @@ void KeyHandler::keyHandler( ) {
         if ( keyname.compare( "move.sprint" ) == 0 && this->keys[i].pressed ) {
             p->setSprint(true);
             continue;
+        } else if ( keyname.compare( "move.sprint" ) == 0 && !this->keys[i].pressed ) { 
+            p->setSprint(false);
+            continue;
         }
 
         if ( keyname.compare( "move.forward" ) == 0 && this->keys[i].pressed ) {
@@ -83,8 +86,6 @@ void KeyHandler::keyHandler( ) {
                 sin(p->getCam()->getRotX())
             );
             continue;
-        } else if ( keyname.compare( "move.forward" ) == 0 && !this->keys[i].pressed ) {
-            p->setSprint(false);
         }
 
         if ( keyname.compare( "move.left" )  == 0 && this->keys[i].pressed ) {

@@ -243,8 +243,10 @@ void Player::setSprint(bool sprint) {
     float sprintSpeed = 0.125f;
     float normalSpeed = 0.07f;
 
-    if (sprint == true) {
-        this->movementSpeed = sprintSpeed;
+    if (sprint) {
+        if (this->vspd == 0 && this->movementSpeed < sprintSpeed) {
+            this->movementSpeed = sprintSpeed + 0.00001f;
+        }
     } else {
         this->movementSpeed = normalSpeed;
     }

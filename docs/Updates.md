@@ -1,5 +1,16 @@
 # Updates
 
+# Dev5.0
+* Infinite world
+
+# Dev4.0
+* Placing blocks
+* Removing blocks
+* Player camera
+* Sprint
+
+*Bugs will now be listed on docs/Bugs.md*
+
 # Dev3.2
 * Textures rework
   * New grass texture

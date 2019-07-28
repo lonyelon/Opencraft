@@ -14,6 +14,7 @@
 World *world;
 Player *p;
 int useMipmap = 1;
+float renderDistance;
 
 KeyHandler k;
 
@@ -51,7 +52,7 @@ int main() {
 	k = KeyHandler();
 
 	float fov = cf.getFloat( "render.fov" );
-	float renderDistance = cf.getFloat( "render.distance" );
+	renderDistance = cf.getFloat( "render.distance" );
 	int worldSize = cf.getInt( "world.size" );
 	useMipmap = cf.getInt( "render.mipmap" );
 
@@ -157,9 +158,12 @@ int main() {
 		
 		glfwSwapBuffers(window);
 		glfwPollEvents();
+
+		printf("Cubes drawn: %d\n", world->getCubesDrawn());
 	}
 	
 	glfwTerminate();
+	delete(world);
 	return 0;
 }
 

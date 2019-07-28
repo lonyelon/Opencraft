@@ -12,9 +12,9 @@
   - [x] Negative coordinates
 
 - [x] **Gameplay**
-  - [ ] Remove blocks
-  - [ ] Place blocks
-  - [ ] Player camera *Work in progress*
+  - [x] Remove blocks
+  - [x] Place blocks
+  - [x] Player camera
   - [x] Floating camera 
 
 - [ ] **Graphics**

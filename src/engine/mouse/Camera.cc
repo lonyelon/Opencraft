@@ -23,9 +23,9 @@ void Camera::moveCoords( int xpos, int ypos ) {
 }
 
 void Camera::move(float x, float y, float z) {
-    this->x += x*this->player->getSpeed();
-    this->y += y*this->player->getSpeed();
-    this->z += z*this->player->getSpeed();
+    this->x += x;
+    this->y += y;
+    this->z += z;
 }
 
 glm::mat4 Camera::getViewMatrix() {
@@ -51,7 +51,7 @@ void Camera::setRotation(int x, int y) {
     this->camRotY = y;
 }
 
-void Camera::setPos(int x, int y, int z) {
+void Camera::setPos(float x, float y, float z) {
     this->x = x;
     this->y = y;
     this->z = z;

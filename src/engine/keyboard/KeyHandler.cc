@@ -64,45 +64,49 @@ void KeyHandler::keyHandler( ) {
         }
 
         if ( keyname.compare( "move.sprint" ) == 0 ) {
-            p->setSprint(true);
-            break;
+            p->jump();
+            continue;
         }
 
         if ( keyname.compare( "move.forward" ) == 0 ) {
-            p->getCam()->move( 
-                -cos(p->getCam()->getRotX())*cos(p->getCam()->getRotY()), 
-                sin(p->getCam()->getRotY()), 
-                sin(p->getCam()->getRotX())*cos(p->getCam()->getRotY()) 
+            p->move( 
+                -cos(p->getCam()->getRotX()), 
+                0, 
+                sin(p->getCam()->getRotX())
             );
-            break;
+            continue;
         }
 
         if ( keyname.compare( "move.left" )  == 0) {
-            p->getCam()->move( 
+            p->move( 
                 -cos(glm::half_pi<float>()+p->getCam()->getRotX()), 
                 0, 
                 sin(glm::half_pi<float>()+p->getCam()->getRotX())
             );
+            continue;
         }
         
         if ( keyname.compare( "move.backward" ) == 0 ) {
-            p->getCam()->move( 
-                cos(p->getCam()->getRotX())*cos(p->getCam()->getRotY()), 
-                -sin(p->getCam()->getRotY()), 
-                -sin(p->getCam()->getRotX())*cos(p->getCam()->getRotY()) 
+            p->move( 
+                cos(p->getCam()->getRotX()), 
+                0, 
+                -sin(p->getCam()->getRotX())
             );
+            continue;
         }
         if ( keyname.compare( "move.right" ) == 0 ) {
-            p->getCam()->move( 
+            p->move( 
                 cos(glm::half_pi<float>()+p->getCam()->getRotX()), 
                 0, 
                 -sin(glm::half_pi<float>()+p->getCam()->getRotX()) 
             );
+            continue;
         }
         if ( keyname.compare( "special.worldgen" ) == 0 ) {
             world->setSeed( rand() % 2000000 );
             world->genChunks();
             this->keys.erase(this->keys.begin() + i);
+            continue;
         }
     }
 }

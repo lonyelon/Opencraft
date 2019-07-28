@@ -15,14 +15,17 @@ private:
 public:
     Player( World *world );
 
-    void move(  );
+    void move( float mx, float my, float mz );
     void setSprint(bool sprint);
 
     Camera *getCam();
     Cube* getPointedCube();
     float getSpeed() { return this->movementSpeed; };
+    World *getWorld() { return this->world; };
 
     void breakCube();
+    void gravity(float ammount);
+    void jump();
 };
 
 #endif

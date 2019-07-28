@@ -19,6 +19,8 @@ public:
     void genChunks(  );
     void setSize(const int size );
     Cube *getCube( int x, int y, int z );
+    Cube *getCube( float x, float y, float z ) { return this->getCube((int)round(x), (int)round(y), (int)round(z)); };
+    Cube *getCube( double x, double y, double z ) { return this->getCube((int)round(x), (int)round(y), (int)round(z)); };
     Cube *getCube( Chunk *c, int x, int y, int z );
     void setSeed( int seed );
     int getSeed(  );

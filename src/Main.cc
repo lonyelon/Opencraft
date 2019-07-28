@@ -103,7 +103,7 @@ int main() {
 	world->genChunks();
 	printf("World generation completed\n");
 
-	p->getCam()->setPos(0, 90, 0);
+	p->getCam()->setPos(0, 180, 0);
 	p->getCam()->setRotation( glm::half_pi<float>() , glm::half_pi<float>()/3 );
 
 	unsigned int windowSizeLoc = glGetUniformLocation(shaderProgram, "windowSize");
@@ -148,7 +148,7 @@ int main() {
 		glm::mat4 model = glm::mat4(1.0f);
 		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
 		world->draw();
-		p->move();
+		p->gravity(0.1);
 
 		glBindTexture( GL_TEXTURE_2D, skyTex );
 		model = glm::translate( glm::mat4(1.0f), glm::vec3( p->getCam()->getX(), p->getCam()->getY(), p->getCam()->getZ() ) );

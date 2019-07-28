@@ -29,11 +29,12 @@ add_executable(
     ./src/game/world/CubeTypes.hpp
     ./src/game/world/Chunk.hpp
     ./src/game/Player.hpp
+    ./src/game/Hitbox.hpp
+    ./src/game/Hitbox.cc
     ./src/engine/keyboard/KeyboardInput.hpp
     ./src/engine/keyboard/KeyHandler.hpp
     ./src/engine/config/ConfigLoader.hpp
     ./src/engine/glfw.hpp
-    ./src/engine/hitBox.hpp
     ./src/engine/LoadTexture.hpp
     ./src/engine/mouse/MouseInput.hpp
     ./src/engine/mouse/Camera.hpp

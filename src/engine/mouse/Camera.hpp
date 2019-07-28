@@ -26,7 +26,7 @@ public:
     float getRotX();
     float getRotY();
     void setRotation(int x, int y);
-    void setPos(int x, int y, int z);
+    void setPos(float x, float y, float z);
 
     float getX(  ) { return this->x; }
     float getY(  ) { return this->y; }

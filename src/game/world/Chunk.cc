@@ -251,8 +251,9 @@ void Chunk::genVao() {
 void Chunk::draw() {
     if ( this->VAO == 0 ) return;
 
-    glBindVertexArray( this->VAO );
     
+
+    glBindVertexArray( this->VAO );
     glDrawElements(GL_TRIANGLES, 36*this->renderedCubes.size(), GL_UNSIGNED_INT, 0);
 }
 

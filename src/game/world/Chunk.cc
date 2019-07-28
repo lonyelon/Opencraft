@@ -21,11 +21,11 @@ Chunk::Chunk ( World *w, int xpos, int ypos, int zpos ) {
 }
 
 void Chunk::genTerrain() {
-    const float xCoordRed = 200;
-    const float yCoordRed = 200;
-    const float zCoordRed = 200;
+    const float xCoordRed = 300;
+    const float yCoordRed = 300;
+    const float zCoordRed = 300;
     const float noiseFreq = 1;
-    const float ystrech = 75;
+     float ystrech = 60;
     const int heightIncrease = 60;
 
     const int waterHeight = 64+heightIncrease;

@@ -7,7 +7,7 @@
 extern Player *p;
 
 World::World(  ) {
-    this->seed = 0;
+    this->seed = 279;
     this->size = 15;
     this->chunkCount = 0;
     this->genThread = NULL;

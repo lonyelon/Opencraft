@@ -1,17 +1,20 @@
 # Updates
 
-# Dev5.0 World Gen Update 2.0
+# Dev5.1: Graphics Update 1.2-a
+* Better renderer, at least x2 performance.
+
+# Dev5.0 World Gen Update 2.0-a
 * Infinite world
 
 *Bugs will now be listed on docs/Bugs.md*
 
-# Dev4.0: Gameplay Update 1.0
+# Dev4.0: Gameplay Update 1.0-a
 * Placing blocks
 * Removing blocks
 * Player camera
 * Sprint
 
-# Dev3.2: Graphics Update 1.1
+# Dev3.2: Graphics Update 1.1-a
 * Textures rework
   * New grass texture
   * Block sides
@@ -20,7 +23,7 @@
 *Bugs Solved*
 * 0x5
 
-# Dev3.1: Graphics Update 1.0a
+# Dev3.1: Graphics Update 1.0-b
 * Keybindigs
 * Mipmaps
 * CMake
@@ -34,7 +37,7 @@ The windows port needs:
 *Known Bugs*
 * 0x6: Mipmap fails at cube borders
 
-## Dev3.0: Graphics Update 1.0
+## Dev3.0: Graphics Update 1.0-a
 * Config file
 * Textures
   * Grass, Dirt, Water, Lava, Stone and Sand
@@ -46,15 +49,15 @@ The windows port needs:
 *Known Bugs*
 * 0x5: Textures seem badly placed
 
-## Dev2.4: World Gen Update 1.2
+## Dev2.4: World Gen Update 1.2-a
 * Caves
   * Lava
 * x6 faster chunk rendering
 
-## Dev2.3: World Gen Update 1.1a
+## Dev2.3: World Gen Update 1.1-b
 * Sand
 
-## Dev2.2: World Gen Update 1.1
+## Dev2.2: World Gen Update 1.1-a
 * Better world generation
   * Dirt
   * Stone
@@ -63,7 +66,7 @@ The windows port needs:
 *Bugs Solved*
 * 0x1, the firts bug
   
-## Dev2.1: World Gen Update 1.0a
+## Dev2.1: World Gen Update 1.0-b
 * Crosshair
 * Multithread chunk generation (temporal)
 * Chunk customization (biomes?)
@@ -75,7 +78,7 @@ The windows port needs:
 *Known Bugs*
 * 0x4: Crosshair cant be seen in the sky
 
-## Dev2.0: World Gen Update 1.0
+## Dev2.0: World Gen Update 1.0-a
 * New render engine, over x1000 performance increase!
 * Brown dirt
 * Better world gen

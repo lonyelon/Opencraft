@@ -11,6 +11,7 @@ Cube::Cube( Chunk *c, int xpos, int ypos, int zpos ) {
     Cube::z = zpos;
     Cube::type = CubeType::air;
     Cube::chunk = c;
+    this->sides = 1;
 }
 
 Cube::Cube(  ) {
@@ -19,6 +20,7 @@ Cube::Cube(  ) {
     Cube::z = 0;
     Cube::type = CubeType::air;
     Cube::chunk = NULL;
+    this->sides = 1;
 }
 
 void Cube::setPosition( int x, int y, int z ) {
@@ -150,6 +152,13 @@ void Cube::getVertex(std::vector<float> *v, std::vector<int> *i, int n) {
 	};
 
     for ( int k = 0; k < 6*2*3*3; k += 3 ) {
+        if ( k >= 0*3 && k < 6*3 && this->sides % 11 != 0 ) continue;
+        if ( k >= 6*3 && k < 12*3 && this->sides % 2 != 0 ) continue;
+        if ( k >= 12*3 && k < 18*3 && this->sides % 5 != 0 ) continue;
+        if ( k >= 18*3 && k < 24*3 && this->sides % 7 != 0 ) continue;
+        if ( k >= 24*3 && k < 30*3 && this->sides % 3 != 0 ) continue;
+        if ( k >= 30*3 && k < 36*3 && this->sides % 13 != 0 ) continue;
+
         v->push_back( vertices[k + 0] + this->x );
         v->push_back( vertices[k + 1] + this->y );
         v->push_back( vertices[k + 2] + this->z );
@@ -186,7 +195,18 @@ void Cube::getVertex(std::vector<float> *v, std::vector<int> *i, int n) {
     }
 
     for ( int k = 0; k < 6*6; k++ ) {
-        i->push_back( k + 36*n );
+        if ( k >= 0 && k < 6 && this->sides % 11 != 0 ) continue;
+        if ( k >= 6 && k < 12 && this->sides % 2 != 0 ) continue;
+        if ( k >= 12 && k < 18 && this->sides % 5 != 0 ) continue;
+        if ( k >= 18 && k < 24 && this->sides % 7 != 0 ) continue;
+        if ( k >= 24 && k < 30 && this->sides % 3 != 0 ) continue;
+        if ( k >= 30 && k < 36 && this->sides % 13 != 0 ) continue;
+
+        if (i->size() != 0) {
+            i->push_back( (*i)[i->size() - 1] + 1 );
+        } else {
+            i->push_back( 0 );
+        }
     }
 }
 

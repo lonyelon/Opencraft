@@ -25,7 +25,7 @@ public:
     void genTerrain();
     Cube *getCube(int x, int y, int z);
     std::vector<Cube*> getCubes();
-    bool isIllated(int x, int y, int z);
+    int isIllated(int x, int y, int z);
     void genVao();
     void getVisibleCubes();
 

@@ -33,25 +33,25 @@ void Player::move(float mx, float my, float mz) {
     if ( c != NULL && !isTransparent(c) && my < 0 ) { 
         my = 0; 
         this->vspd = 0;
-        this->cam->setPos(this->cam->getX(), c->getY() + 0.5 + bot, this->cam->getZ());
+        //this->cam->setPos(this->cam->getX(), c->getY() + 0.5 + bot, this->cam->getZ());
     }
     c = this->world->getCube( this->cam->getX() + right, this->cam->getY() - bot + my, this->cam->getZ() - back );
     if ( c != NULL && !isTransparent(c) && my < 0 ) { 
         my = 0; 
         this->vspd = 0;
-        this->cam->setPos(this->cam->getX(), c->getY() + 0.5 + bot, this->cam->getZ());
+        //this->cam->setPos(this->cam->getX(), c->getY() + 0.5 + bot, this->cam->getZ());
     }
     c = this->world->getCube( this->cam->getX() - left, this->cam->getY() - bot + my, this->cam->getZ() + front );
     if ( c != NULL && !isTransparent(c) && my < 0 ) { 
         my = 0; 
         this->vspd = 0;
-        this->cam->setPos(this->cam->getX(), c->getY() + 0.5 + bot, this->cam->getZ());
+        //this->cam->setPos(this->cam->getX(), c->getY() + 0.5 + bot, this->cam->getZ());
     }
     c = this->world->getCube( this->cam->getX() - left, this->cam->getY() - bot + my, this->cam->getZ() - back );
     if ( c != NULL && !isTransparent(c) && my < 0 ) { 
         my = 0; 
         this->vspd = 0;
-        this->cam->setPos(this->cam->getX(), c->getY() + 0.5 + bot, this->cam->getZ());
+        //this->cam->setPos(this->cam->getX(), c->getY() + 0.5 + bot, this->cam->getZ());
     }
 
     //? Positive Y

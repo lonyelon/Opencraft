@@ -25,6 +25,7 @@ public:
     CubeType getType();
 
     void setSides(int s) { this->sides = s; };
+    int getSides() { return this->sides; };
 
     void getVertex( std::vector<float> *v, std::vector<int> *i, int n );
 

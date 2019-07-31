@@ -18,14 +18,20 @@ void World::setSize( const int size ) {
     this->size = size;
 }
 
-void World::genChunkAt(int x, int y, int z) {
+void World::genChunkAt(bool draw, int x, int y, int z) {
+    if (this->getChunk(x, y, z) != NULL) {
+        return;
+    }
+
     Chunk *c = new Chunk(this, x, y, z);
     this->chunks.push_back(c);
     c->genTerrain();
     this->chunkCount++;
-    c->getVisibleCubes();
-    
-    this->addChunkToQueue(c);
+
+    if (draw) {
+        c->getVisibleCubes();
+        this->addChunkToQueue(c);
+    }
 }
 
 void World::addChunkToQueue(Chunk *c) {
@@ -64,7 +70,11 @@ void worldUpdate( World *world, Player *player ) {
             for (int x = -radius; x < radius; x++ ) {
                 for (int z = -radius; z < radius; z++ ) {
                     if (world->getChunk(ck->getX()+x, ck->getY(), ck->getZ()+z) == NULL) {
-                        world->genChunkAt(ck->getX()+x, ck->getY(), ck->getZ()+z);
+                        world->genChunkAt(true, ck->getX()+x, ck->getY(), ck->getZ()+z);
+                    } else if (world->getChunk(ck->getX()+x, ck->getY(), ck->getZ()+z)->getVao() == 0) {
+                        Chunk *chunk = world->getChunk(ck->getX()+x, ck->getY(), ck->getZ()+z);
+                        chunk->getVisibleCubes();
+                        world->addChunkToQueue(chunk);
                     }
                 }
             }
@@ -85,7 +95,7 @@ void worldUpdate( World *world, Player *player ) {
 }
 
 void World::deleteChunk(Chunk *c) {
-    for (int i = 0; i < this->chunks.size(); i++) {
+    for (int i = 0; i < this->chunkCount; i++) {
         if (this->chunks[i]->getX() == c->getX()
             && this->chunks[i]->getY() == c->getY()
             && this->chunks[i]->getZ() == c->getZ() ) {
@@ -101,7 +111,7 @@ void World::genChunks(  ) {
     printf("Reserving memory for the world...\n");
     this->updateWorld = false;
     if (this->genThread != NULL) this->genThread->join();
-    for (int i = 0; i < this->chunks.size(); i++) {
+    for (int i = 0; i < this->chunkCount; i++) {
 		delete(this->chunks[i]);
 	}
 	this->chunks.clear();
@@ -131,9 +141,9 @@ void World::genChunks(  ) {
 	for (int i = 0; i < threadCount; i++) {
 		t[i].join();
     }*/
-
-    for (int i = 0; i < this->chunkCount; i++) {
-        printf("%d/%d\n", i, this->chunkCount);
+    int count = this->chunkCount;
+    for (int i = 0; i < count; i++) {
+        printf("%d/%d\n", i, count);
         this->chunks[i]->getVisibleCubes();
         this->chunks[i]->genVao();
     }
@@ -167,8 +177,8 @@ int sign( int x ) {
 Cube *World::getCube( int x, int y, int z ) {
     Chunk *c = NULL;
 
-    int chunkX = x/16;
-    int chunkZ = z/16;
+    int chunkX = floor((float)x/16);
+    int chunkZ = floor((float)z/16);
 
     if ( x < 0 ) {
         chunkX = -((-x-1)/16 + 1);
@@ -179,7 +189,7 @@ Cube *World::getCube( int x, int y, int z ) {
     }
 
 
-    for ( int i = 0; i < this->chunks.size(); i++ ) {
+    for ( int i = 0; i < this->chunkCount; i++ ) {
         if ( this->chunks[i]->getX() == chunkX && this->chunks[i]->getZ() == chunkZ ) {
             c = this->chunks[i];
             break;
@@ -190,7 +200,7 @@ Cube *World::getCube( int x, int y, int z ) {
         return NULL;
     }
 
-    if ( y >= 256 || y <= 0  ) {
+    if ( y >= 256 || y < 0  ) {
         return NULL;
     }
 
@@ -220,9 +230,7 @@ Cube *World::getCube( Chunk *k, int x, int y, int z ) {
         return cube;
     }
 
-    for ( int i = 0; i < this->chunks.size(); i++ ) {
-        if ( k==NULL )
-            printf("getcube %d\n", i);
+    for ( int i = 0; i < this->chunkCount; i++ ) {
         if ( this->chunks[i]->getX() == chunkX && this->chunks[i]->getZ() == chunkZ ) {
             c = this->chunks[i];
             break;
@@ -250,7 +258,7 @@ int World::getSeed(  ) {
 }
 
 int World::getChunkCount(  ) {
-    return this->chunks.size();
+    return this->chunkCount;
 }
 
 std::vector<Chunk*> World::getChunks() {

@@ -3,6 +3,8 @@
 
 #include <cstdio>
 
+extern int pint;
+
 Player::Player( World *world ) {
     this->cam = new Camera(this);
     this->cam->setPos( 0, 100, 0 );
@@ -230,9 +232,13 @@ void Player::placeCube() {
         return;
     }
 
+    pint = 1;
     c0->setType(CubeType::stone);
     c0->getChunk()->getVisibleCubes();
+    printf("Chunk[%d, %d, %d]\tBlock[%d, %d, %d]\n", 
+        c0->getChunk()->getX(), c0->getChunk()->getY(), c0->getChunk()->getZ(), c0->getX(), c0->getY(), c0->getZ());
     c0->getChunk()->genVao();
+    pint = 0;
 }
 
 Camera *Player::getCam() {
@@ -262,4 +268,8 @@ void Player::gravity(float ammount) {
 void Player::jump() {
     if (this->vspd == 0)
         this->vspd = 2;
+    Cube *c = this->world->getCube(-80, 127, 54);
+    if (c != NULL) {
+        printf("%d\n", isTransparent(c));
+    }
 }

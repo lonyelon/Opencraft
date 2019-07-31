@@ -9,12 +9,15 @@
 #include <vector>
 
 extern GLuint shaderProgram;
+extern int pint;
 
 Chunk::Chunk ( World *w, int xpos, int ypos, int zpos ) {
     this->world = w;
     this->x = xpos;
     this->y = ypos;
     this->z = zpos;
+
+    this->generated = false;
     
     this->cubes = std::vector<Cube*>(this->W*this->H*this->Z);
     this->VAO = 0;
@@ -29,6 +32,11 @@ void Chunk::genTerrain() {
     const int heightIncrease = 60;
 
     const int waterHeight = 64+heightIncrease;
+
+    if ( this->generated == true ) {
+        return;
+    }
+    this->generated = true;
 
     noise::module::Perlin p;
 
@@ -137,7 +145,7 @@ void Chunk::genTerrain() {
     }
 }
 
-Cube *Chunk::getCube(int x, int y, int z) {
+Cube *Chunk::getCube(unsigned int x, int y, int z) {
     if ( x + y*this->W + z*this->W*this->H > this->W*this->H*this->Z ) {
         return NULL;
     }
@@ -197,6 +205,11 @@ void Chunk::getVisibleCubes() {
     if (this->renderedCubes.size() != 0) {
         this->renderedCubes.clear();
     }
+
+    this->world->genChunkAt(false, this->x + 1, this->y, this->z);
+    this->world->genChunkAt(false, this->x - 1, this->y, this->z);
+    this->world->genChunkAt(false, this->x, this->y, this->z + 1);
+    this->world->genChunkAt(false, this->x, this->y, this->z - 1);
     
     for ( int i = 0; i < this->W*this->H*this->Z; i++ ) {
         if ( this->cubes[i]->getType(  ) != CubeType::air ) {

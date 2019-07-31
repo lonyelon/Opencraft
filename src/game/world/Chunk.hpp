@@ -15,6 +15,7 @@ private:
     unsigned int VAO;
     std::vector<Cube*> cubes;
     std::vector<Cube*> renderedCubes;
+    bool generated;
     World *world;
 
 public:
@@ -23,7 +24,7 @@ public:
     Chunk ( World *w, int posX, int posY, int posZ );
     
     void genTerrain();
-    Cube *getCube(int x, int y, int z);
+    Cube *getCube(unsigned int x, int y, int z);
     std::vector<Cube*> getCubes();
     int isIllated(int x, int y, int z);
     void genVao();
@@ -34,6 +35,7 @@ public:
     int getX() { return this->x; };
     int getY() { return this->y; };
     int getZ() { return this->z; };
+    int getVao() { return this->VAO; };
 
     void draw();
 

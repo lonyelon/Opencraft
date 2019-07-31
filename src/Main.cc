@@ -7,12 +7,16 @@
 #include "engine/config/ConfigLoader.hpp"
 #include "game/world/Sphere.h"
 #include "game/Player.hpp"
+#include "engine/model/ModelLoader.hpp"
 
 #include <string>
 #include <boost/thread.hpp>
 
+int pint = 0;
+
 World *world;
 Player *p;
+Model *cubeModel;
 int useMipmap = 1;
 float renderDistance;
 
@@ -33,11 +37,11 @@ void openGlInit() {
 	glClearColor(0.2f, 0.2f, 1.0f, 1.0f); 
 
 	glEnable( GL_DEPTH_TEST ); 
-	glEnable( GL_CULL_FACE );
+	//glEnable( GL_CULL_FACE );
 	glEnable( GL_TEXTURE_2D );
 	glEnable( GL_ALPHA );
 
-	glCullFace(GL_BACK);
+	//glCullFace(GL_BACK);
 }
 
 void windowResize(GLFWwindow *window, int width, int height) {
@@ -50,6 +54,13 @@ int main() {
 	p = new Player( world );
 	ConfigLoader cf = ConfigLoader( "./bin/game.conf" );
 	k = KeyHandler();
+	
+	ModelLoader *md = new ModelLoader();
+
+	cubeModel = md->loadModel( "Cube.model" );
+	if (cubeModel == NULL ){
+		printf("Error loading model.\n");
+	}
 
 	float fov = cf.getFloat( "render.fov" );
 	renderDistance = cf.getFloat( "render.distance" );

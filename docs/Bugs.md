@@ -2,6 +2,7 @@
 - (Dev3.1_0) Mimmap fails at cube borders.
 - (Dev4.0_2) Chunk transparency when breaking blocks at chunk border.
 - (Dev5.0_0) Transparent blocks at chunk border when rendering new chunks. Related to (Dev4.0_2).
+- (Dev5.0_1) Weird error with skybox.
 
 ## Gameplay
 - (Dev4.0_0) Player gets stuck when jumping with a block on top.

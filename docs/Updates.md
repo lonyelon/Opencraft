@@ -2,6 +2,7 @@
 
 # Dev5.1: Graphics Update 1.2-a
 * Better renderer, at least x2 performance.
+* Model loader.
 
 # Dev5.0 World Gen Update 2.0-a
 * Infinite world

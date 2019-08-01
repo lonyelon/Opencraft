@@ -7,3 +7,4 @@
 ## Gameplay
 - (Dev4.0_0) Player gets stuck when jumping with a block on top.
 - (Dev4.0_1) Blocks can be placed on top of the player.
+- (Dev4.0_2) Player can go through blocks in specific situations.

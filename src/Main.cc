@@ -136,7 +136,7 @@ int main() {
 		glm::mat4 projection; // Se calcula
 		
 		view = p->getCam()->getViewMatrix();
-		projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH/(float)SCR_HEIGHT, 0.1f, renderDistance);
+		projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH/(float)SCR_HEIGHT, 0.1f, renderDistance*1.1f );
 
 		unsigned int viewLoc = glGetUniformLocation(shaderProgram, "view");
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));

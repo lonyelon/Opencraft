@@ -214,6 +214,28 @@ void Player::breakCube() {
     c->setType(CubeType::air);
     c->getChunk()->getVisibleCubes();
     c->getChunk()->genVao();
+
+    Chunk *c0 = c->getChunk();
+
+    if ( c->getX() % 16 == 15 || c->getX() % 16 == -1 ) {
+        this->world->getChunk( c0->getX() + 1, c0->getY(),c0->getZ() )->getVisibleCubes();
+        this->world->getChunk( c0->getX() + 1, c0->getY(),c0->getZ() )->genVao();
+    }
+
+    if ( c->getZ() % 16 == 15 || c->getZ() % 16 == -1 ) {
+        this->world->getChunk( c0->getX(), c0->getY(),c0->getZ() + 1 )->getVisibleCubes();
+        this->world->getChunk( c0->getX(), c0->getY(),c0->getZ() + 1 )->genVao();
+    }
+
+    if ( c->getX() % 16 == 0 ) {
+        this->world->getChunk( c0->getX() - 1, c0->getY(),c0->getZ() )->getVisibleCubes();
+        this->world->getChunk( c0->getX() - 1, c0->getY(),c0->getZ() )->genVao();
+    }
+
+    if ( c->getZ() % 16 == 0 ) {
+        this->world->getChunk( c0->getX(), c0->getY(),c0->getZ() - 1 )->getVisibleCubes();
+        this->world->getChunk( c0->getX(), c0->getY(),c0->getZ() - 1 )->genVao();
+    }
 }
 
 void Player::placeCube() {
@@ -236,6 +258,8 @@ void Player::placeCube() {
     c0->setType(CubeType::stone);
     c0->getChunk()->getVisibleCubes();
     c0->getChunk()->genVao();
+    printf("%d %d %d // %d %d %d\n", c0->getX(), c0->getY(), c0->getZ(), c0->getChunk()->getX(), c0->getChunk()->getY(), c0->getChunk()->getZ() );
+
     pint = 0;
 }
 

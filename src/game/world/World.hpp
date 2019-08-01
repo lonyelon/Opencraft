@@ -25,7 +25,7 @@ public:
     World(  );
 
     void genChunks(  );
-    void genChunkAt(int x, int y, int z);
+    void genChunkAt(bool draw, int x, int y, int z);
     void setSize(const int size );
     Cube *getCube( int x, int y, int z );
     Cube *getCube( float x, float y, float z ) { return this->getCube((int)round(x), (int)round(y), (int)round(z)); };

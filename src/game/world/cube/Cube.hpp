@@ -14,6 +14,7 @@ private:
     Chunk *chunk;
     CubeType type;
     int x, y, z;
+    int sides;
 
 public:
     Cube (); 
@@ -22,6 +23,9 @@ public:
     void setPosition( int x, int y, int z );
     void setType( CubeType t );
     CubeType getType();
+
+    void setSides(int s) { this->sides = s; };
+    int getSides() { return this->sides; };
 
     void getVertex( std::vector<float> *v, std::vector<int> *i, int n );
 

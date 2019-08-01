@@ -3,7 +3,11 @@
 #include <cstdio>
 #include <cstdlib>
 
+#include "../../../engine/model/Model.hpp"
+
 extern GLuint shaderProgram;
+extern Model *cubeModel;
+extern Model *grassModel;
 
 Cube::Cube( Chunk *c, int xpos, int ypos, int zpos ) {
     Cube::x = xpos;
@@ -11,6 +15,7 @@ Cube::Cube( Chunk *c, int xpos, int ypos, int zpos ) {
     Cube::z = zpos;
     Cube::type = CubeType::air;
     Cube::chunk = c;
+    this->sides = 1;
 }
 
 Cube::Cube(  ) {
@@ -19,6 +24,7 @@ Cube::Cube(  ) {
     Cube::z = 0;
     Cube::type = CubeType::air;
     Cube::chunk = NULL;
+    this->sides = 1;
 }
 
 void Cube::setPosition( int x, int y, int z ) {
@@ -38,124 +44,33 @@ CubeType Cube::getType() {
 void Cube::getVertex(std::vector<float> *v, std::vector<int> *i, int n) {
     const int texFileSize = 256/32;
 
-/*
-      5--6
-    0--1 -
-    - 4--7
-    2--3
+    std::vector<float> vertex;
+    std::vector<int> textureCoords;
 
-*/
+    if (this->type != CubeType::grass) {
+        vertex = cubeModel->getVertex();
+        textureCoords = cubeModel->getTextureCoords();
+    } else {
+        vertex = grassModel->getVertex();
+        textureCoords = grassModel->getTextureCoords();
+    }
 
-    float vertices[  ] = {
-        // Front
-        -0.5f, -0.5f, 0.5f, // 2
-		0.5f, -0.5f, 0.5f, // 3
-		0.5f, 0.5f, 0.5f, // 1
-        -0.5f, -0.5f, 0.5f, // 2
-        0.5f, 0.5f, 0.5f, // 1
-		-0.5f, 0.5f, 0.5f, // 0
+    for ( int k = 0; k < vertex.size(); k += 3 ) {
+        if ( this->type != CubeType::grass ) {
+            if ( k >= 0*3 && k < 6*3 && this->sides % 11 != 0 ) continue;
+            if ( k >= 6*3 && k < 12*3 && this->sides % 2 != 0 ) continue;
+            if ( k >= 12*3 && k < 18*3 && this->sides % 5 != 0 ) continue;
+            if ( k >= 18*3 && k < 24*3 && this->sides % 7 != 0 ) continue;
+            if ( k >= 24*3 && k < 30*3 && this->sides % 3 != 0 ) continue;
+            if ( k >= 30*3 && k < 36*3 && this->sides % 13 != 0 ) continue;
+        }
 
-        // Top
-        -0.5f, 0.5f, 0.5f, // 0
-        0.5f, 0.5f, 0.5f, // 1
-        -0.5f, 0.5f, -0.5f, // 5
-        -0.5f, 0.5f, -0.5f, // 5
-        0.5f, 0.5f, 0.5f, // 1
-        0.5f, 0.5f, -0.5f, // 6
+        v->push_back( vertex[k + 0] + this->x );
+        v->push_back( vertex[k + 1] + this->y );
+        v->push_back( vertex[k + 2] + this->z );
 
-        // Left
-        0.5f, -0.5f, 0.5f, // 3
-        0.5f, 0.5f, -0.5f, // 6
-        0.5f, 0.5f, 0.5f, // 1
-        0.5f, -0.5f, 0.5f, // 3
-        0.5f, -0.5f, -0.5f, // 7
-        0.5f, 0.5f, -0.5f, // 6
-
-        // Right
-        -0.5f, -0.5f, 0.5f, // 2
-        -0.5f, 0.5f, 0.5f, // 0
-		-0.5f, 0.5f, -0.5f, // 5
-        -0.5f, -0.5f, 0.5f, // 2
-        -0.5f, 0.5f, -0.5f, // 5
-        -0.5f, -0.5f, -0.5f, // 4
-
-        // Bot
-        0.5f, -0.5f, 0.5f, // 3
-        -0.5f, -0.5f, 0.5f, // 2
-        -0.5f, -0.5f, -0.5f, // 4
-        0.5f, -0.5f, 0.5f, // 3
-        -0.5f, -0.5f, -0.5f, // 4
-        0.5f, -0.5f, -0.5f, // 7
-
-        // Back
-        0.5f, 0.5f, -0.5f, // 6
-		0.5f, -0.5f, -0.5f, // 7
-		-0.5f, -0.5f, -0.5f, // 4
-        -0.5f, 0.5f, -0.5f, // 5
-        0.5f, 0.5f, -0.5f, // 6
-        -0.5f, -0.5f, -0.5f, // 4
-	};
-
-    unsigned int indices[] = {
-		0, 1, 2, 0, 2, 3, 
-		3, 2, 4, 4, 2, 5,
-		1, 5, 2, 1, 6, 5,
-		0, 3, 4, 0, 4, 7,
-		1, 0, 7, 1, 7, 6,
-		5, 6, 7, 4, 5, 7,
-	};
-
-    float texCoords[] = {
-		1, 1,
-        2, 1,
-        2, 0,
-        1, 1,
-        2, 0,
-        1, 0,
-
-        0, 1,
-        1, 1,
-        0, 0,
-        0, 0,
-        1, 1,
-        1, 0,
-
-        3, 1,
-        2, 0,
-        3, 0,
-        3, 1,
-        2, 1,
-        2, 0,
-
-        4, 1,
-        4, 0,
-        3, 0,
-        4, 1,
-        3, 0,
-        3, 1,
-
-        5, 1,
-        6, 1,
-        6, 0,
-        5, 1,
-        6, 0,
-        5, 0,
-
-        5, 0,
-        5, 1,
-        4, 1,
-        4, 0,
-        5, 0,
-        4, 1,
-	};
-
-    for ( int k = 0; k < 6*2*3*3; k += 3 ) {
-        v->push_back( vertices[k + 0] + this->x );
-        v->push_back( vertices[k + 1] + this->y );
-        v->push_back( vertices[k + 2] + this->z );
-
-        float texCoordX = texCoords[ 2*(k/3) ];
-        float texCoordY = texCoords[ 2*(k/3) + 1 ];
+        float texCoordX = textureCoords[ 2*(k/3) ];
+        float texCoordY = textureCoords[ 2*(k/3) + 1 ];
 
         switch ( this->type ) {
             case CubeType::grassyDirt:
@@ -182,26 +97,31 @@ void Cube::getVertex(std::vector<float> *v, std::vector<int> *i, int n) {
                 v->push_back( texCoordX/(float)texFileSize );
                 v->push_back( texCoordY/(float)texFileSize + 5/(float)texFileSize );
                 break;
+            case CubeType::grass:
+                v->push_back( texCoordX/(float)texFileSize );
+                v->push_back( texCoordY/(float)texFileSize + 0/(float)texFileSize );
+                break;
         }
     }
 
-    for ( int k = 0; k < 6*6; k++ ) {
-        i->push_back( k + 36*n );
+    for ( int k = 0; k < vertex.size()/3; k++ ) {
+        if ( this->type != CubeType::grass ) {
+            if ( k >= 0 && k < 6 && this->sides % 11 != 0 ) continue;
+            if ( k >= 6 && k < 12 && this->sides % 2 != 0 ) continue;
+            if ( k >= 12 && k < 18 && this->sides % 5 != 0 ) continue;
+            if ( k >= 18 && k < 24 && this->sides % 7 != 0 ) continue;
+            if ( k >= 24 && k < 30 && this->sides % 3 != 0 ) continue;
+            if ( k >= 30 && k < 36 && this->sides % 13 != 0 ) continue;
+        }
+
+        if (i->size() != 0) {
+            i->push_back( (*i)[i->size() - 1] + 1 );
+        } else {
+            i->push_back( 0 );
+        }
     }
 }
 
 Cube::~Cube() {
     
 }
-
-/*
-    0   0 
-    3   2 
-    6   4 
-    9   6 
-    12  8 
-    15  10
-    18  12
-    21  14
-    24  12
-*/

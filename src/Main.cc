@@ -7,12 +7,16 @@
 #include "engine/config/ConfigLoader.hpp"
 #include "game/world/Sphere.h"
 #include "game/Player.hpp"
+#include "engine/model/ModelLoader.hpp"
 
 #include <string>
 #include <boost/thread.hpp>
 
+int pint = 0;
+
 World *world;
 Player *p;
+Model *cubeModel, *grassModel;
 int useMipmap = 1;
 float renderDistance;
 
@@ -50,6 +54,14 @@ int main() {
 	p = new Player( world );
 	ConfigLoader cf = ConfigLoader( "./bin/game.conf" );
 	k = KeyHandler();
+	
+	ModelLoader *md = new ModelLoader();
+
+	cubeModel = md->loadModel( "Cube.model" );
+	grassModel = md->loadModel( "Grass.model" );
+	if (cubeModel == NULL || grassModel == NULL ){
+		printf("Error loading model.\n");
+	}
 
 	float fov = cf.getFloat( "render.fov" );
 	renderDistance = cf.getFloat( "render.distance" );
@@ -104,7 +116,7 @@ int main() {
 	world->genChunks();
 	printf("World generation completed\n");
 
-	p->getCam()->setPos(0, 180, 0);
+	p->getCam()->setPos(0, 190, 0);
 	p->getCam()->setRotation( glm::half_pi<float>() , glm::half_pi<float>()/3 );
 
 	unsigned int windowSizeLoc = glGetUniformLocation(shaderProgram, "windowSize");
@@ -124,7 +136,7 @@ int main() {
 		glm::mat4 projection; // Se calcula
 		
 		view = p->getCam()->getViewMatrix();
-		projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH/(float)SCR_HEIGHT, 0.1f, renderDistance);
+		projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH/(float)SCR_HEIGHT, 0.1f, renderDistance*1.1f );
 
 		unsigned int viewLoc = glGetUniformLocation(shaderProgram, "view");
 		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
@@ -158,8 +170,6 @@ int main() {
 		
 		glfwSwapBuffers(window);
 		glfwPollEvents();
-
-		printf("Cubes drawn: %d\n", world->getCubesDrawn());
 	}
 	
 	glfwTerminate();

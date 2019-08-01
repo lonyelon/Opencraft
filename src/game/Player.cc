@@ -3,6 +3,8 @@
 
 #include <cstdio>
 
+extern int pint;
+
 Player::Player( World *world ) {
     this->cam = new Camera(this);
     this->cam->setPos( 0, 100, 0 );
@@ -33,25 +35,25 @@ void Player::move(float mx, float my, float mz) {
     if ( c != NULL && !isTransparent(c) && my < 0 ) { 
         my = 0; 
         this->vspd = 0;
-        this->cam->setPos(this->cam->getX(), c->getY() + 0.5 + bot, this->cam->getZ());
+        //this->cam->setPos(this->cam->getX(), c->getY() + 0.5 + bot, this->cam->getZ());
     }
     c = this->world->getCube( this->cam->getX() + right, this->cam->getY() - bot + my, this->cam->getZ() - back );
     if ( c != NULL && !isTransparent(c) && my < 0 ) { 
         my = 0; 
         this->vspd = 0;
-        this->cam->setPos(this->cam->getX(), c->getY() + 0.5 + bot, this->cam->getZ());
+        //this->cam->setPos(this->cam->getX(), c->getY() + 0.5 + bot, this->cam->getZ());
     }
     c = this->world->getCube( this->cam->getX() - left, this->cam->getY() - bot + my, this->cam->getZ() + front );
     if ( c != NULL && !isTransparent(c) && my < 0 ) { 
         my = 0; 
         this->vspd = 0;
-        this->cam->setPos(this->cam->getX(), c->getY() + 0.5 + bot, this->cam->getZ());
+        //this->cam->setPos(this->cam->getX(), c->getY() + 0.5 + bot, this->cam->getZ());
     }
     c = this->world->getCube( this->cam->getX() - left, this->cam->getY() - bot + my, this->cam->getZ() - back );
     if ( c != NULL && !isTransparent(c) && my < 0 ) { 
         my = 0; 
         this->vspd = 0;
-        this->cam->setPos(this->cam->getX(), c->getY() + 0.5 + bot, this->cam->getZ());
+        //this->cam->setPos(this->cam->getX(), c->getY() + 0.5 + bot, this->cam->getZ());
     }
 
     //? Positive Y
@@ -212,6 +214,28 @@ void Player::breakCube() {
     c->setType(CubeType::air);
     c->getChunk()->getVisibleCubes();
     c->getChunk()->genVao();
+
+    Chunk *c0 = c->getChunk();
+
+    if ( c->getX() % 16 == 15 || c->getX() % 16 == -1 ) {
+        this->world->getChunk( c0->getX() + 1, c0->getY(),c0->getZ() )->getVisibleCubes();
+        this->world->getChunk( c0->getX() + 1, c0->getY(),c0->getZ() )->genVao();
+    }
+
+    if ( c->getZ() % 16 == 15 || c->getZ() % 16 == -1 ) {
+        this->world->getChunk( c0->getX(), c0->getY(),c0->getZ() + 1 )->getVisibleCubes();
+        this->world->getChunk( c0->getX(), c0->getY(),c0->getZ() + 1 )->genVao();
+    }
+
+    if ( c->getX() % 16 == 0 ) {
+        this->world->getChunk( c0->getX() - 1, c0->getY(),c0->getZ() )->getVisibleCubes();
+        this->world->getChunk( c0->getX() - 1, c0->getY(),c0->getZ() )->genVao();
+    }
+
+    if ( c->getZ() % 16 == 0 ) {
+        this->world->getChunk( c0->getX(), c0->getY(),c0->getZ() - 1 )->getVisibleCubes();
+        this->world->getChunk( c0->getX(), c0->getY(),c0->getZ() - 1 )->genVao();
+    }
 }
 
 void Player::placeCube() {
@@ -230,9 +254,13 @@ void Player::placeCube() {
         return;
     }
 
+    pint = 1;
     c0->setType(CubeType::stone);
     c0->getChunk()->getVisibleCubes();
     c0->getChunk()->genVao();
+    printf("%d %d %d // %d %d %d\n", c0->getX(), c0->getY(), c0->getZ(), c0->getChunk()->getX(), c0->getChunk()->getY(), c0->getChunk()->getZ() );
+
+    pint = 0;
 }
 
 Camera *Player::getCam() {

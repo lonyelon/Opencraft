@@ -180,21 +180,7 @@ Cube *World::getCube( int x, int y, int z ) {
     int chunkX = floor((float)x/16);
     int chunkZ = floor((float)z/16);
 
-    if ( x < 0 ) {
-        chunkX = -((-x-1)/16 + 1);
-    }
-
-    if ( z < 0 ) {
-        chunkZ = -((-z-1)/16 + 1);
-    }
-
-
-    for ( int i = 0; i < this->chunkCount; i++ ) {
-        if ( this->chunks[i]->getX() == chunkX && this->chunks[i]->getZ() == chunkZ ) {
-            c = this->chunks[i];
-            break;
-        }
-    }
+    c = this->getChunk( chunkX, 0, chunkZ );
 
     if ( c == NULL ) {
         return NULL;
@@ -210,18 +196,10 @@ Cube *World::getCube( int x, int y, int z ) {
 Cube *World::getCube( Chunk *k, int x, int y, int z ) {
     Chunk *c = NULL;
 
-    int chunkX = x/16;
-    int chunkZ = z/16;
+    int chunkX = floor((float)x/16);
+    int chunkZ = floor((float)z/16);
 
-    if ( x < 0 ) {
-        chunkX = -((-x-1)/16 + 1);
-    }
-
-    if ( z < 0 ) {
-        chunkZ = -((-z-1)/16 + 1);
-    }
-
-    if ( y >= 256 || y <= 0  ) {
+    if ( y >= 256 || y < 0  ) {
         return NULL;
     }
     
@@ -230,22 +208,7 @@ Cube *World::getCube( Chunk *k, int x, int y, int z ) {
         return cube;
     }
 
-    for ( int i = 0; i < this->chunkCount; i++ ) {
-        if ( this->chunks[i]->getX() == chunkX && this->chunks[i]->getZ() == chunkZ ) {
-            c = this->chunks[i];
-            break;
-        }
-    }
-
-    if ( c == NULL ) {
-        return NULL;
-    }
-
-    if ( c->getZ() >= this->size || c->getX() >= this->size || y >= 256 || y <= 0  ) {
-        return NULL;
-    }
-    
-    return c->getCube( x - c->getX()*16, y, z - c->getZ()*16 );
+    return this->getCube(x, y, z);
 }
 
 

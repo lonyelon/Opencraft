@@ -16,7 +16,7 @@ int pint = 0;
 
 World *world;
 Player *p;
-Model *cubeModel;
+Model *cubeModel, *grassModel;
 int useMipmap = 1;
 float renderDistance;
 
@@ -37,11 +37,11 @@ void openGlInit() {
 	glClearColor(0.2f, 0.2f, 1.0f, 1.0f); 
 
 	glEnable( GL_DEPTH_TEST ); 
-	//glEnable( GL_CULL_FACE );
+	glEnable( GL_CULL_FACE );
 	glEnable( GL_TEXTURE_2D );
 	glEnable( GL_ALPHA );
 
-	//glCullFace(GL_BACK);
+	glCullFace(GL_BACK);
 }
 
 void windowResize(GLFWwindow *window, int width, int height) {
@@ -58,7 +58,8 @@ int main() {
 	ModelLoader *md = new ModelLoader();
 
 	cubeModel = md->loadModel( "Cube.model" );
-	if (cubeModel == NULL ){
+	grassModel = md->loadModel( "Grass.model" );
+	if (cubeModel == NULL || grassModel == NULL ){
 		printf("Error loading model.\n");
 	}
 

@@ -268,8 +268,4 @@ void Player::gravity(float ammount) {
 void Player::jump() {
     if (this->vspd == 0)
         this->vspd = 2;
-    Cube *c = this->world->getCube(-80, 127, 54);
-    if (c != NULL) {
-        printf("%d\n", isTransparent(c));
-    }
 }

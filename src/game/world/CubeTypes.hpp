@@ -8,7 +8,8 @@ enum CubeType {
     water,
     air,
     sand,
-    lava
+    lava,
+    grass
 };
 
 class Cube;

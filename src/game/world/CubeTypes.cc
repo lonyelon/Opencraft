@@ -6,7 +6,8 @@ bool isTransparent(Cube *c) {
     if (
         t == CubeType::air ||
         t == CubeType::water ||
-        t == CubeType::lava
+        t == CubeType::lava ||
+        t == CubeType::grass
     ) {
         return true;
     }

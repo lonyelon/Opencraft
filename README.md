@@ -1,4 +1,4 @@
-# Minecraft
+# Opencraft
 
 
 ### Ideas for Alpha

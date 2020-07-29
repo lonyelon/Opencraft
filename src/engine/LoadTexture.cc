@@ -6,12 +6,12 @@
 #include <GL/glu.h>
 
 #define STB_IMAGE_IMPLEMENTATION
-#include <stb/stb_image.h>
+#include "stb/stb_image.h"
 
 extern int useMipmap;
 
 GLuint loadTexture( const std::string path ) {
-	// load and create a texture 
+	// load and create a texture
 	// -------------------------
 	GLuint texture;
 	glGenTextures(1, &texture);
@@ -48,12 +48,12 @@ GLuint loadTexture( const std::string path ) {
 	std::string p = "bin/textures/" + path;
 	unsigned char *data = stbi_load( p.c_str(), &width, &height, &nrChannels, 0);
 	if ( data ) {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data); 
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
         if ( useMipmap > 0 ) {
-		    gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data); //con mimap 
+		    gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, width, height, GL_RGBA, GL_UNSIGNED_BYTE, data); //con mimap
         }
-	
+
 	} else {
 		std::cout << "Failed to load texture" << std::endl;
 	}

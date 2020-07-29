@@ -1,5 +1,32 @@
 # Opencraft
 
+Opencraft is a 3D sandbox game based on Minecraft. The game is fully written on
+C++.
+
+## Build and installation
+
+To build the game you first need the following libraries:
+* GLFW
+* GLM
+* Boost libraries
+* Libnoise
+
+Next, you can clone this repository with:
+```bash
+git clone https://github.com/lonyelon/Opencraft
+```
+
+The enter the folder and compile the game:
+```bash
+cmake .
+make
+chmod +x ./minecraft
+```
+
+Lastly, run the game with:
+```
+./minecraft
+```
 
 ### Ideas for Alpha
 
@@ -15,7 +42,7 @@
   - [x] Remove blocks
   - [x] Place blocks
   - [x] Player camera
-  - [x] Floating camera 
+  - [x] Floating camera
 
 - [ ] **Graphics**
   - [ ] Textures *Work in progress*

@@ -15,9 +15,10 @@ private:
     CubeType type;
     int x, y, z;
     int sides;
+	boolean isTransparent;
 
 public:
-    Cube (); 
+    Cube ();
     Cube ( Chunk *c, int xpos, int ypos, int zpos );
 
     void setPosition( int x, int y, int z );

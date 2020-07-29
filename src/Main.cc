@@ -50,6 +50,9 @@ void windowResize(GLFWwindow *window, int width, int height) {
 }
 
 int main() {
+
+	srand(time(NULL));
+	
 	world = new World(  );
 	p = new Player( world );
 	ConfigLoader cf = ConfigLoader( "./bin/game.conf" );
@@ -77,8 +80,6 @@ int main() {
 	GLuint skyTex;
 
 	Sphere skyBox = Sphere( -renderDistance, 36, 18, true );
-
-	srand(time(NULL));
 
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);

@@ -4,16 +4,17 @@ set(CMAKE_CXX_STANDARD 17)
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 #set(CMAKE_CXX_FLAGS "-std=c++17 -lglfw -lGL -lGLU -ldl -lm -lboost_thread -lnoise -pthread")
 
-project(Minecraft)
+project(Opencraft)
 
 add_executable(
-    Minecraft
+    Opencraft
 
     ./src/Main.cc
 
     ./src/game/Player.cc
     ./src/game/Sphere.cc
     ./src/game/world/Chunk.cc
+	./src/game/world/Chunk.hpp
     ./src/game/world/CubeTypes.cc
     ./src/game/world/cube/Cube.cc
     ./src/game/world/World.cc
@@ -31,9 +32,10 @@ add_executable(
 	./src/game/world/cube/Lava.hpp
 	./src/game/world/cube/Water.hpp
 	./src/game/world/cube/Sand.hpp
+	./src/game/world/cube/Grass.hpp
 
     ./src/game/world/CubeTypes.hpp
-    ./src/game/world/Chunk.hpp
+
     ./src/game/Player.hpp
     ./src/game/Hitbox.hpp
     ./src/game/Hitbox.cc
@@ -65,4 +67,4 @@ add_executable(
     ./src/engine/model/ModelLoader.hpp
 )
 
-target_link_libraries (Minecraft glfw GL GLU dl m boost_thread pthread noise)
+target_link_libraries (Opencraft glfw GL GLU dl m boost_thread pthread noise)

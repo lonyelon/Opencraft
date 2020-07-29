@@ -7,7 +7,7 @@
 extern Player *p;
 
 World::World(  ) {
-    this->seed = 279;
+    this->seed = 2;
     this->size = 15;
     this->chunkCount = 0;
     this->genThread = NULL;
@@ -120,7 +120,7 @@ void World::genChunks(  ) {
 	const int threadCount = 8;
 
 	this->chunks = std::vector<Chunk*>(size*size, NULL);
-	
+
     printf("Generating world...\n");
 
 	boost::thread t[threadCount];
@@ -202,7 +202,7 @@ Cube *World::getCube( Chunk *k, int x, int y, int z ) {
     if ( y >= 256 || y < 0  ) {
         return NULL;
     }
-    
+
     if ( k != NULL && k->getX() == chunkX && k->getZ() == chunkZ ) {
         Cube *cube = k->getCube( x - k->getX()*16, y, z - k->getZ()*16 );
         return cube;
@@ -214,7 +214,7 @@ Cube *World::getCube( Chunk *k, int x, int y, int z ) {
 
 void World::setSeed( int seed ) {
     this->seed = seed;
-} 
+}
 
 int World::getSeed(  ) {
     return this->seed;

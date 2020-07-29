@@ -1,5 +1,8 @@
 # Updates
 
+# Dev6.0:
+* Better and cleaner code.
+
 # Dev5.1: Graphics Update 1.2-a
 * Better renderer, at least x2 performance.
 * Model loader.
@@ -28,13 +31,13 @@
 * Keybindigs
 * Mipmaps
 * CMake
-  
+
 The windows port needs:
 
 1. The DLLs for glfw
 2. _The boost thread lib._ Done
 3. _CMake_ Done
-  
+
 *Known Bugs*
 * 0x6: Mipmap fails at cube borders
 
@@ -66,7 +69,7 @@ The windows port needs:
 
 *Bugs Solved*
 * 0x1, the firts bug
-  
+
 ## Dev2.1: World Gen Update 1.0-b
 * Crosshair
 * Multithread chunk generation (temporal)
@@ -89,7 +92,7 @@ The windows port needs:
 *Known bugs*
 * 0x3: Cubes below water don't render
 
-## Dev1.1 
+## Dev1.1
 * Better performance
 * Documentation
 

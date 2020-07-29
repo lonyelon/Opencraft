@@ -30,7 +30,7 @@ void Chunk::genTerrain() {
     const float yCoordRed = 300;
     const float zCoordRed = 300;
     const float noiseFreq = 1;
-     float ystrech = 60;
+    const float ystrech = 60;
     const int heightIncrease = 60;
 
     const int waterHeight = 64+heightIncrease;
@@ -96,6 +96,10 @@ void Chunk::genTerrain() {
                             this->setCube(new Sand(), x, y, z);
                         } else if (dirtCount == 0 && y >= waterHeight-1) {
                             this->setCube(new GrassyDirt(), x, y, z);
+
+							/*if (rand() % 10 == 1) {
+								this->setCube(new Grass(), x, y+1, z);
+							}*/
                         } else {
                             this->setCube(new Dirt(), x, y, z);
                         }
@@ -127,7 +131,7 @@ void Chunk::genTerrain() {
                 float noiseZ = (float)(this->z*this->Z + z)/zCoordRed*10;
 
                 if ( (caveNoise.GetValue( noiseX, noiseY, noiseZ )*( heights[x + z*this->W] - caveDistance ) )/y < caveProb && c->getType() != CubeType::water ) {
-                    this->setCube(new Air(), z, y, z);
+                    //this->setCube(new Air(), x, y, 0);
                 }
             }
         }
@@ -157,9 +161,9 @@ Cube *Chunk::getCube(unsigned int x, int y, int z) {
 
 void Chunk::setCube(Cube *c, int x, int y, int z) {
 
-	/*if (x < this->W && y < this->H && z < this->Z) {
+	if (x >= this->W && y >= this->H && z >= this->Z) {
 		return;
-	}*/
+	}
 
 	c->setX(x + this->x*this->W);
 	c->setY(y + this->y*this->H);

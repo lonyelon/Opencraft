@@ -27,7 +27,7 @@ void processInput(GLFWwindow *window);
 unsigned int SCR_WIDTH = 1920;
 unsigned int SCR_HEIGHT = 1080;
 
-int seed = 0;
+int seed = 1000;
 
 extern GLuint setShaders(const char *nVertx, const char *nFrag);
 GLuint shaderProgram;

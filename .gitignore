@@ -6,8 +6,8 @@ Makefile
 makefile
 
 # CMake
-cmake_install.cmake 
+cmake_install.cmake
 CMakeCache.txt
 CMakeFiles
 
-Minecraft
+Opencraft

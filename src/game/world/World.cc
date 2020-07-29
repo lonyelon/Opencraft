@@ -70,6 +70,7 @@ void worldUpdate( World *world, Player *player ) {
             for (int x = -radius; x < radius; x++ ) {
                 for (int z = -radius; z < radius; z++ ) {
                     if (world->getChunk(ck->getX()+x, ck->getY(), ck->getZ()+z) == NULL) {
+						printf("Gen chunk %d %d %d\n", ck->getX()+x, ck->getY(), ck->getZ()+z);
                         world->genChunkAt(true, ck->getX()+x, ck->getY(), ck->getZ()+z);
                     } else if (world->getChunk(ck->getX()+x, ck->getY(), ck->getZ()+z)->getVao() == 0) {
                         Chunk *chunk = world->getChunk(ck->getX()+x, ck->getY(), ck->getZ()+z);

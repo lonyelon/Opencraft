@@ -8,6 +8,7 @@
 extern GLuint shaderProgram;
 extern Model *cubeModel;
 extern Model *grassModel;
+extern Model *fluidModel;
 
 Cube::Cube( Chunk *c, int xpos, int ypos, int zpos ) {
     Cube::x = xpos;
@@ -47,13 +48,19 @@ void Cube::getVertex(std::vector<float> *v, std::vector<int> *i, int n) {
     std::vector<float> vertex;
     std::vector<int> textureCoords;
 
-    if (this->type != CubeType::grass) {
-        vertex = cubeModel->getVertex();
-        textureCoords = cubeModel->getTextureCoords();
-    } else {
-        vertex = grassModel->getVertex();
-        textureCoords = grassModel->getTextureCoords();
-    }
+	switch (this->type) {
+	    case CubeType::grass:
+	        vertex = grassModel->getVertex();
+	        textureCoords = grassModel->getTextureCoords();
+			break;
+	    case CubeType::water:
+			vertex = fluidModel->getVertex();
+			textureCoords = fluidModel->getTextureCoords();
+			break;
+		default:
+			vertex = cubeModel->getVertex();
+	        textureCoords = cubeModel->getTextureCoords();
+	}
 
     for ( int k = 0; k < vertex.size(); k += 3 ) {
         if ( this->type != CubeType::grass ) {
@@ -123,5 +130,5 @@ void Cube::getVertex(std::vector<float> *v, std::vector<int> *i, int n) {
 }
 
 Cube::~Cube() {
-    
+
 }

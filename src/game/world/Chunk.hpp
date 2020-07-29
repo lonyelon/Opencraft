@@ -6,6 +6,7 @@
 //#include "World.hpp"
 #include "Chunk.hpp"
 #include "cube/Cube.hpp"
+#include "cube/Dirt.hpp"
 
 class World;
 
@@ -22,9 +23,12 @@ public:
     static const int W=16, H=256, Z=16;
 
     Chunk ( World *w, int posX, int posY, int posZ );
-    
+
     void genTerrain();
-    Cube *getCube(unsigned int x, int y, int z);
+
+	Cube *getCube(unsigned int x, int y, int z);
+	void setCube(Cube *c, int x, int y, int z);
+
     std::vector<Cube*> getCubes();
     int isIllated(int x, int y, int z);
     void genVao();

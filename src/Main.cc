@@ -16,7 +16,7 @@ int pint = 0;
 
 World *world;
 Player *p;
-Model *cubeModel, *grassModel;
+Model *cubeModel, *grassModel, *fluidModel;
 int useMipmap = 1;
 float renderDistance;
 
@@ -34,9 +34,9 @@ GLuint shaderProgram;
 
 void openGlInit() {
 	glClearDepth(1.0f);
-	glClearColor(0.2f, 0.2f, 1.0f, 1.0f); 
+	glClearColor(0.2f, 0.2f, 1.0f, 1.0f);
 
-	glEnable( GL_DEPTH_TEST ); 
+	glEnable( GL_DEPTH_TEST );
 	glEnable( GL_CULL_FACE );
 	glEnable( GL_TEXTURE_2D );
 	glEnable( GL_ALPHA );
@@ -54,11 +54,12 @@ int main() {
 	p = new Player( world );
 	ConfigLoader cf = ConfigLoader( "./bin/game.conf" );
 	k = KeyHandler();
-	
+
 	ModelLoader *md = new ModelLoader();
 
 	cubeModel = md->loadModel( "Cube.model" );
 	grassModel = md->loadModel( "Grass.model" );
+	fluidModel = md->loadModel( "Fluid.model" );
 	if (cubeModel == NULL || grassModel == NULL ){
 		printf("Error loading model.\n");
 	}
@@ -76,14 +77,14 @@ int main() {
 	GLuint skyTex;
 
 	Sphere skyBox = Sphere( -renderDistance, 36, 18, true );
-	
+
 	srand(time(NULL));
 
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-													
+
 	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Clases", NULL, NULL);
 	if (window == NULL) {
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -110,9 +111,9 @@ int main() {
 
 	shaderProgram = setShaders("./bin/shaders/shader.vert", "./bin/shaders/shader.frag");
 	glUseProgram(shaderProgram);
-	
+
 	openGlInit();
-	
+
 	world->genChunks();
 	printf("World generation completed\n");
 
@@ -134,7 +135,7 @@ int main() {
 
 		glm::mat4 view; // Se Calcula
 		glm::mat4 projection; // Se calcula
-		
+
 		view = p->getCam()->getViewMatrix();
 		projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH/(float)SCR_HEIGHT, 0.1f, renderDistance*1.1f );
 
@@ -146,7 +147,7 @@ int main() {
 
 		unsigned int selCubeLoc = glGetUniformLocation(shaderProgram, "selectedCube");
 		Cube *cs = p->getPointedCube();
-		
+
 		if (cs != NULL) {
 			glUniform3f(selCubeLoc, cs->getX(), cs->getY(), cs->getZ());
 		} else {
@@ -167,11 +168,11 @@ int main() {
 		model = glm::translate( glm::mat4(1.0f), glm::vec3( p->getCam()->getX(), p->getCam()->getY(), p->getCam()->getZ() ) );
 		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
 		skyBox.draw();
-		
+
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
-	
+
 	glfwTerminate();
 	delete(world);
 	return 0;

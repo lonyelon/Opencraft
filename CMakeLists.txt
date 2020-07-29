@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.0)
 set(CMAKE_BUILD_TYPE Debug)
-set(CMAKE_CXX_STANDARD 17) 
+set(CMAKE_CXX_STANDARD 17)
 set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 #set(CMAKE_CXX_FLAGS "-std=c++17 -lglfw -lGL -lGLU -ldl -lm -lboost_thread -lnoise -pthread")
 
@@ -18,7 +18,20 @@ add_executable(
     ./src/game/world/cube/Cube.cc
     ./src/game/world/World.cc
     ./src/game/world/World.hpp
+
+
     ./src/game/world/cube/Cube.hpp
+	./src/game/world/cube/Cubes.hpp
+	./src/game/world/cube/Cube.cc
+
+	./src/game/world/cube/Air.hpp
+	./src/game/world/cube/Dirt.hpp
+	./src/game/world/cube/GrassyDirt.hpp
+	./src/game/world/cube/Stone.hpp
+	./src/game/world/cube/Lava.hpp
+	./src/game/world/cube/Water.hpp
+	./src/game/world/cube/Sand.hpp
+
     ./src/game/world/CubeTypes.hpp
     ./src/game/world/Chunk.hpp
     ./src/game/Player.hpp
@@ -34,7 +47,7 @@ add_executable(
     ./src/engine/mouse/Camera.cc
     ./src/engine/mouse/MouseInput.cc
     ./src/engine/LoadTexture.cc
-    
+
     ./src/engine/keyboard/KeyboardInput.hpp
     ./src/engine/keyboard/KeyHandler.hpp
     ./src/engine/config/ConfigLoader.hpp

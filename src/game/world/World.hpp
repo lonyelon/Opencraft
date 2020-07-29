@@ -6,6 +6,7 @@
 #include <boost/thread.hpp>
 
 #include "Chunk.hpp"
+#include "cube/Cubes.hpp"
 
 class World {
 private:

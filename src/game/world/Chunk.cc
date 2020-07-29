@@ -1,5 +1,7 @@
 #include "Chunk.hpp"
 #include "World.hpp"
+#include "cube/Cubes.hpp"
+#include "../../engine/FixedPosition.hpp"
 
 #include <noise/noise.h>
 
@@ -18,7 +20,7 @@ Chunk::Chunk ( World *w, int xpos, int ypos, int zpos ) {
     this->z = zpos;
 
     this->generated = false;
-    
+
     this->cubes = std::vector<Cube*>(this->W*this->H*this->Z);
     this->VAO = 0;
 }
@@ -58,22 +60,22 @@ void Chunk::genTerrain() {
                 float noiseZ = (float)(this->z*this->Z + z)/zCoordRed;
 
                 int noiseValue = (int)((p.GetValue(noiseX, noiseY, noiseZ) + 1.1)*ystrech)+heightIncrease;
-                
-                this->cubes[x + y*this->W + z*this->W*this->H] = new Cube( this, this->x*this->W + x, this->H*this->y + y, this->z*this->Z + z );
 
                 if ( y < noiseValue ) {
-                    this->getCube( x, y, z )->setType( CubeType::stone );
-                }
+                    this->setCube(new Stone(), x, y, z);
+                } else {
+					this->setCube(new Air(), x, y, z);
+				}
             }
         }
     }
-    
+
     p.SetSeed( this->world->getSeed(  )*2 );
 
     for (int x = 0; x < this->W; x++) {
         for (int z = 0; z < this->Z; z++) {
             int dirtCount = 0;
-            for (int y = this->H-1; y > 0; y--) {    
+            for (int y = this->H-1; y > 0; y--) {
                 Cube *c = this->getCube( x, y, z );
 
                 float noiseX = (float)(this->x*this->W + x)/xCoordRed*10;
@@ -81,7 +83,7 @@ void Chunk::genTerrain() {
 
                 if ( c->getType() == CubeType::air ) {
                     if ( y < waterHeight ) {
-                        c->setType(CubeType::water);
+                        this->setCube(new Water(), x, y, z);
                     } else {
                         dirtCount = 0;
                     }
@@ -91,11 +93,11 @@ void Chunk::genTerrain() {
                             heights[x + z*this->W] = y;
                         }
                         if ( (p.GetValue(noiseX, 1, noiseZ)*5 + waterHeight)/y > 1) {
-                            c->setType(CubeType::sand);
+                            this->setCube(new Sand(), x, y, z);
                         } else if (dirtCount == 0 && y >= waterHeight-1) {
-                            c->setType(CubeType::grassyDirt);
+                            this->setCube(new GrassyDirt(), x, y, z);
                         } else {
-                            c->setType(CubeType::dirt);
+                            this->setCube(new Dirt(), x, y, z);
                         }
                         dirtCount++;
                     }
@@ -117,7 +119,7 @@ void Chunk::genTerrain() {
     for (int x = 0; x < this->W; x++) {
         for (int z = 0; z < this->Z; z++) {
             int dirtCount = 0;
-            for (int y = this->H-1; y > 0; y--) {    
+            for (int y = this->H-1; y > 0; y--) {
                 Cube *c = this->getCube( x, y, z );
 
                 float noiseX = (float)(this->x*this->W + x)/xCoordRed*10;
@@ -125,21 +127,21 @@ void Chunk::genTerrain() {
                 float noiseZ = (float)(this->z*this->Z + z)/zCoordRed*10;
 
                 if ( (caveNoise.GetValue( noiseX, noiseY, noiseZ )*( heights[x + z*this->W] - caveDistance ) )/y < caveProb && c->getType() != CubeType::water ) {
-                    c->setType( CubeType::air );
+                    this->setCube(new Air(), z, y, z);
                 }
             }
         }
     }
-    
+
     for (int x = 0; x < this->W; x++) {
         for (int z = 0; z < this->Z; z++) {
             int dirtCount = 0;
-            for (int y = this->H-1; y > 0; y--) {    
+            for (int y = this->H-1; y > 0; y--) {
                 Cube *c = this->getCube( x, y, z );
 
                 if ( y < 12 && c->getType() == CubeType::air ) {
-                    c->setType( CubeType::lava );
-                } 
+                    this->setCube(new Lava(), x, y, z);
+                }
             }
         }
     }
@@ -152,6 +154,28 @@ Cube *Chunk::getCube(unsigned int x, int y, int z) {
     return this->cubes[x + y*this->W + z*this->W*this->H];
     //return NULL;
 }
+
+void Chunk::setCube(Cube *c, int x, int y, int z) {
+
+	/*if (x < this->W && y < this->H && z < this->Z) {
+		return;
+	}*/
+
+	c->setX(x + this->x*this->W);
+	c->setY(y + this->y*this->H);
+	c->setZ(z + this->z*this->Z);
+
+	FixedPosition chunkPos;
+	chunkPos.x = x;
+	chunkPos.y = y;
+	chunkPos.z = z;
+	c->setChunkPos(chunkPos);
+
+	c->setChunk(this);
+
+    this->cubes[x + y*this->W + z*this->W*this->H] = c;
+}
+
 
 std::vector<Cube*> Chunk::getCubes() {
     return this->cubes;
@@ -176,7 +200,7 @@ int Chunk::isIllated(int x, int y, int z) {
     if ( c != NULL && isTransparent( c ) && k->getType() != c->getType() ) {
         n *= 3;
     }
-    
+
     c = this->world->getCube(this, x + 1,y ,z );
     if ( c != NULL && isTransparent( c ) && k->getType() != c->getType() ) {
         n *= 5;
@@ -210,7 +234,7 @@ void Chunk::getVisibleCubes() {
     this->world->genChunkAt(false, this->x - 1, this->y, this->z);
     this->world->genChunkAt(false, this->x, this->y, this->z + 1);
     this->world->genChunkAt(false, this->x, this->y, this->z - 1);
-    
+
     for ( int i = 0; i < this->W*this->H*this->Z; i++ ) {
         if ( this->cubes[i]->getType(  ) != CubeType::air ) {
             if ( this->isIllated(this->cubes[i]->getX(), this->cubes[i]->getY(), this->cubes[i]->getZ()) == 1  ) {
@@ -252,7 +276,7 @@ void Chunk::genVao() {
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER,  sizeof( float ) * i.size(), indices, GL_STATIC_DRAW);
-	
+
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
 

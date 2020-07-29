@@ -20,12 +20,12 @@ The enter the folder and compile the game:
 ```bash
 cmake .
 make
-chmod +x ./minecraft
+chmod +x ./Opencraft
 ```
 
 Lastly, run the game with:
 ```
-./minecraft
+./Opencraft
 ```
 
 ### Ideas for Alpha

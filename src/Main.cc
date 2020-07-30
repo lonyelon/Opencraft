@@ -118,7 +118,7 @@ int main() {
 	world->genChunks();
 	printf("World generation completed\n");
 
-	p->getCam()->setPos(0, 190, 0);
+	p->getCam()->setPos(0, 20, 0);
 	p->getCam()->setRotation( glm::half_pi<float>() , glm::half_pi<float>()/3 );
 
 	unsigned int windowSizeLoc = glGetUniformLocation(shaderProgram, "windowSize");

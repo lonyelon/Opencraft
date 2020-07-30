@@ -220,24 +220,34 @@ void Player::breakCube() {
 
 	// TODO: Move this to the world or chunk class
 
-    if ( c->getX() % 16 == 15 || c->getX() % 16 == -1 ) {
+    if ( c->getX() % Chunk::W == 15 || c->getX() % Chunk::W == -1 ) {
         this->world->getChunk( c0->getX() + 1, c0->getY(),c0->getZ() )->getVisibleCubes();
         this->world->getChunk( c0->getX() + 1, c0->getY(),c0->getZ() )->genVao();
     }
 
-    if ( c->getZ() % 16 == 15 || c->getZ() % 16 == -1 ) {
+    if ( c->getZ() % Chunk::Z == 15 || c->getZ() % Chunk::Z == -1 ) {
         this->world->getChunk( c0->getX(), c0->getY(),c0->getZ() + 1 )->getVisibleCubes();
         this->world->getChunk( c0->getX(), c0->getY(),c0->getZ() + 1 )->genVao();
     }
 
-    if ( c->getX() % 16 == 0 ) {
+	if ( c->getY() % Chunk::H == 15 || c->getY() % Chunk::H == -1 ) {
+        this->world->getChunk( c0->getX(), c0->getY()+1, c0->getZ())->getVisibleCubes();
+        this->world->getChunk( c0->getX(), c0->getY()+1, c0->getZ())->genVao();
+    }
+
+    if ( c->getX() % Chunk::W == 0 ) {
         this->world->getChunk( c0->getX() - 1, c0->getY(),c0->getZ() )->getVisibleCubes();
         this->world->getChunk( c0->getX() - 1, c0->getY(),c0->getZ() )->genVao();
     }
 
-    if ( c->getZ() % 16 == 0 ) {
+    if ( c->getZ() % Chunk::Z == 0 ) {
         this->world->getChunk( c0->getX(), c0->getY(),c0->getZ() - 1 )->getVisibleCubes();
         this->world->getChunk( c0->getX(), c0->getY(),c0->getZ() - 1 )->genVao();
+    }
+
+	if ( c->getY() % Chunk::H == 0 ) {
+        this->world->getChunk( c0->getX(), c0->getY() - 1,c0->getZ())->getVisibleCubes();
+        this->world->getChunk( c0->getX(), c0->getY() - 1,c0->getZ())->genVao();
     }
 }
 

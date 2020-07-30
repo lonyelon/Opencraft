@@ -21,7 +21,7 @@ private:
 
 public:
 	// TODO Change Y to 16
-    static const int W=16, H=256, Z=16;
+    static const int W=16, H=16, Z=16;
 
     Chunk ( World *w, int posX, int posY, int posZ );
 

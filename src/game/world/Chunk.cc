@@ -31,7 +31,7 @@ void Chunk::genTerrain() {
     const float zCoordRed = 300;
     const float noiseFreq = 1;
     const float ystrech = 60;
-    const int heightIncrease = 60;
+    const int heightIncrease = -60;
 
     const int waterHeight = 64+heightIncrease;
 
@@ -52,16 +52,16 @@ void Chunk::genTerrain() {
 
     // Generate stone world and water
 
-    for (int y = 0; y < this->H; y++) {
-        for (int x = 0; x < this->W; x++) {
-            for (int z = 0; z < this->Z; z++) {
-                float noiseX = (float)(this->x*this->W + x)/xCoordRed;
-                float noiseY = (float)(this->y*this->H + y)/yCoordRed;
-                float noiseZ = (float)(this->z*this->Z + z)/zCoordRed;
+    for (int y = 0; y < Chunk::H; y++) {
+        for (int x = 0; x < Chunk::W; x++) {
+            for (int z = 0; z < Chunk::Z; z++) {
+                float noiseX = (float)(this->x*Chunk::W + x)/xCoordRed;
+                float noiseY = (float)(this->y*Chunk::H + y)/yCoordRed;
+                float noiseZ = (float)(this->z*Chunk::Z + z)/zCoordRed;
 
                 int noiseValue = (int)((p.GetValue(noiseX, noiseY, noiseZ) + 1.1)*ystrech)+heightIncrease;
 
-                if ( y < noiseValue ) {
+                if ( y+this->y*Chunk::H < noiseValue ) {
                     this->setCube(new Stone(), x, y, z);
                 } else {
 					this->setCube(new Air(), x, y, z);
@@ -75,31 +75,28 @@ void Chunk::genTerrain() {
     for (int x = 0; x < this->W; x++) {
         for (int z = 0; z < this->Z; z++) {
             int dirtCount = 0;
-            for (int y = this->H-1; y > 0; y--) {
+            for (int y = Chunk::H-1; y >= 0; y--) {
                 Cube *c = this->getCube( x, y, z );
 
                 float noiseX = (float)(this->x*this->W + x)/xCoordRed*10;
+				float noiseY = (float)(this->y*this->H + z)/yCoordRed*10;
                 float noiseZ = (float)(this->z*this->Z + z)/zCoordRed*10;
 
                 if ( c->getType() == CubeType::air ) {
-                    if ( y < waterHeight ) {
+                    if ( y+this->y*Chunk::H < waterHeight ) {
                         this->setCube(new Water(), x, y, z);
                     } else {
                         dirtCount = 0;
                     }
                 } else {
                     if (dirtCount < 4) {
-                        if ( y < heights[x + z*this->W] || heights[x + z*this->W] == -1 ) {
-                            heights[x + z*this->W] = y;
+                        if ( y+this->y*Chunk::H < heights[x + z*this->W] || heights[x + z*this->W] == -1 ) {
+                            heights[x + z*this->W] = y+this->y*Chunk::H;
                         }
-                        if ( (p.GetValue(noiseX, 1, noiseZ)*5 + waterHeight)/y > 1) {
+                        if ( (p.GetValue(noiseX, noiseY, noiseZ)*5 + waterHeight)/(y+this->y*Chunk::H) > 1) {
                             this->setCube(new Sand(), x, y, z);
-                        } else if (dirtCount == 0 && y >= waterHeight-1) {
+                        } else if (dirtCount == 0 && y+this->y*Chunk::H >= waterHeight-1) {
                             this->setCube(new GrassyDirt(), x, y, z);
-
-							/*if (rand() % 10 == 1) {
-								this->setCube(new Grass(), x, y+1, z);
-							}*/
                         } else {
                             this->setCube(new Dirt(), x, y, z);
                         }
@@ -114,34 +111,34 @@ void Chunk::genTerrain() {
 
     float caveFreq = 1;
     int caveDistance = 20;
-    float caveProb = -0.8;
+    float caveProb = -0.5;
 
     caveNoise.SetSeed( this->world->getSeed(  )*3 );
     caveNoise.SetFrequency(caveFreq);
-    caveNoise.SetLacunarity(3.5);
+    caveNoise.SetLacunarity(1);
 
     for (int x = 0; x < this->W; x++) {
         for (int z = 0; z < this->Z; z++) {
             int dirtCount = 0;
-            for (int y = this->H-1; y > 0; y--) {
+            for (int y = this->H-1; y >= 0; y--) {
                 Cube *c = this->getCube( x, y, z );
 
                 float noiseX = (float)(this->x*this->W + x)/xCoordRed*10;
                 float noiseY = (float)(this->y*this->H + y)/yCoordRed*10;
                 float noiseZ = (float)(this->z*this->Z + z)/zCoordRed*10;
 
-				float caveHeightRedux = y;
+				float caveHeightRedux = y+this->y*Chunk::H;
 				if (caveHeightRedux < 1) {
 					caveHeightRedux = 1;
 				}
 
-                if ( (caveNoise.GetValue( noiseX, noiseY, noiseZ )*( heights[x + z*this->W] - caveDistance ) )/caveHeightRedux < caveProb && c->getType() != CubeType::water ) {
+                if ( (caveNoise.GetValue( noiseX, noiseY, noiseZ ) < caveProb ) && c->getType() != CubeType::water ) {
                     this->setCube(new Air(), x, y, z);
                 }
             }
         }
     }
-
+/*
     for (int x = 0; x < this->W; x++) {
         for (int z = 0; z < this->Z; z++) {
             int dirtCount = 0;
@@ -153,7 +150,7 @@ void Chunk::genTerrain() {
                 }
             }
         }
-    }
+    }*/
 }
 
 Cube *Chunk::getCube(unsigned int x, int y, int z) {
@@ -254,6 +251,8 @@ void Chunk::getVisibleCubes() {
     this->world->genChunkAt(false, this->x - 1, this->y, this->z);
     this->world->genChunkAt(false, this->x, this->y, this->z + 1);
     this->world->genChunkAt(false, this->x, this->y, this->z - 1);
+	this->world->genChunkAt(false, this->x, this->y-1, this->z);
+    this->world->genChunkAt(false, this->x, this->y+1, this->z);
 
     for ( int i = 0; i < this->W*this->H*this->Z; i++ ) {
         if ( this->cubes[i]->getType(  ) != CubeType::air ) {

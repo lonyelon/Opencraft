@@ -151,7 +151,7 @@ Cube *World::getCube( int x, int y, int z ) {
     }
 
 	// TODO DELETE THIS
-    if ( y >= 256 || y < 0  ) {
+    if ( y < 0  ) {
         return NULL;
     }
 
@@ -169,12 +169,13 @@ Cube *World::getCube( Chunk *k, int x, int y, int z ) {
     int chunkZ = floor((float)z/16);
 
 	// TODO DELETE THIS
-    if ( y >= 256 || y < 0  ) {
+    if ( y >= 256 || y < 0 ) {
         return NULL;
     }
 
+
     if ( k != NULL && k->getX() == chunkX && k->getY() == chunkY && k->getZ() == chunkZ ) {
-        Cube *cube = k->getCube( x - k->getX()*16, y, z - k->getZ()*16 );
+        Cube *cube = k->getCube( x - k->getX()*Chunk::W, y  - k->getY()*Chunk::H, z - k->getZ()*Chunk::Z );
         return cube;
     }
 

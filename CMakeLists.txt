@@ -20,6 +20,8 @@ add_executable(
     ./src/game/world/World.cc
     ./src/game/world/World.hpp
 
+	./src/game/world/WorldGenerator.hpp
+	./src/game/world/WorldGenerator.cc
 
     ./src/game/world/cube/Cube.hpp
 	./src/game/world/cube/Cubes.hpp
@@ -67,4 +69,5 @@ add_executable(
     ./src/engine/model/ModelLoader.hpp
 )
 
-target_link_libraries (Opencraft glfw GL GLU dl m boost_thread pthread noise)
+target_include_directories(Opencraft PUBLIC src PRIVATE src)
+target_link_libraries(Opencraft glfw GL GLU dl m boost_thread pthread noise)

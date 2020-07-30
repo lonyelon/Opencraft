@@ -130,8 +130,13 @@ void Chunk::genTerrain() {
                 float noiseY = (float)(this->y*this->H + y)/yCoordRed*10;
                 float noiseZ = (float)(this->z*this->Z + z)/zCoordRed*10;
 
-                if ( (caveNoise.GetValue( noiseX, noiseY, noiseZ )*( heights[x + z*this->W] - caveDistance ) )/y < caveProb && c->getType() != CubeType::water ) {
-                    //this->setCube(new Air(), x, y, 0);
+				float caveHeightRedux = y;
+				if (caveHeightRedux < 1) {
+					caveHeightRedux = 1;
+				}
+
+                if ( (caveNoise.GetValue( noiseX, noiseY, noiseZ )*( heights[x + z*this->W] - caveDistance ) )/caveHeightRedux < caveProb && c->getType() != CubeType::water ) {
+                    this->setCube(new Air(), x, y, z);
                 }
             }
         }
@@ -156,7 +161,6 @@ Cube *Chunk::getCube(unsigned int x, int y, int z) {
         return NULL;
     }
     return this->cubes[x + y*this->W + z*this->W*this->H];
-    //return NULL;
 }
 
 void Chunk::setCube(Cube *c, int x, int y, int z) {

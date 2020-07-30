@@ -1,13 +1,14 @@
-#include "World.hpp"
+#include <game/world/World.hpp>
 
 #include <boost/thread.hpp>
 
-#include "../Player.hpp"
+#include <game/Player.hpp>
+#include <game/world/WorldGenerator.hpp>
 
 extern Player *p;
 
 World::World(  ) {
-    this->seed = rand();
+    this->seed = 279;
     this->size = 15;
     this->chunkCount = 0;
     this->genThread = NULL;
@@ -18,10 +19,16 @@ void World::setSize( const int size ) {
     this->size = size;
 }
 
+/*
+	Creates a chunk at the specified position. If draw == true the chunk is
+	drawn when generated.
+*/
 void World::genChunkAt(bool draw, int x, int y, int z) {
     if (this->getChunk(x, y, z) != NULL) {
         return;
     }
+
+	printf("Generating chunk %d %d %d\n", x, y, z);
 
     Chunk *c = new Chunk(this, x, y, z);
     this->chunks.push_back(c);
@@ -34,72 +41,23 @@ void World::genChunkAt(bool draw, int x, int y, int z) {
     }
 }
 
+/*
+	Adds a chunk to the drawing queue so it can wait to get drawn.
+*/
 void World::addChunkToQueue(Chunk *c) {
     this->drawQueue.push_back(c);
 }
 
-void genChunk( std::vector<Chunk*> *chunks, int *chunkCount, int size, World *w, int threadNumber, int threadCount) {
-	for ( int x = 0; x < size; x++ ) {
-		for ( int y = threadNumber; y < size; y += threadCount ) {
-			//c->push_back(new Chunk(x - size/2, 0, y - size/2));
-			(*chunks)[x*size+y] = new Chunk( w, x - size/2, 0, y - size/2 );
-			(*chunks)[x*size+y]->genTerrain();
-			(*chunkCount)++;
-		}
-	}
-}
-
-void genVAOs( std::vector<Chunk*> *chunks, int threadNumber, int threadCount ) {
-    for ( int i = threadNumber; i < (*chunks).size(); i += threadCount ) {
-        (*chunks)[i]->getVisibleCubes();
-        (*chunks)[i]->genVao();
-    }
-}
-
-extern float renderDistance;
-
-void worldUpdate( World *world, Player *player ) {
-    const int maxDist = round(renderDistance/16);
-
-    while (world->isWorldUpdating()) {
-        Cube *c = world->getCube(player->getCam()->getX(), player->getCam()->getY(), player->getCam()->getZ());
-        if (c == NULL) continue;
-        Chunk *ck = c->getChunk();
-
-        for (int radius = 0; radius < maxDist; radius++) {
-            for (int x = -radius; x < radius; x++ ) {
-                for (int z = -radius; z < radius; z++ ) {
-                    if (world->getChunk(ck->getX()+x, ck->getY(), ck->getZ()+z) == NULL) {
-						printf("Gen chunk %d %d %d\n", ck->getX()+x, ck->getY(), ck->getZ()+z);
-                        world->genChunkAt(true, ck->getX()+x, ck->getY(), ck->getZ()+z);
-                    } else if (world->getChunk(ck->getX()+x, ck->getY(), ck->getZ()+z)->getVao() == 0) {
-                        Chunk *chunk = world->getChunk(ck->getX()+x, ck->getY(), ck->getZ()+z);
-                        chunk->getVisibleCubes();
-                        world->addChunkToQueue(chunk);
-                    }
-                }
-            }
-        }
-
-        std::vector<Chunk*> chunks = world->getChunks();
-        for (int i = 0; i < chunks.size(); i++) {
-            float dist = pow(chunks[i]->getX()-ck->getX(), 2);
-            dist += pow(chunks[i]->getY()-ck->getY(), 2);
-            dist += pow(chunks[i]->getZ()-ck->getZ(), 2);
-            dist = sqrt(dist);
-
-            if (dist >= (float)maxDist*1.25) {
-                world->deleteChunk(chunks[i]);
-            }
-        }
-    }
-}
-
+/*
+	Deletes a chunk from memory.
+*/
 void World::deleteChunk(Chunk *c) {
     for (int i = 0; i < this->chunkCount; i++) {
-        if (this->chunks[i]->getX() == c->getX()
-            && this->chunks[i]->getY() == c->getY()
-            && this->chunks[i]->getZ() == c->getZ() ) {
+		int chunX = this->chunks[i]->getX();
+		int chunY = this->chunks[i]->getY();
+		int chunZ = this->chunks[i]->getZ();
+
+        if (chunX == c->getX() && chunY == c->getY() && chunZ == c->getZ() ) {
             delete(c);
             this->chunks.erase(this->chunks.begin()+i);
             this->chunkCount--;
@@ -109,7 +67,10 @@ void World::deleteChunk(Chunk *c) {
 }
 
 void World::genChunks(  ) {
+	const int threadCount = 8;
+
     printf("Reserving memory for the world...\n");
+
     this->updateWorld = false;
     if (this->genThread != NULL) this->genThread->join();
     for (int i = 0; i < this->chunkCount; i++) {
@@ -118,9 +79,7 @@ void World::genChunks(  ) {
 	this->chunks.clear();
     this->chunkCount = 0;
 
-	const int threadCount = 8;
-
-	this->chunks = std::vector<Chunk*>(size*size, NULL);
+	this->chunks = std::vector<Chunk*>(size*size*size, NULL);
 
     printf("Generating world...\n");
 
@@ -175,36 +134,46 @@ int sign( int x ) {
     }
 }
 
+/*
+	Returns a cube by it's coordinates.
+*/
 Cube *World::getCube( int x, int y, int z ) {
     Chunk *c = NULL;
 
-    int chunkX = floor((float)x/16);
-    int chunkZ = floor((float)z/16);
+    int chunkX = floor((float)x/Chunk::W);
+	int chunkY = floor((float)y/Chunk::H);
+    int chunkZ = floor((float)z/Chunk::Z);
 
-    c = this->getChunk( chunkX, 0, chunkZ );
+    c = this->getChunk( chunkX, chunkY, chunkZ );
 
     if ( c == NULL ) {
         return NULL;
     }
 
+	// TODO DELETE THIS
     if ( y >= 256 || y < 0  ) {
         return NULL;
     }
 
-    return c->getCube( x - c->getX()*16, y, z - c->getZ()*16 );
+    return c->getCube( x - c->getX()*16, y - c->getY()*16, z - c->getZ()*16 );
 }
 
+/*
+	Returns a cube by it's coordinates, but first it checks it's own chunk.
+*/
 Cube *World::getCube( Chunk *k, int x, int y, int z ) {
     Chunk *c = NULL;
 
     int chunkX = floor((float)x/16);
+	int chunkY = floor((float)y/16);
     int chunkZ = floor((float)z/16);
 
+	// TODO DELETE THIS
     if ( y >= 256 || y < 0  ) {
         return NULL;
     }
 
-    if ( k != NULL && k->getX() == chunkX && k->getZ() == chunkZ ) {
+    if ( k != NULL && k->getX() == chunkX && k->getY() == chunkY && k->getZ() == chunkZ ) {
         Cube *cube = k->getCube( x - k->getX()*16, y, z - k->getZ()*16 );
         return cube;
     }
@@ -229,9 +198,12 @@ std::vector<Chunk*> World::getChunks() {
     return this->chunks;
 }
 
+/*
+	Get's a chunk by it's coordinates.
+*/
 Chunk *World::getChunk(int x, int y, int z) {
     for (int i = 0; i < this->chunkCount; i++) {
-        if (this->chunks[i]->getX() == x && this->chunks[i]->getZ() == z) {
+        if (this->chunks[i]->getX() == x && this->chunks[i]->getY() == y && this->chunks[i]->getZ() == z) {
             return this->chunks[i];
         }
     }

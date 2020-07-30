@@ -9,10 +9,10 @@
 // UPDATED: 2018-03-23
 ///////////////////////////////////////////////////////////////////////////////
 #pragma warning(disable:4996)
-#include "../engine/glad/glad.h"
+#include <engine/glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <stdio.h>
-#include <math.h> 
+#include <math.h>
 #include "Sphere.h"
 //Para las transformaciones
 #include <glm/glm.hpp>
@@ -124,7 +124,7 @@ void Sphere::printSelf() const
 ///////////////////////////////////////////////////////////////////////////////
 void Sphere::draw() const
 {
-    
+
 	unsigned int VAOTriangulo;
 	unsigned int VBO, EBO;
 
@@ -164,8 +164,8 @@ void Sphere::draw() const
 	glBindVertexArray(0);
 	glDeleteBuffers(1, &VBO);
 	glDeleteBuffers(1, &EBO);
-	
-	
+
+
 	glBindVertexArray(VAOTriangulo);
 glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
 glDeleteVertexArrays(1, &VAOTriangulo);

@@ -5,8 +5,8 @@
 
 #include <boost/thread.hpp>
 
-#include "Chunk.hpp"
-#include "cube/Cubes.hpp"
+#include <game/world/Chunk.hpp>
+#include <game/world/cube/Cubes.hpp>
 
 class World {
 private:

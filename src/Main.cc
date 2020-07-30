@@ -1,13 +1,13 @@
-#include "engine/glfw.hpp"
+#include <engine/glfw.hpp>
 
-#include "engine/keyboard/KeyboardInput.hpp"
-#include "game/world/Chunk.hpp"
-#include "game/world/World.hpp"
-#include "engine/LoadTexture.hpp"
-#include "engine/config/ConfigLoader.hpp"
-#include "game/world/Sphere.h"
-#include "game/Player.hpp"
-#include "engine/model/ModelLoader.hpp"
+#include <engine/keyboard/KeyboardInput.hpp>
+#include <game/world/Chunk.hpp>
+#include <game/world/World.hpp>
+#include <engine/LoadTexture.hpp>
+#include <engine/config/ConfigLoader.hpp>
+#include <game/world/Sphere.h>
+#include <game/Player.hpp>
+#include <engine/model/ModelLoader.hpp>
 
 #include <string>
 #include <boost/thread.hpp>
@@ -52,7 +52,7 @@ void windowResize(GLFWwindow *window, int width, int height) {
 int main() {
 
 	srand(time(NULL));
-	
+
 	world = new World(  );
 	p = new Player( world );
 	ConfigLoader cf = ConfigLoader( "./bin/game.conf" );

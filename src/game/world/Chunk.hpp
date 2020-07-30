@@ -42,6 +42,9 @@ public:
     int getZ() { return this->z; };
     int getVao() { return this->VAO; };
 
+	void Save();
+	void Load();
+
     void draw();
 
     ~Chunk();

@@ -8,6 +8,11 @@
 #include <game/world/Chunk.hpp>
 #include <game/world/cube/Cubes.hpp>
 
+
+#include <game/Player.hpp>
+
+extern Player *p;
+
 class World {
 private:
     int seed;
@@ -16,6 +21,8 @@ private:
 
     bool updateWorld;
 
+	std::string name;
+
     std::vector<Chunk*> chunks;
     std::vector<Cube*> cubesToRender;
 
@@ -23,7 +30,7 @@ private:
 
     boost::thread *genThread;
 public:
-    World(  );
+    World( std::string name, int seed );
 
     void genChunks(  );
     void genChunkAt(bool draw, int x, int y, int z);
@@ -45,12 +52,28 @@ public:
 
     void draw(  );
 
+	std::string getName() { return this->name; };
+
     ~World() {
         if (this->genThread != NULL) {
             this->updateWorld = false;
             this->genThread->join();
         }
+
+		this->saveWorld();
     }
+
+	void saveWorld() {
+		std::ofstream file("saves/" + this->name + "/playerdata.txt");
+
+		file << p->getCam()->getX() << "\t" << p->getCam()->getY() << "\t" << p->getCam()->getZ();
+
+		file.close();
+
+		for (int i = 0; i < this->chunks.size(); i++) {
+			delete(this->chunks[i]);
+		}
+	}
 
     int getCubesDrawn() {
         int c = 0;

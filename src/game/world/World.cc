@@ -1,18 +1,24 @@
 #include <game/world/World.hpp>
 
 #include <boost/thread.hpp>
+#include <filesystem>
 
 #include <game/Player.hpp>
 #include <game/world/WorldGenerator.hpp>
 
 extern Player *p;
 
-World::World(  ) {
-    this->seed = 279;
+World::World( std::string name, int seed ) {
+	this->name = name;
+	this->seed = seed;
     this->size = 15;
     this->chunkCount = 0;
     this->genThread = NULL;
     this->updateWorld = false;
+
+	if (!std::filesystem::is_directory("saves/" + name)) {
+		std::filesystem::create_directories("saves/" + name + "/world");
+	}
 }
 
 void World::setSize( const int size ) {

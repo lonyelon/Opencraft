@@ -2,14 +2,14 @@
 #define _CUBE_TYPES_HPP_
 
 enum CubeType {
-    grassyDirt,
-    dirt,
-    stone,
-    water,
-    air,
-    sand,
-    lava,
-    grass
+	air = 0,
+	stone = 1,
+	dirt = 2,
+    grassyDirt = 3,
+	sand = 4,
+    water = 5,
+    lava = 6,
+    grass = 7
 };
 
 class Cube;

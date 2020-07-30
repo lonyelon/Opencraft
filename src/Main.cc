@@ -49,11 +49,16 @@ void windowResize(GLFWwindow *window, int width, int height) {
 	SCR_HEIGHT = height;
 }
 
-int main() {
+int main( int argc, char **argv) {
 
 	srand(time(NULL));
 
-	world = new World(  );
+	if (argc != 3) {
+		printf("Usage: Opencraft [worldname] [seed]\n");
+	}
+
+	world = new World( argv[1], atoi(argv[2]) );
+
 	p = new Player( world );
 	ConfigLoader cf = ConfigLoader( "./bin/game.conf" );
 	k = KeyHandler();
@@ -182,6 +187,7 @@ int main() {
 void processInput(GLFWwindow *window)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+		delete(world);
 		glfwSetWindowShouldClose(window, true);
 	}
 }

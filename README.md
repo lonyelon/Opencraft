@@ -6,7 +6,7 @@ C++.
 ## Build and installation
 
 To build the game you first need the following libraries:
-* GLFW
+* GLFW3
 * GLM
 * Boost libraries
 * Libnoise
@@ -16,48 +16,14 @@ Next, you can clone this repository with:
 git clone https://github.com/lonyelon/Opencraft
 ```
 
-The enter the folder and compile the game:
+The enter the folder and compile the game (both "worldname" and "seed" are mandatory):
 ```bash
 cmake .
 make
-chmod +x ./Opencraft
+chmod +x ./Opencraft [worldname] [seed]
 ```
 
 Lastly, run the game with:
 ```
 ./Opencraft
 ```
-
-### Ideas for Alpha
-
-- [x] **First version**
-  - [x] Blocks
-  - [x] Camera
-  - [x] Chunks
-
-- [x] **Extra additions**
-  - [x] Negative coordinates
-
-- [x] **Gameplay**
-  - [x] Remove blocks
-  - [x] Place blocks
-  - [x] Player camera
-  - [x] Floating camera
-
-- [ ] **Graphics**
-  - [ ] Textures *Work in progress*
-  - [ ] Lighting
-  - [x] Skybox
-
-- [ ] **World gen**
-  - [x] Stone
-  - [x] Sand
-  - [ ] Infinite world
-  - [ ] Trees
-  - [ ] Grass
-  - [ ] Ores
-
-- [ ] **UI**
-  - [ ] Game menu
-  - [ ] World saving
-  - [ ] Creative Inventory  

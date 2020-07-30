@@ -2,6 +2,7 @@
 #include "World.hpp"
 #include "cube/Cubes.hpp"
 #include "../../engine/FixedPosition.hpp"
+#include <game/world/CubeTypes.hpp>
 
 #include <noise/noise.h>
 
@@ -9,6 +10,8 @@
 #include <random>
 #include <cmath>
 #include <vector>
+#include <sstream>
+
 
 extern GLuint shaderProgram;
 extern int pint;
@@ -35,6 +38,7 @@ void Chunk::genTerrain() {
 
     const int waterHeight = 64+heightIncrease;
 
+	this->Load();
     if ( this->generated == true ) {
         return;
     }
@@ -151,6 +155,8 @@ void Chunk::genTerrain() {
             }
         }
     }*/
+
+	this->Save();
 }
 
 Cube *Chunk::getCube(unsigned int x, int y, int z) {
@@ -318,10 +324,68 @@ void Chunk::draw() {
 }
 
 Chunk::~Chunk() {
+	this->Save();
     glDeleteVertexArrays(1, &(this->VAO));
     for (int i = 0; i < this->W*this->H*this->Z; i++) {
         delete(this->cubes[i]);
     }
     this->cubes.clear();
     this->renderedCubes.clear();
+}
+
+
+void Chunk::Save() {
+	std::stringstream name;
+	name << "saves/" << this->world->getName() << "/world/" << this->x << "_" << this->y << "_" << this->z << ".chunk";
+
+	std::ofstream file(name.str());
+
+	for (int i = 0; i < Chunk::W*Chunk::H*Chunk::Z; i++) {
+		file << this->cubes[i]->getType() << "\t";
+		FixedPosition p = this->cubes[i]->getChunkPos();
+		file << p.x << "\t";
+		file << p.y << "\t";
+		file << p.z << "\n";
+	}
+
+	file.close();
+}
+
+void Chunk::Load() {
+	std::stringstream name;
+	name << "saves/" << this->world->getName() << "/world/" << this->x << "_" << this->y << "_" << this->z << ".chunk";
+
+	std::ifstream file(name.str(), std::ios::binary);
+
+	if (file.is_open()) {
+		while (!file.eof()) {
+			int type, x, y, z;
+			file >> type >> x >> y >> z;
+			switch(type) {
+				case CubeType::air:
+					this->setCube(new Air(), x, y, z);
+					break;
+				case CubeType::dirt:
+					this->setCube(new Dirt(), x, y, z);
+					break;
+				case CubeType::grassyDirt:
+					this->setCube(new GrassyDirt(), x, y, z);
+					break;
+				case CubeType::sand:
+					this->setCube(new Sand(), x, y, z);
+					break;
+				case CubeType::water:
+					this->setCube(new Water(), x, y, z);
+					break;
+				case CubeType::lava:
+					this->setCube(new Lava(), x, y, z);
+					break;
+				default:
+					this->setCube(new Stone(), x, y, z);
+					break;
+			}
+		}
+
+		this->generated = true;
+	}
 }

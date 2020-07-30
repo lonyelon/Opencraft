@@ -1,6 +1,6 @@
 #include <game/world/World.hpp>
 
-#include <boost/thread.hpp>
+#include <thread>
 #include <filesystem>
 
 #include <game/Player.hpp>
@@ -89,9 +89,9 @@ void World::genChunks(  ) {
 
     printf("Generating world...\n");
 
-	boost::thread t[threadCount];
+	std::thread t[threadCount];
 	for (int i = 0; i < threadCount; i++) {
-		t[i] = boost::thread( genChunk, &(this->chunks), &(this->chunkCount), this->size, this, i, threadCount );
+		t[i] = std::thread( genChunk, &(this->chunks), &(this->chunkCount), this->size, this, i, threadCount );
 	}
 
 	for (int i = 0; i < threadCount; i++) {
@@ -115,7 +115,7 @@ void World::genChunks(  ) {
     }
 
     this->updateWorld = true;
-    this->genThread = new boost::thread( worldUpdate, this, p );
+    this->genThread = new std::thread( worldUpdate, this, p );
 
     printf("Complete!\n");
 }

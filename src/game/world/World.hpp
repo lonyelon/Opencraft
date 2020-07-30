@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include <boost/thread.hpp>
+#include <thread>
 
 #include <game/world/Chunk.hpp>
 #include <game/world/cube/Cubes.hpp>
@@ -28,7 +28,7 @@ private:
 
     std::vector<Chunk*> drawQueue;
 
-    boost::thread *genThread;
+    std::thread *genThread;
 public:
     World( std::string name, int seed );
 

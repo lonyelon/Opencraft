@@ -151,7 +151,7 @@ Cube *World::getCube( int x, int y, int z ) {
     }
 
 	// TODO DELETE THIS
-    if ( y < 0  ) {
+    if ( y >= Chunk::H || y < 0 ) {
         return NULL;
     }
 
@@ -169,7 +169,7 @@ Cube *World::getCube( Chunk *k, int x, int y, int z ) {
     int chunkZ = floor((float)z/16);
 
 	// TODO DELETE THIS
-    if ( y >= 256 || y < 0 ) {
+    if ( y >= Chunk::H || y < 0 ) {
         return NULL;
     }
 

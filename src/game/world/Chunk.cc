@@ -169,9 +169,9 @@ void Chunk::setCube(Cube *c, int x, int y, int z) {
 		return;
 	}
 
-	c->setX(x + this->x*this->W);
-	c->setY(y + this->y*this->H);
-	c->setZ(z + this->z*this->Z);
+	c->setX(x + this->x*Chunk::W);
+	c->setY(y + this->y*Chunk::H);
+	c->setZ(z + this->z*Chunk::Z);
 
 	FixedPosition chunkPos;
 	chunkPos.x = x;
@@ -181,7 +181,7 @@ void Chunk::setCube(Cube *c, int x, int y, int z) {
 
 	c->setChunk(this);
 
-    this->cubes[x + y*this->W + z*this->W*this->H] = c;
+    this->cubes[x + y*Chunk::W + z*Chunk::H*Chunk::W] = c;
 }
 
 
@@ -202,32 +202,44 @@ int Chunk::isIllated(int x, int y, int z) {
     c = this->world->getCube(this, x ,y + 1 ,z );
     if ( c != NULL && isTransparent( c ) && k->getType() != c->getType() ) {
         n *= 2;
-    }
+    } else if (c == NULL) {
+		n *= 2;
+	}
 
-    c = this->world->getCube(this, x, y - 1 ,z );
+    c = this->world->getCube(this, x, y - 1 , z);
     if ( c != NULL && isTransparent( c ) && k->getType() != c->getType() ) {
         n *= 3;
-    }
+    } else if (c == NULL) {
+		n *= 3;
+	}
 
-    c = this->world->getCube(this, x + 1,y ,z );
+    c = this->world->getCube(this, x + 1,y , z);
     if ( c != NULL && isTransparent( c ) && k->getType() != c->getType() ) {
         n *= 5;
-    }
+    } else if (c == NULL) {
+		n *= 5;
+	}
 
     c = this->world->getCube(this, x - 1,y ,z );
     if ( c != NULL && isTransparent( c ) && k->getType() != c->getType() ) {
         n *= 7;
-    }
+    } else if (c == NULL) {
+		n *= 7;
+	}
 
     c = this->world->getCube(this, x,y ,z + 1 );
     if ( c != NULL && isTransparent( c ) && k->getType() != c->getType() ) {
         n *= 11;
-    }
+    } else if (c == NULL) {
+		n *= 11;
+	}
 
     c = this->world->getCube(this, x ,y ,z - 1 );
     if ( c != NULL && isTransparent( c ) && k->getType() != c->getType() ) {
         n *= 13;
-    }
+    } else if (c == NULL) {
+		n *= 13;
+	}
 
     k->setSides(n);
     return n;

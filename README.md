@@ -1,7 +1,9 @@
 # Opencraft
 
-Opencraft is a 3D sandbox game based on Minecraft. The game is fully written on
-C++.
+Opencraft is a 3D open source sandbox game based on Minecraft. The game is fully written on C++.
+
+## Compatibility
+The game currently **runs on ArchLinux** without problems. A port to other Linux distros is being worked on. The Windows version will have to wait, since threading works differently on Windows.
 
 ## Build and installation
 

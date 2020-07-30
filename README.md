@@ -16,11 +16,11 @@ Next, you can clone this repository with:
 git clone https://github.com/lonyelon/Opencraft
 ```
 
-The enter the folder and compile the game (both "worldname" and "seed" are mandatory):
+The enter the folder and compile the game:
 ```bash
 cmake .
 make
-chmod +x ./Opencraft [worldname] [seed]
+chmod +x ./Opencraft
 ```
 
 Lastly, run the game with (both arguments are mandatory):

@@ -10,7 +10,6 @@ The game currently **runs on ArchLinux** without problems. A port to other Linux
 To build the game you first need the following libraries:
 * GLFW3
 * GLM
-* Boost libraries
 * Libnoise
 
 Next, you can clone this repository with:

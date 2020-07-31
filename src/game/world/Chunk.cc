@@ -27,14 +27,14 @@ Chunk::Chunk(World *w, int xpos, int ypos, int zpos) {
 }
 
 void Chunk::genTerrain() {
-    const float xCoordRed = 300;
-    const float yCoordRed = 300;
-    const float zCoordRed = 300;
+    const float xCoordRed = 150;
+    const float yCoordRed = 150;
+    const float zCoordRed = 150;
     const float noiseFreq = 1;
     const float ystrech = 60;
     const int heightIncrease = -60;
 
-    const int waterHeight = 64 + heightIncrease;
+    const int waterHeight = 40 + heightIncrease;
 
     this->Load();
     if (this->generated == true) {
@@ -73,6 +73,7 @@ void Chunk::genTerrain() {
     }
 
     p.SetSeed(this->world->getSeed() * 2);
+	p.SetLacunarity(1);
 
     for (int x = 0; x < this->W; x++) {
         for (int z = 0; z < this->Z; z++) {
@@ -95,7 +96,7 @@ void Chunk::genTerrain() {
                         if (y + this->y * Chunk::H < heights[x + z * this->W] || heights[x + z * this->W] == -1) {
                             heights[x + z * this->W] = y + this->y * Chunk::H;
                         }
-                        if ((p.GetValue(noiseX, noiseY, noiseZ) * 5 + waterHeight) / (y + this->y * Chunk::H) > 1) {
+                        if ((p.GetValue(noiseX, noiseY, noiseZ) * 5) / (waterHeight - y - this->y * Chunk::H) > 1) {
                             this->setCube(new Sand(), x, y, z);
                         } else if (dirtCount == 0 && y + this->y * Chunk::H >= waterHeight - 1) {
                             this->setCube(new GrassyDirt(), x, y, z);

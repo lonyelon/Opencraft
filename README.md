@@ -24,7 +24,7 @@ make
 chmod +x ./Opencraft
 ```
 
-Lastly, run the game with (both arguments are mandatory):
+Lastly, run the game with:
 ```
-./Opencraft [worldname] [seed]
+./Opencraft
 ```

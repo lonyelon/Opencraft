@@ -13,8 +13,13 @@
 class World;
 class Player;
 
-void genChunk(std::vector<Chunk*> *chunks, int *chunkCount, int size, World *w, int threadNumber, int threadCount);
-void genVAOs(std::vector<Chunk*> *chunks, int threadNumber, int threadCount);
-void worldUpdate(World *world, Player *player);
+class WorldGenerator {
+public:
+    static void genChunk(std::vector<Chunk *> *chunks, int *chunkCount, int size, World *w, int threadNumber, int threadCount);
+
+    static void genVAOs(std::vector<Chunk *> *chunks, int threadNumber, int threadCount);
+
+    static void worldUpdate(World *world, Player *player);
+};
 
 #endif

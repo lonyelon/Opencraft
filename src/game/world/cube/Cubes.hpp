@@ -13,3 +13,5 @@
 #include "Lava.hpp"
 
 #include "Grass.hpp"
+
+#include "Wood.hpp"

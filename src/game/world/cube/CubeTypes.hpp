@@ -9,11 +9,8 @@ enum CubeType {
 	sand = 4,
     water = 5,
     lava = 6,
-    grass = 7
+    grass = 7,
+    wood = 8
 };
-
-class Cube;
-
-bool isTransparent(Cube *c);
 
 #endif

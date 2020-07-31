@@ -1,1 +1,0 @@
-[  4%] Building CXX object CMakeFiles/Opencraft.dir/src/game/world/Chunk.cc.o

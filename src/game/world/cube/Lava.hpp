@@ -9,6 +9,10 @@ public:
 		this->transparent = true;
 		this->type = CubeType::lava;
 	}
+
+    void update() {
+
+    };
 };
 
 #endif

@@ -5,7 +5,7 @@
 
 extern float renderDistance;
 
-void genChunk( std::vector<Chunk*> *chunks, int *chunkCount, int size, World *w, int threadNumber, int threadCount) {
+void WorldGenerator::genChunk( std::vector<Chunk*> *chunks, int *chunkCount, int size, World *w, int threadNumber, int threadCount) {
 	for ( int x = 0; x < size; x++ ) {
 		for (int z = 0; z < size; z++) {
 			for ( int y = threadNumber; y < size; y += threadCount ) {
@@ -18,7 +18,7 @@ void genChunk( std::vector<Chunk*> *chunks, int *chunkCount, int size, World *w,
 	}
 }
 
-void genVAOs( std::vector<Chunk*> *chunks, int threadNumber, int threadCount ) {
+void WorldGenerator::genVAOs( std::vector<Chunk*> *chunks, int threadNumber, int threadCount ) {
     for ( int i = threadNumber; i < (*chunks).size(); i += threadCount ) {
         (*chunks)[i]->getVisibleCubes();
         (*chunks)[i]->genVao();
@@ -28,7 +28,7 @@ void genVAOs( std::vector<Chunk*> *chunks, int threadNumber, int threadCount ) {
 /*
 	Updates the world. Gets executes in a separated thread.
 */
-void worldUpdate(World *world, Player *player) {
+void WorldGenerator::worldUpdate(World *world, Player *player) {
     const int maxDist = round(renderDistance/16);
 
     while (world->isWorldUpdating()) {
@@ -41,11 +41,11 @@ void worldUpdate(World *world, Player *player) {
 				for (int y = -radius; y < radius; y++) {
 	                for (int z = -radius; z < radius; z++ ) {
 	                    if (world->getChunk(ck->getX()+x, ck->getY()+y, ck->getZ()+z) == NULL) {
-							printf("Gen chunk %d %d %d\n", ck->getX()+x, ck->getY()+y, ck->getZ()+z);
 	                        world->genChunkAt(true, ck->getX()+x, ck->getY()+y, ck->getZ()+z);
 	                    } else if (world->getChunk(ck->getX()+x, ck->getY()+y, ck->getZ()+z)->getVao() == 0) {
 	                        Chunk *chunk = world->getChunk(ck->getX()+x, ck->getY()+y, ck->getZ()+z);
 	                        chunk->getVisibleCubes();
+	                        chunk->genVao();
 	                        world->addChunkToQueue(chunk);
 	                    }
 					}

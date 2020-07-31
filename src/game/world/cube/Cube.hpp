@@ -4,9 +4,9 @@
 #include <vector>
 
 //#include "Cube.hpp"
-#include "../CubeTypes.hpp"
+#include "CubeTypes.hpp"
 #include "../../../engine/glfw.hpp"
-#include "../../../engine/FixedPosition.hpp"
+#include "engine/position/FixedPosition.hpp"
 
 class Chunk;
 
@@ -42,11 +42,14 @@ public:
 
 	void setChunkPos(FixedPosition pos) { this->chunkPos = pos; };
 	FixedPosition getChunkPos() {return this->chunkPos; };
+	FixedPosition getPos();
 
     Chunk * getChunk() { return this->chunk; };
 	void setChunk(Chunk *c) { this->chunk = c; };
 
 	bool isTransparent() { return this->transparent; }
+
+	virtual void update() = 0;
 
     ~Cube();
 };

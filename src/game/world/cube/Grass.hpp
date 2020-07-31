@@ -5,10 +5,14 @@
 
 class Grass : public Cube {
 public:
-	Grass() : Cube() {
-		this->transparent = false;
-		this->type = CubeType::grass;
-	}
+    Grass() : Cube() {
+        this->transparent = false;
+        this->type = CubeType::grass;
+    }
+
+    void update() {
+
+    };
 };
 
 #endif

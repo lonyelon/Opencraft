@@ -9,6 +9,10 @@ public:
 		this->transparent = false;
 		this->type = CubeType::sand;
 	}
+
+    void update() {
+
+    };
 };
 
 #endif

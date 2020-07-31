@@ -9,7 +9,7 @@ ModelLoader::ModelLoader() {
 Model *ModelLoader::loadModel( std::string path ) {
     Model *m;
     FILE *f;
-    std::vector<float> vertex;
+    std::vector<double> vertex;
     std::vector<int> textureCoords;
     int size;
     float v0, v1, v2; 

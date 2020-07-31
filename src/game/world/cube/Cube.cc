@@ -1,7 +1,6 @@
-#include "Cube.hpp"
+#include <game/world/cube/Cube.hpp>
 
 #include <cstdio>
-#include <cstdlib>
 
 #include "../../../engine/model/Model.hpp"
 
@@ -10,32 +9,32 @@ extern Model *cubeModel;
 extern Model *grassModel;
 extern Model *fluidModel;
 
-Cube::Cube( Chunk *c, int xpos, int ypos, int zpos ) {
-    Cube::x = xpos;
-    Cube::y = ypos;
-    Cube::z = zpos;
-    Cube::type = CubeType::air;
-    Cube::chunk = c;
+Cube::Cube(Chunk *c, int xpos, int ypos, int zpos) {
+    this->x = xpos;
+    this->y = ypos;
+    this->z = zpos;
+    this->type = CubeType::air;
+    this->chunk = c;
     this->sides = 1;
 }
 
-Cube::Cube(  ) {
-    Cube::x = 0;
-    Cube::y = 0;
-    Cube::z = 0;
-    Cube::type = CubeType::air;
-    Cube::chunk = NULL;
+Cube::Cube() {
+    this->x = 0;
+    this->y = 0;
+    this->z = 0;
+    this->type = CubeType::air;
+    this->chunk = NULL;
     this->sides = 1;
 }
 
-void Cube::setPosition( int x, int y, int z ) {
+void Cube::setPosition(int x, int y, int z) {
     Cube::x = x;
     Cube::y = y;
     Cube::z = z;
 }
 
 void Cube::setType(CubeType t) {
-    Cube::type=t;
+    Cube::type = t;
 }
 
 CubeType Cube::getType() {
@@ -43,90 +42,101 @@ CubeType Cube::getType() {
 }
 
 void Cube::getVertex(std::vector<float> *v, std::vector<int> *i, int n) {
-    const int texFileSize = 256/32;
+    const int texFileSize = 512 / 32;
 
-    std::vector<float> vertex;
+    std::vector<double> vertex;
     std::vector<int> textureCoords;
 
-	switch (this->type) {
-	    case CubeType::grass:
-	        vertex = grassModel->getVertex();
-	        textureCoords = grassModel->getTextureCoords();
-			break;
-	    case CubeType::water:
-			vertex = fluidModel->getVertex();
-			textureCoords = fluidModel->getTextureCoords();
-			break;
-		default:
-			vertex = cubeModel->getVertex();
-	        textureCoords = cubeModel->getTextureCoords();
-	}
+    switch (this->type) {
+        case CubeType::grass:
+            vertex = grassModel->getVertex();
+            textureCoords = grassModel->getTextureCoords();
+            break;
+        case CubeType::water:
+            vertex = fluidModel->getVertex();
+            textureCoords = fluidModel->getTextureCoords();
+            break;
+        default:
+            vertex = cubeModel->getVertex();
+            textureCoords = cubeModel->getTextureCoords();
+    }
 
-    for ( int k = 0; k < vertex.size(); k += 3 ) {
-        if ( this->type != CubeType::grass ) {
-            if ( k >= 0*3 && k < 6*3 && this->sides % 11 != 0 ) continue;
-            if ( k >= 6*3 && k < 12*3 && this->sides % 2 != 0 ) continue;
-            if ( k >= 12*3 && k < 18*3 && this->sides % 5 != 0 ) continue;
-            if ( k >= 18*3 && k < 24*3 && this->sides % 7 != 0 ) continue;
-            if ( k >= 24*3 && k < 30*3 && this->sides % 3 != 0 ) continue;
-            if ( k >= 30*3 && k < 36*3 && this->sides % 13 != 0 ) continue;
+    for (int k = 0; k < vertex.size(); k += 3) {
+        if (this->type != CubeType::grass) {
+            if (k >= 0 * 3 && k < 6 * 3 && this->sides % 11 != 0) continue;
+            if (k >= 6 * 3 && k < 12 * 3 && this->sides % 2 != 0) continue;
+            if (k >= 12 * 3 && k < 18 * 3 && this->sides % 5 != 0) continue;
+            if (k >= 18 * 3 && k < 24 * 3 && this->sides % 7 != 0) continue;
+            if (k >= 24 * 3 && k < 30 * 3 && this->sides % 3 != 0) continue;
+            if (k >= 30 * 3 && k < 36 * 3 && this->sides % 13 != 0) continue;
         }
 
-        v->push_back( vertex[k + 0] + this->x );
-        v->push_back( vertex[k + 1] + this->y );
-        v->push_back( vertex[k + 2] + this->z );
+        v->push_back(vertex[k + 0] + this->x);
+        v->push_back(vertex[k + 1] + this->y);
+        v->push_back(vertex[k + 2] + this->z);
 
-        float texCoordX = textureCoords[ 2*(k/3) ];
-        float texCoordY = textureCoords[ 2*(k/3) + 1 ];
+        double texCoordX = textureCoords[2 * (k / 3)];
+        double texCoordY = textureCoords[2 * (k / 3) + 1];
 
-        switch ( this->type ) {
+        switch (this->type) {
             case CubeType::grassyDirt:
-                v->push_back( texCoordX/(float)texFileSize );
-                v->push_back( texCoordY/(float)texFileSize + 0/(float)texFileSize );
+                v->push_back(texCoordX / (double) texFileSize);
+                v->push_back(texCoordY / (double) texFileSize + 0 / (double) texFileSize);
                 break;
             case CubeType::dirt:
-                v->push_back( texCoordX/(float)texFileSize );
-                v->push_back( texCoordY/(float)texFileSize + 1/(float)texFileSize );
+                v->push_back(texCoordX / (double) texFileSize);
+                v->push_back(texCoordY / (double) texFileSize + 1 / (double) texFileSize);
                 break;
             case CubeType::water:
-                v->push_back( texCoordX/(float)texFileSize );
-                v->push_back( texCoordY/(float)texFileSize + 4/(float)texFileSize );
+                v->push_back(texCoordX / (double) texFileSize);
+                v->push_back(texCoordY / (double) texFileSize + 4 / (double) texFileSize);
                 break;
             case CubeType::stone:
-                v->push_back( texCoordX/(float)texFileSize );
-                v->push_back( texCoordY/(float)texFileSize + 3/(float)texFileSize );
+                v->push_back(texCoordX / (double) texFileSize);
+                v->push_back(texCoordY / (double) texFileSize + 3 / (double) texFileSize);
                 break;
             case CubeType::sand:
-                v->push_back( texCoordX/(float)texFileSize );
-                v->push_back( texCoordY/(float)texFileSize + 2/(float)texFileSize );
+                v->push_back(texCoordX / (double) texFileSize);
+                v->push_back(texCoordY / (double) texFileSize + 2 / (double) texFileSize);
                 break;
             case CubeType::lava:
-                v->push_back( texCoordX/(float)texFileSize );
-                v->push_back( texCoordY/(float)texFileSize + 5/(float)texFileSize );
+                v->push_back(texCoordX / (double) texFileSize);
+                v->push_back(texCoordY / (double) texFileSize + 5 / (double) texFileSize);
                 break;
             case CubeType::grass:
-                v->push_back( texCoordX/(float)texFileSize );
-                v->push_back( texCoordY/(float)texFileSize + 0/(float)texFileSize );
+                v->push_back(texCoordX / (double) texFileSize);
+                v->push_back(texCoordY / (double) texFileSize + 0 / (double) texFileSize);
+                break;
+            case CubeType::wood:
+                v->push_back(texCoordX / (double) texFileSize);
+                v->push_back(texCoordY / (double) texFileSize + 7 / (double) texFileSize);
                 break;
         }
     }
 
-    for ( int k = 0; k < vertex.size()/3; k++ ) {
-        if ( this->type != CubeType::grass ) {
-            if ( k >= 0 && k < 6 && this->sides % 11 != 0 ) continue;
-            if ( k >= 6 && k < 12 && this->sides % 2 != 0 ) continue;
-            if ( k >= 12 && k < 18 && this->sides % 5 != 0 ) continue;
-            if ( k >= 18 && k < 24 && this->sides % 7 != 0 ) continue;
-            if ( k >= 24 && k < 30 && this->sides % 3 != 0 ) continue;
-            if ( k >= 30 && k < 36 && this->sides % 13 != 0 ) continue;
+    for (int k = 0; k < vertex.size() / 3; k++) {
+        if (this->type != CubeType::grass) {
+            if (k >= 0 && k < 6 && this->sides % 11 != 0) continue;
+            if (k >= 6 && k < 12 && this->sides % 2 != 0) continue;
+            if (k >= 12 && k < 18 && this->sides % 5 != 0) continue;
+            if (k >= 18 && k < 24 && this->sides % 7 != 0) continue;
+            if (k >= 24 && k < 30 && this->sides % 3 != 0) continue;
+            if (k >= 30 && k < 36 && this->sides % 13 != 0) continue;
         }
 
         if (i->size() != 0) {
-            i->push_back( (*i)[i->size() - 1] + 1 );
+            i->push_back((*i)[i->size() - 1] + 1);
         } else {
-            i->push_back( 0 );
+            i->push_back(0);
         }
     }
+}
+
+FixedPosition Cube::getPos() {
+    int x = this->getX();
+    int y = this->getY();
+    int z = this->getZ();
+    return FixedPosition(x, y, z);
 }
 
 Cube::~Cube() {

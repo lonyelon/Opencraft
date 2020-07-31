@@ -5,14 +5,14 @@
 
 class Model {
 private:
-    std::vector<float> vertex;
+    std::vector<double> vertex;
     std::vector<int> textureCoords;
 public:
     Model();
 
-    void setVertex( std::vector<float> vertex );
+    void setVertex( std::vector<double> vertex );
     void setTextureCoords( std::vector<int> textureCoords );
-    std::vector<float> getVertex();
+    std::vector<double> getVertex();
     std::vector<int> getTextureCoords();
 };
 

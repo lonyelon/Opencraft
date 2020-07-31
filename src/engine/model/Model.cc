@@ -4,7 +4,7 @@ Model::Model() {
 
 }
 
-void Model::setVertex( std::vector<float> vertex ) {
+void Model::setVertex( std::vector<double> vertex ) {
     this->vertex = vertex;
 }
 
@@ -14,7 +14,7 @@ void Model::setTextureCoords( std::vector<int> textureCoords ) {
 }
 
 
-std::vector<float> Model::getVertex() {
+std::vector<double> Model::getVertex() {
     return this->vertex;
 }
 

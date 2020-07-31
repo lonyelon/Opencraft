@@ -10,7 +10,7 @@
 #include <engine/model/ModelLoader.hpp>
 
 #include <string>
-#include <boost/thread.hpp>
+#include <filesystem>
 
 int pint = 0;
 
@@ -30,164 +30,173 @@ unsigned int SCR_HEIGHT = 1080;
 int seed = 1000;
 
 extern GLuint setShaders(const char *nVertx, const char *nFrag);
+
 GLuint shaderProgram;
 
 void openGlInit() {
-	glClearDepth(1.0f);
-	glClearColor(0.2f, 0.2f, 1.0f, 1.0f);
+    glClearDepth(1.0f);
+    glClearColor(0.2f, 0.2f, 1.0f, 1.0f);
 
-	glEnable( GL_DEPTH_TEST );
-	glEnable( GL_CULL_FACE );
-	glEnable( GL_TEXTURE_2D );
-	glEnable( GL_ALPHA );
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_TEXTURE_2D);
+    glEnable(GL_ALPHA);
 
-	glCullFace(GL_BACK);
+    glCullFace(GL_BACK);
 }
 
 void windowResize(GLFWwindow *window, int width, int height) {
-	SCR_WIDTH = width;
-	SCR_HEIGHT = height;
+    SCR_WIDTH = width;
+    SCR_HEIGHT = height;
 }
 
-int main( int argc, char **argv) {
+int main(int argc, char **argv) {
 
-	srand(time(NULL));
+    srand(time(NULL));
 
-	if (argc != 3) {
-		printf("Usage: Opencraft [worldname] [seed]\n");
-	}
+    std::string worldName;
+    int seed;
 
-	world = new World( argv[1], atoi(argv[2]) );
+    std::cout << "Enter a world name: ";
+    std::cin >> worldName;
 
-	p = new Player( world );
-	ConfigLoader cf = ConfigLoader( "./bin/game.conf" );
-	k = KeyHandler();
+    if (!std::filesystem::is_directory("saves/" + worldName)) {
+        std::cout << "Enter a world seed: ";
+        std::cin >> seed;
+    }
 
-	ModelLoader *md = new ModelLoader();
+    world = new World(worldName, seed);
 
-	cubeModel = md->loadModel( "Cube.model" );
-	grassModel = md->loadModel( "Grass.model" );
-	fluidModel = md->loadModel( "Fluid.model" );
-	if (cubeModel == NULL || grassModel == NULL ){
-		printf("Error loading model.\n");
-	}
+    p = new Player(world);
+    ConfigLoader cf = ConfigLoader("./bin/game.conf");
+    k = KeyHandler();
 
-	float fov = cf.getFloat( "render.fov" );
-	renderDistance = cf.getFloat( "render.distance" );
-	int worldSize = cf.getInt( "world.size" );
-	useMipmap = cf.getInt( "render.mipmap" );
+    ModelLoader *md = new ModelLoader();
 
-	world->setSize( worldSize );
+    cubeModel = md->loadModel("Cube.model");
+    grassModel = md->loadModel("Grass.model");
+    fluidModel = md->loadModel("Fluid.model");
+    if (cubeModel == NULL || grassModel == NULL) {
+        printf("Error loading model.\n");
+    }
 
-	GLuint dirtTex;
-	GLuint stoneTex;
-	GLuint grassTex;
-	GLuint skyTex;
+    float fov = cf.getFloat("render.fov");
+    renderDistance = cf.getFloat("render.distance");
+    int worldSize = cf.getInt("world.size");
+    useMipmap = cf.getInt("render.mipmap");
 
-	Sphere skyBox = Sphere( -renderDistance, 36, 18, true );
+    world->setSize(worldSize);
 
-	glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    GLuint dirtTex;
+    GLuint stoneTex;
+    GLuint grassTex;
+    GLuint skyTex;
 
-	GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Clases", NULL, NULL);
-	if (window == NULL) {
-		std::cout << "Failed to create GLFW window" << std::endl;
-		glfwTerminate();
-		return -1;
-	}
+    Sphere skyBox = Sphere(-renderDistance, 36, 18, true);
 
-	glfwMakeContextCurrent(window);
-	glfwSetKeyCallback(window, getKeyboardInput);
-	glfwSetInputMode(window, GLFW_STICKY_KEYS, 1);
+    glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	glfwSetCursorPosCallback(window, getMouseInput);
-	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    GLFWwindow *window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Clases", NULL, NULL);
+    if (window == NULL) {
+        std::cout << "Failed to create GLFW window" << std::endl;
+        glfwTerminate();
+        return -1;
+    }
 
-	glfwSetWindowSizeCallback (window, windowResize);
-	glfwSetFramebufferSizeCallback (window, windowResize);
+    glfwMakeContextCurrent(window);
+    glfwSetKeyCallback(window, getKeyboardInput);
+    glfwSetInputMode(window, GLFW_STICKY_KEYS, 1);
 
-	glfwSetMouseButtonCallback(window, getMouseButton);
+    glfwSetCursorPosCallback(window, getMouseInput);
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-		std::cout << "Failed to initialize GLAD" << std::endl;
-		return -1;
-	}
+    glfwSetWindowSizeCallback(window, windowResize);
+    glfwSetFramebufferSizeCallback(window, windowResize);
 
-	shaderProgram = setShaders("./bin/shaders/shader.vert", "./bin/shaders/shader.frag");
-	glUseProgram(shaderProgram);
+    glfwSetMouseButtonCallback(window, getMouseButton);
 
-	openGlInit();
+    if (!gladLoadGLLoader((GLADloadproc) glfwGetProcAddress)) {
+        std::cout << "Failed to initialize GLAD" << std::endl;
+        return -1;
+    }
 
-	world->genChunks();
-	printf("World generation completed\n");
+    shaderProgram = setShaders("./bin/shaders/shader.vert", "./bin/shaders/shader.frag");
+    glUseProgram(shaderProgram);
 
-	p->getCam()->setPos(0, 20, 0);
-	p->getCam()->setRotation( glm::half_pi<float>() , glm::half_pi<float>()/3 );
+    openGlInit();
 
-	unsigned int windowSizeLoc = glGetUniformLocation(shaderProgram, "windowSize");
-	glUniform2f(windowSizeLoc, SCR_WIDTH, SCR_HEIGHT);
+    world->genChunks();
+    printf("World generation completed\n");
 
-	dirtTex = loadTexture( "textures.png" );
-	skyTex = loadTexture( "sky.png" );
+    p->getCam()->setPos(0, 20, 0);
+    p->getCam()->setRotation(glm::half_pi<float>(), glm::half_pi<float>() / 3);
 
-	printf("Textures loaded!\n");
+    unsigned int windowSizeLoc = glGetUniformLocation(shaderProgram, "windowSize");
+    glUniform2f(windowSizeLoc, SCR_WIDTH, SCR_HEIGHT);
 
-	while (!glfwWindowShouldClose(window)) {
-		double t = glfwGetTime();
-		processInput(window);
-		k.keyHandler();
+    dirtTex = loadTexture("textures.png");
+    skyTex = loadTexture("sky.png");
 
-		glm::mat4 view; // Se Calcula
-		glm::mat4 projection; // Se calcula
+    printf("Textures loaded!\n");
 
-		view = p->getCam()->getViewMatrix();
-		projection = glm::perspective(glm::radians(fov), (float)SCR_WIDTH/(float)SCR_HEIGHT, 0.1f, renderDistance*1.1f );
+    while (!glfwWindowShouldClose(window)) {
+        double t = glfwGetTime();
+        processInput(window);
+        k.keyHandler();
 
-		unsigned int viewLoc = glGetUniformLocation(shaderProgram, "view");
-		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+        glm::mat4 view; // Se Calcula
+        glm::mat4 projection; // Se calcula
 
-		unsigned int projectionLoc = glGetUniformLocation(shaderProgram, "projection");
-		glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
+        view = p->getCam()->getViewMatrix();
+        projection = glm::perspective(glm::radians(fov), (float) SCR_WIDTH / (float) SCR_HEIGHT, 0.1f,
+                                      renderDistance * 1.1f);
 
-		unsigned int selCubeLoc = glGetUniformLocation(shaderProgram, "selectedCube");
-		Cube *cs = p->getPointedCube();
+        unsigned int viewLoc = glGetUniformLocation(shaderProgram, "view");
+        glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
 
-		if (cs != NULL) {
-			glUniform3f(selCubeLoc, cs->getX(), cs->getY(), cs->getZ());
-		} else {
-			glUniform3f(selCubeLoc, 0, 0, 0);
-		}
+        unsigned int projectionLoc = glGetUniformLocation(shaderProgram, "projection");
+        glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
-		glClear(GL_COLOR_BUFFER_BIT);
-		glClear(GL_DEPTH_BUFFER_BIT);
+        unsigned int selCubeLoc = glGetUniformLocation(shaderProgram, "selectedCube");
+        Cube *cs = p->getPointedCube();
 
-		glBindTexture( GL_TEXTURE_2D, dirtTex );
+        if (cs != NULL) {
+            glUniform3f(selCubeLoc, cs->getX(), cs->getY(), cs->getZ());
+        } else {
+            glUniform3f(selCubeLoc, 0, 0, 0);
+        }
 
-		glm::mat4 model = glm::mat4(1.0f);
-		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
-		world->draw();
-		p->gravity(0.1);
+        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_DEPTH_BUFFER_BIT);
 
-		glBindTexture( GL_TEXTURE_2D, skyTex );
-		model = glm::translate( glm::mat4(1.0f), glm::vec3( p->getCam()->getX(), p->getCam()->getY(), p->getCam()->getZ() ) );
-		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
-		skyBox.draw();
+        glBindTexture(GL_TEXTURE_2D, dirtTex);
 
-		glfwSwapBuffers(window);
-		glfwPollEvents();
-	}
+        glm::mat4 model = glm::mat4(1.0f);
+        glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        world->draw();
+        p->gravity(0.1);
 
-	glfwTerminate();
-	delete(world);
-	return 0;
+        glBindTexture(GL_TEXTURE_2D, skyTex);
+        model = glm::translate(glm::mat4(1.0f),
+                               glm::vec3(p->getCam()->getX(), p->getCam()->getY(), p->getCam()->getZ()));
+        glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
+        skyBox.draw();
+
+        glfwSwapBuffers(window);
+        glfwPollEvents();
+    }
+
+    glfwTerminate();
+    delete (world);
+    return 0;
 }
 
-void processInput(GLFWwindow *window)
-{
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
-		delete(world);
-		glfwSetWindowShouldClose(window, true);
-	}
+void processInput(GLFWwindow *window) {
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
+        delete (world);
+        glfwSetWindowShouldClose(window, true);
+    }
 }

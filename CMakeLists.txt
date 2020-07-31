@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.0)
 set(CMAKE_BUILD_TYPE Debug)
 set(CMAKE_CXX_STANDARD 17)
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
+set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 #set(CMAKE_CXX_FLAGS "-std=c++17 -lglfw -lGL -lGLU -ldl -lm -lboost_thread -lnoise -pthread")
 
 project(Opencraft)
@@ -15,8 +15,7 @@ add_executable(
     ./src/game/Sphere.cc
     ./src/game/world/Chunk.cc
 	./src/game/world/Chunk.hpp
-    ./src/game/world/CubeTypes.cc
-    ./src/game/world/cube/Cube.cc
+        ./src/game/world/cube/Cube.cc
     ./src/game/world/World.cc
     ./src/game/world/World.hpp
 
@@ -36,7 +35,7 @@ add_executable(
 	./src/game/world/cube/Sand.hpp
 	./src/game/world/cube/Grass.hpp
 
-    ./src/game/world/CubeTypes.hpp
+		src/game/world/cube/CubeTypes.hpp
 
     ./src/game/Player.hpp
     ./src/game/Hitbox.hpp
@@ -67,7 +66,7 @@ add_executable(
     ./src/engine/model/Model.hpp
     ./src/engine/model/ModelLoader.cc
     ./src/engine/model/ModelLoader.hpp
-)
+		src/engine/position/FixedPosition.cc src/engine/position/FixedPosition.hpp src/game/world/cube/GrassyDirt.cc src/engine/position/Position.cc src/engine/position/Position.hpp src/game/world/strcuture/Tree.cc src/game/world/strcuture/Tree.hpp src/game/world/cube/Wood.cc src/game/world/cube/Wood.hpp)
 
 target_include_directories(Opencraft PUBLIC src PRIVATE src)
 target_link_libraries(Opencraft glfw GL GLU dl m boost_thread pthread noise)

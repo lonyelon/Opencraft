@@ -11,6 +11,12 @@ To build the game you first need the following libraries:
 * GLFW3
 * GLM
 * Libnoise
+* GLU
+
+```bash
+sudo apt install cmake make g++ git libglfw3-dev libglm-dev libnoise-dev libglu1-mesa-dev
+sudo ln -s /usr/include/libnoise /usr/include/noise
+```
 
 Next, you can clone this repository with:
 ```bash

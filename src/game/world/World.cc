@@ -215,6 +215,10 @@ void World::saveWorld() {
 
     file << game->getPlayer()->getCam()->getX() << "\t" << game->getPlayer()->getCam()->getY() << "\t" << game->getPlayer()->getCam()->getZ();
 
+    for (auto c: this->chunks) {
+        c->Save();
+    }
+
     file.close();
 }
 
@@ -247,11 +251,12 @@ void World::setCube(std::shared_ptr<Cube> c, FixedPosition pos) {
 };
 
 World::~World() {
+    printf("sadada\n");
     if (this->genThread != nullptr) {
         this->updateWorld = false;
         this->genThread->join();
     }
 
     this->saveWorld();
-    this->chunks.clear();
+    //this->chunks.clear();
 }

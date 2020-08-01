@@ -187,6 +187,10 @@ std::shared_ptr<KeyHandler> Game::getKeyHandler() {
 }
 
 Game::~Game() {
+    printf("Closing game\n");
+
+    this->world->saveWorld();
+
     glfwTerminate();
     glfwSetWindowShouldClose(window, true);
 }

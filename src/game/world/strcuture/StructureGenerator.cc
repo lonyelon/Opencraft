@@ -4,6 +4,8 @@
 
 #include "StructureGenerator.hpp"
 
-StructureGenerator::StructureGenerator(World *w) {
+#include <memory>
+
+StructureGenerator::StructureGenerator(std::weak_ptr<World> w) {
     this->world = w;
 }

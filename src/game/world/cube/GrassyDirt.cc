@@ -12,7 +12,7 @@ GrassyDirt::GrassyDirt() : Cube() {
 }
 
 void GrassyDirt::update() {
-    if (!this->chunk->getWorld()->getCube(this->getPos().move(FixedPosition(0,1,0)))->isTransparent()) {
+    if (!this->chunk->getWorld().lock()->getCube(this->getPos().move(FixedPosition(0,1,0)))->isTransparent()) {
         this->chunk->setCube(std::make_shared<Dirt>(), this->getPos());
     }
 };

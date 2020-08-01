@@ -16,7 +16,7 @@
 
 extern std::unique_ptr<Game> game;
 
-Chunk::Chunk(std::shared_ptr<World> w, int xpos, int ypos, int zpos) {
+Chunk::Chunk(std::weak_ptr<World> w, int xpos, int ypos, int zpos) {
     this->world = w;
     this->x = xpos;
     this->y = ypos;
@@ -51,7 +51,7 @@ void Chunk::genTerrain() {
         heights[i] = -1;
     }
 
-    p.SetSeed(this->world->getSeed());
+    p.SetSeed(this->world.lock()->getSeed());
     p.SetFrequency(noiseFreq);
 
     // Generate stone world and water
@@ -74,7 +74,7 @@ void Chunk::genTerrain() {
         }
     }
 
-    p.SetSeed(this->world->getSeed() * 2);
+    p.SetSeed(this->world.lock()->getSeed() * 2);
     p.SetLacunarity(1);
 
     for (int x = 0; x < this->W; x++) {
@@ -117,7 +117,7 @@ void Chunk::genTerrain() {
     float caveFreq = 1;
     float caveProb = -0.5;
 
-    caveNoise.SetSeed(this->world->getSeed() * 3);
+    caveNoise.SetSeed(this->world.lock()->getSeed() * 3);
     caveNoise.SetFrequency(caveFreq);
     caveNoise.SetLacunarity(1);
 
@@ -197,32 +197,32 @@ void Chunk::setCube(std::shared_ptr<Cube> c, FixedPosition pos) {
     this->cubes[pos.getX() + pos.getY() * Chunk::W + pos.getZ() * Chunk::H * Chunk::W] = c;
 
     if (this->generated) {
-        Chunk *c = this->world->getChunk(this->x + 1, this->y, this->z);
+        Chunk *c = this->world.lock()->getChunk(this->x + 1, this->y, this->z);
         if (pos.getX() == Chunk::W - 1 && c != nullptr) {
             c->setUpdated(false);
         }
 
-        c = this->world->getChunk(this->x - 1, this->y, this->z);
+        c = this->world.lock()->getChunk(this->x - 1, this->y, this->z);
         if (pos.getX() == 0 && c != nullptr) {
             c->setUpdated(false);
         }
 
-        c = this->world->getChunk(this->x, this->y + 1, this->z);
+        c = this->world.lock()->getChunk(this->x, this->y + 1, this->z);
         if (pos.getY() == Chunk::H - 1 && c != nullptr) {
             c->setUpdated(false);
         }
 
-        c = this->world->getChunk(this->x, this->y - 1, this->z);
+        c = this->world.lock()->getChunk(this->x, this->y - 1, this->z);
         if (pos.getY() == 0 && c != nullptr) {
             c->setUpdated(false);
         }
 
-        c = this->world->getChunk(this->x, this->y, this->z + 1);
+        c = this->world.lock()->getChunk(this->x, this->y, this->z + 1);
         if (pos.getZ() == Chunk::Z - 1 && c != nullptr) {
             c->setUpdated(false);
         }
 
-        c = this->world->getChunk(this->x, this->y, this->z - 1);
+        c = this->world.lock()->getChunk(this->x, this->y, this->z - 1);
         if (pos.getZ() == 0 && c != nullptr) {
             c->setUpdated(false);
         }
@@ -239,49 +239,49 @@ std::vector<std::shared_ptr<Cube> > Chunk::getCubes() {
 
 int Chunk::isIllated(int x, int y, int z) {
     std::shared_ptr<Cube> c = nullptr;
-    std::shared_ptr<Cube> k = this->world->getCube(this, x, y, z);
+    std::shared_ptr<Cube> k = this->world.lock()->getCube(this, x, y, z);
     int n = 1;
 
     if (k == nullptr) {
         return 1;
     }
 
-    c = this->world->getCube(this, x, y + 1, z);
+    c = this->world.lock()->getCube(this, x, y + 1, z);
     if (c != nullptr && c->isTransparent() && k->getType() != c->getType()) {
         n *= 2;
     } else if (c == nullptr) {
         n *= 2;
     }
 
-    c = this->world->getCube(this, x, y - 1, z);
+    c = this->world.lock()->getCube(this, x, y - 1, z);
     if (c != nullptr && c->isTransparent() && k->getType() != c->getType()) {
         n *= 3;
     } else if (c == nullptr) {
         n *= 3;
     }
 
-    c = this->world->getCube(this, x + 1, y, z);
+    c = this->world.lock()->getCube(this, x + 1, y, z);
     if (c != nullptr && c->isTransparent() && k->getType() != c->getType()) {
         n *= 5;
     } else if (c == nullptr) {
         n *= 5;
     }
 
-    c = this->world->getCube(this, x - 1, y, z);
+    c = this->world.lock()->getCube(this, x - 1, y, z);
     if (c != nullptr && c->isTransparent() && k->getType() != c->getType()) {
         n *= 7;
     } else if (c == nullptr) {
         n *= 7;
     }
 
-    c = this->world->getCube(this, x, y, z + 1);
+    c = this->world.lock()->getCube(this, x, y, z + 1);
     if (c != nullptr && c->isTransparent() && k->getType() != c->getType()) {
         n *= 11;
     } else if (c == nullptr) {
         n *= 11;
     }
 
-    c = this->world->getCube(this, x, y, z - 1);
+    c = this->world.lock()->getCube(this, x, y, z - 1);
     if (c != nullptr && c->isTransparent() && k->getType() != c->getType()) {
         n *= 13;
     } else if (c == nullptr) {
@@ -301,12 +301,12 @@ void Chunk::getVisibleCubes() {
         this->renderedCubes.clear();
     }
 
-    this->world->genChunkAt(false, this->x + 1, this->y, this->z);
-    this->world->genChunkAt(false, this->x - 1, this->y, this->z);
-    this->world->genChunkAt(false, this->x, this->y, this->z + 1);
-    this->world->genChunkAt(false, this->x, this->y, this->z - 1);
-    this->world->genChunkAt(false, this->x, this->y - 1, this->z);
-    this->world->genChunkAt(false, this->x, this->y + 1, this->z);
+    this->world.lock()->genChunkAt(false, this->x + 1, this->y, this->z);
+    this->world.lock()->genChunkAt(false, this->x - 1, this->y, this->z);
+    this->world.lock()->genChunkAt(false, this->x, this->y, this->z + 1);
+    this->world.lock()->genChunkAt(false, this->x, this->y, this->z - 1);
+    this->world.lock()->genChunkAt(false, this->x, this->y - 1, this->z);
+    this->world.lock()->genChunkAt(false, this->x, this->y + 1, this->z);
 
     for (int i = 0; i < this->W * this->H * this->Z; i++) {
         if (this->cubes[i]->getType() != CubeType::air) {
@@ -356,7 +356,7 @@ Chunk::~Chunk() {
 
 void Chunk::Save() {
     std::stringstream name;
-    name << "saves/" << this->world->getName() << "/world/" << this->x << "_" << this->y << "_" << this->z << ".chunk";
+    name << "saves/" << this->world.lock()->getName() << "/world/" << this->x << "_" << this->y << "_" << this->z << ".chunk";
 
     std::ofstream file(name.str());
 
@@ -373,7 +373,7 @@ void Chunk::Save() {
 
 void Chunk::Load() {
     std::stringstream name;
-    name << "saves/" << this->world->getName() << "/world/" << this->x << "_" << this->y << "_" << this->z << ".chunk";
+    name << "saves/" << this->world.lock()->getName() << "/world/" << this->x << "_" << this->y << "_" << this->z << ".chunk";
 
     std::ifstream file(name.str());
 
@@ -410,6 +410,6 @@ void Chunk::Load() {
     }
 }
 
-std::shared_ptr<World> Chunk::getWorld() {
+std::weak_ptr<World> Chunk::getWorld() {
     return this->world;
 }

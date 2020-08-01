@@ -7,13 +7,15 @@
 
 #include <engine/position/FixedPosition.hpp>
 
+#include <memory>
+
 class World;
 
 class StructureGenerator {
-private:
-    World *world;
+protected:
+    std::weak_ptr<World> world;
 public:
-    StructureGenerator(World *w);
+    StructureGenerator(std::weak_ptr<World> w);
 
     virtual void constructAt(FixedPosition at) = 0;
 };

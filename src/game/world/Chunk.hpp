@@ -16,7 +16,7 @@ private:
     int x, y, z;
     std::vector<std::shared_ptr<Cube>> cubes;
     std::vector<std::shared_ptr<Cube>> renderedCubes;
-    std::shared_ptr<World> world;
+    std::weak_ptr<World> world;
     bool generated;
     bool updated = false;
     std::unique_ptr<Model> chunkModel;
@@ -24,7 +24,7 @@ private:
 public:
     static const int W = 16, H = 16, Z = 16;
 
-    Chunk(std::shared_ptr<World> w, int posX, int posY, int posZ);
+    Chunk(std::weak_ptr<World> w, int posX, int posY, int posZ);
 
     void genTerrain();
 
@@ -58,7 +58,7 @@ public:
 
     void draw();
 
-    std::shared_ptr<World> getWorld();
+    std::weak_ptr<World> getWorld();
 
     void setUpdated(bool update) { this->updated = update; };
 

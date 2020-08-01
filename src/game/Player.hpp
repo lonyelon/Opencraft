@@ -11,12 +11,12 @@ class Cube;
 
 class Player {
 private:
-    std::shared_ptr<World> world;
+    std::weak_ptr<World> world;
     std::shared_ptr<Camera> cam;
     float vspd;
     float movementSpeed;
 public:
-    Player(std::shared_ptr<World> world);
+    Player(std::weak_ptr<World> world);
 
     void move(float mx, float my, float mz);
 
@@ -32,7 +32,7 @@ public:
 
     float getSpeed() { return this->movementSpeed; };
 
-    std::shared_ptr<World> getWorld() { return this->world; };
+    std::weak_ptr<World> getWorld() { return this->world; };
 
     void breakCube();
 

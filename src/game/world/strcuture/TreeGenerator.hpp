@@ -11,10 +11,8 @@
 class World;
 
 class TreeGenerator : public StructureGenerator {
-private:
-    World *world;
 public:
-    TreeGenerator(World *w);
+    TreeGenerator(std::weak_ptr<World> w);
 
     void constructAt(FixedPosition at);
 };

@@ -69,4 +69,4 @@ add_executable(
 		src/engine/position/FixedPosition.cc src/engine/position/FixedPosition.hpp src/game/world/cube/GrassyDirt.cc src/engine/position/Position.cc src/engine/position/Position.hpp src/game/world/strcuture/TreeGenerator.cc src/game/world/strcuture/TreeGenerator.hpp src/game/world/cube/Wood.cc src/game/world/cube/Wood.hpp src/game/world/strcuture/StructureGenerator.cc src/game/world/strcuture/StructureGenerator.hpp src/game/world/cube/TreeLeaves.cc src/game/world/cube/TreeLeaves.hpp src/game/Game.cc src/game/Game.hpp)
 
 target_include_directories(Opencraft PUBLIC src PRIVATE src)
-target_link_libraries(Opencraft glfw GL GLU dl m boost_thread pthread noise)
+target_link_libraries(Opencraft glfw GL GLU dl m pthread noise)

@@ -65,51 +65,51 @@ void KeyHandler::keyHandler() {
         }
 
         if (keyname.compare("move.jump") == 0 && k.pressed) {
-            game->player->jump();
+            game->getPlayer()->jump();
             continue;
         }
 
         if (keyname.compare("move.sprint") == 0 && k.pressed) {
-            game->player->setSprint(true);
+            game->getPlayer()->setSprint(true);
             continue;
         } else if (keyname.compare("move.sprint") == 0 && !k.pressed) {
-            game->player->setSprint(false);
+            game->getPlayer()->setSprint(false);
             continue;
         }
 
         if (keyname.compare("move.forward") == 0 && k.pressed) {
-            game->player->move(-cos(game->player->getCam()->getRotX()), 0, sin(game->player->getCam()->getRotX()));
+            game->getPlayer()->move(-cos(game->getPlayer()->getCam()->getRotX()), 0, sin(game->getPlayer()->getCam()->getRotX()));
             continue;
         }
 
         if (keyname.compare("move.left") == 0 && k.pressed) {
-            game->player->move(
-                    -cos(glm::half_pi<float>() + game->player->getCam()->getRotX()),
+            game->getPlayer()->move(
+                    -cos(glm::half_pi<float>() + game->getPlayer()->getCam()->getRotX()),
                     0,
-                    sin(glm::half_pi<float>() + game->player->getCam()->getRotX())
+                    sin(glm::half_pi<float>() + game->getPlayer()->getCam()->getRotX())
             );
             continue;
         }
 
         if (keyname.compare("move.backward") == 0 && k.pressed) {
-            game->player->move(
-                    cos(game->player->getCam()->getRotX()),
+            game->getPlayer()->move(
+                    cos(game->getPlayer()->getCam()->getRotX()),
                     0,
-                    -sin(game->player->getCam()->getRotX())
+                    -sin(game->getPlayer()->getCam()->getRotX())
             );
             continue;
         }
         if (keyname.compare("move.right") == 0 && k.pressed) {
-            game->player->move(
-                    cos(glm::half_pi<float>() + game->player->getCam()->getRotX()),
+            game->getPlayer()->move(
+                    cos(glm::half_pi<float>() + game->getPlayer()->getCam()->getRotX()),
                     0,
-                    -sin(glm::half_pi<float>() + game->player->getCam()->getRotX())
+                    -sin(glm::half_pi<float>() + game->getPlayer()->getCam()->getRotX())
             );
             continue;
         }
         if (keyname.compare("special.worldgen") == 0 && k.pressed) {
-            game->world->setSeed(rand() % 2000000);
-            game->world->genChunks();
+            game->getWorld()->setSeed(rand() % 2000000);
+            game->getWorld()->genChunks();
             this->keys.erase(this->keys.begin() + i);
             continue;
         }

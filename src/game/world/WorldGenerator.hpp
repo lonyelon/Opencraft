@@ -19,7 +19,7 @@ public:
 
     static void genVAOs(std::vector<Chunk *> *chunks, int threadNumber, int threadCount);
 
-    static void worldUpdate(World *world, Player *player);
+    static void worldUpdate(std::shared_ptr<World> world, std::shared_ptr<Player> player);
 };
 
 #endif

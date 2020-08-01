@@ -53,11 +53,11 @@ void Game::start() {
         std::cin >> seed;
     }
 
-    this->world = new World(worldName, seed);
-    this->player = new Player(this->world);
+    this->world = std::make_shared<World>(worldName, seed);
+    this->player = std::make_shared<Player>(this->world);
 
     ConfigLoader cf = ConfigLoader("./bin/game.conf");
-    this->k = KeyHandler();
+    this->keyHandler = std::make_shared<KeyHandler>();
 
     // Load models
     ModelLoader *md = new ModelLoader();
@@ -129,7 +129,7 @@ void Game::start() {
 void Game::loop() {
     while (!glfwWindowShouldClose(window)) {
         processInput(window);
-        k.keyHandler();
+        keyHandler->keyHandler();
 
         glm::mat4 view; // Se Calcula
         glm::mat4 projection; // Se calcula
@@ -145,7 +145,7 @@ void Game::loop() {
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
         unsigned int selCubeLoc = glGetUniformLocation(shaderProgram, "selectedCube");
-        Cube *cs = game->player->getPointedCube();
+        Cube *cs = game->getPlayer()->getPointedCube();
 
         if (cs != nullptr) {
             glUniform3f(selCubeLoc, cs->getX(), cs->getY(), cs->getZ());
@@ -175,8 +175,19 @@ void Game::loop() {
     }
 }
 
+std::shared_ptr<World> Game::getWorld() {
+    return this->world;
+}
+
+std::shared_ptr<Player> Game::getPlayer() {
+    return this->player;
+}
+
+std::shared_ptr<KeyHandler> Game::getKeyHandler() {
+    return this->keyHandler;
+}
+
 Game::~Game() {
     glfwTerminate();
     glfwSetWindowShouldClose(window, true);
-    delete (this->world);
 }

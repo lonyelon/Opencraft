@@ -2,10 +2,11 @@
 #include "world/World.hpp"
 
 #include <cstdio>
+#include <memory>
 
 extern int pint;
 
-Player::Player( World *world ) {
+Player::Player( std::shared_ptr<World> world ) {
     this->cam = new Camera(this);
     this->cam->setPos( 0, 100, 0 );
     this->world = world;

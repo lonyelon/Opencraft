@@ -30,7 +30,7 @@ void WorldGenerator::genVAOs(std::vector<Chunk *> *chunks, int threadNumber, int
 /*
 	Updates the world. Gets executes in a separated thread.
 */
-void WorldGenerator::worldUpdate(World *world, Player *player) {
+void WorldGenerator::worldUpdate(std::shared_ptr<World> world, std::shared_ptr<Player> player) {
     const int maxDist = round(game->renderDistance / 16);
 
     while (world->isWorldUpdating()) {

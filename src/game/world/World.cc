@@ -116,7 +116,7 @@ void World::genChunks() {
     }
 
     this->updateWorld = true;
-    this->genThread = std::make_unique<std::thread>(WorldGenerator::worldUpdate, this, game->player);
+    this->genThread = std::make_unique<std::thread>(WorldGenerator::worldUpdate, game->getWorld(), game->getPlayer());
 
     printf("Complete!\n");
 }
@@ -213,7 +213,7 @@ Chunk *World::getChunk(int x, int y, int z) {
 void World::saveWorld() {
     std::ofstream file("saves/" + this->name + "/playerdata.txt");
 
-    file << game->player->getCam()->getX() << "\t" << game->player->getCam()->getY() << "\t" << game->player->getCam()->getZ();
+    file << game->getPlayer()->getCam()->getX() << "\t" << game->getPlayer()->getCam()->getY() << "\t" << game->getPlayer()->getCam()->getZ();
 
     file.close();
 

@@ -18,9 +18,13 @@
 #include <memory>
 
 class Game {
+private:
+    std::shared_ptr<World> world;
+    std::shared_ptr<Player> player;
+    std::shared_ptr<KeyHandler> keyHandler;
+
+    Sphere skybox;
 public:
-    World *world;
-    Player *player;
     std::shared_ptr<Model> cubeModel, grassModel, fluidModel;
 
     int useMipmap = 1;
@@ -28,20 +32,22 @@ public:
     unsigned int SCR_WIDTH = 1920;
     unsigned int SCR_HEIGHT = 1080;
     GLuint shaderProgram;
-    KeyHandler k;
-    GLFWwindow *window;
 
+    GLFWwindow *window;
     GLuint dirtTex;
     GLuint skyTex;
-
-    Sphere skybox;
-
 
     Game();
 
     void start();
 
     void loop();
+
+    std::shared_ptr<World> getWorld();
+
+    std::shared_ptr<Player> getPlayer();
+
+    std::shared_ptr<KeyHandler> getKeyHandler();
 
     ~Game();
 };

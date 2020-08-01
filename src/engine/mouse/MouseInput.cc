@@ -6,7 +6,7 @@
 extern std::unique_ptr<Game> game;
 
 void getMouseInput(GLFWwindow* window, double xpos, double ypos) {
-	game->player->getCam()->moveCoords(xpos, ypos);
+	game->getPlayer()->getCam()->moveCoords(xpos, ypos);
 	 
 	glfwSetCursorPos(window, 0, 0);
 }
@@ -14,10 +14,10 @@ void getMouseInput(GLFWwindow* window, double xpos, double ypos) {
 void getMouseButton(GLFWwindow* window, int button, int action, int mods)
 {
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-		game->player->breakCube();
+		game->getPlayer()->breakCube();
 	}
 
 	if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
-		game->player->placeCube();
+		game->getPlayer()->placeCube();
 	}
 }

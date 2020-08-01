@@ -3,17 +3,19 @@
 
 #include "../engine/Engine.hpp"
 
+#include <memory>
+
 class World;
 class Cube;
 
 class Player {
 private:
-    World *world;
+    std::shared_ptr<World> world;
     Camera *cam;
     float vspd;
     float movementSpeed;
 public:
-    Player( World *world );
+    Player( std::shared_ptr<World> world );
 
     void move( float mx, float my, float mz );
     void setSprint(bool sprint);
@@ -25,7 +27,7 @@ public:
     bool getPointedPosition(float *x, float *y, float *z);
 
     float getSpeed() { return this->movementSpeed; };
-    World *getWorld() { return this->world; };
+    std::shared_ptr<World> getWorld() { return this->world; };
 
     void breakCube();
     void placeCube();

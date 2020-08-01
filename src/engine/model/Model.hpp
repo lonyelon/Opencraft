@@ -5,15 +5,28 @@
 
 class Model {
 private:
-    std::vector<double> vertex;
+    std::vector<float> vertex;
     std::vector<int> textureCoords;
+    unsigned int vao;
+
 public:
     Model();
 
-    void setVertex( std::vector<double> vertex );
-    void setTextureCoords( std::vector<int> textureCoords );
-    std::vector<double> getVertex();
+    void setVertex(std::vector<float> vertex);
+
+    void setTextureCoords(std::vector<int> textureCoords);
+
+    std::vector<float> getVertex();
+
     std::vector<int> getTextureCoords();
+
+    int genVao();
+
+    int getVao();
+
+    void draw();
+
+    ~Model();
 };
 
 #endif

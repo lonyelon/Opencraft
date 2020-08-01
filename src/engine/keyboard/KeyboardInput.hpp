@@ -1,7 +1,7 @@
-#ifndef _KEYINPUTHANDLER_HPP_
-#define _KEYINPUTHANDLER_HPP_
+#ifndef KEYINPUTHANDLER_HPP
+#define KEYINPUTHANDLER_HPP
 
-#include "../glfw.hpp"
+#include <engine/Engine.hpp>
 #include <stdio.h>
 #include <iostream>
 #include <vector>

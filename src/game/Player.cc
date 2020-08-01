@@ -270,13 +270,10 @@ void Player::placeCube() {
         return;
     }
 
-    pint = 1;
 	FixedPosition pos = c0->getChunkPos();
     c0->getChunk()->setCube(new Stone(), pos.getX(), pos.getY(), pos.getZ());
     c0->getChunk()->getVisibleCubes();
     c0->getChunk()->genVao();
-
-    pint = 0;
 }
 
 Camera *Player::getCam() {

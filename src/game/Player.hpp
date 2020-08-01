@@ -1,7 +1,7 @@
 #ifndef GAME_PLAYER
 #define GAME_PLAYER 
 
-#include "../engine/glfw.hpp"
+#include "../engine/Engine.hpp"
 
 class World;
 class Cube;

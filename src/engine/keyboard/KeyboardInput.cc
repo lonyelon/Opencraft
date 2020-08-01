@@ -1,16 +1,14 @@
 #include "KeyboardInput.hpp"
 
-#include "../glfw.hpp"
-#include <stdio.h>
-#include <iostream>
+#include <game/Game.hpp>
 
-extern KeyHandler k;
+extern std::unique_ptr<Game> game;
  
 void getKeyboardInput(GLFWwindow* window, int key, int scancode, int action, int mods) {
     if ( action == GLFW_PRESS ) {
-        k.addKey(key);
+        game->k.addKey(key);
     } else if ( action == GLFW_RELEASE ) {
-        k.removeKey(key);
+        game->k.removeKey(key);
     }
 }
 

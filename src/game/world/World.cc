@@ -2,11 +2,13 @@
 
 #include <thread>
 #include <filesystem>
+#include <memory>
 
-#include <game/Player.hpp>
 #include <game/world/WorldGenerator.hpp>
 
-extern Player *p;
+#include <game/Game.hpp>
+
+extern std::unique_ptr<Game> game;
 
 World::World(std::string name, int seed) {
     this->name = name;
@@ -110,24 +112,18 @@ void World::genChunks() {
     for (int i = 0; i < count; i++) {
         printf("%d/%d\n", i, count);
         this->chunks[i]->getVisibleCubes();
-        this->chunks[i]->genVao();
+        //this->chunks[i]->genVao();
     }
 
     this->updateWorld = true;
-    this->genThread = new std::thread(WorldGenerator::worldUpdate, this, p);
+    this->genThread = std::make_unique<std::thread>(WorldGenerator::worldUpdate, this, game->player);
 
     printf("Complete!\n");
 }
 
 void World::draw() {
-    for (int i = 0; i < this->drawQueue.size(); i++) {
-        this->drawQueue[i]->genVao();
-    }
-    this->drawQueue.clear();
-
-    for (int k = 0; k < this->chunks.size(); k++) {
-        //this->chunks[k]->genVao();
-        this->chunks[k]->draw();
+    for (auto c: this->chunks) {
+        c->draw();
     }
 }
 
@@ -143,7 +139,7 @@ int sign(int x) {
 	Returns a cube by it's coordinates.
 */
 Cube *World::getCube(int x, int y, int z) {
-    this->getCube(FixedPosition(x, y, z));
+    return this->getCube(FixedPosition(x, y, z));
 }
 
 Cube *World::getCube(FixedPosition pos) {
@@ -170,8 +166,6 @@ Cube *World::getCube(Chunk *k, int x, int y, int z) {
 }
 
 Cube *World::getCube(Chunk *k, FixedPosition pos) {
-    Chunk *c = NULL;
-
     int chunkX = floor((float) pos.getX() / 16);
     int chunkY = floor((float) pos.getY() / 16);
     int chunkZ = floor((float) pos.getZ() / 16);
@@ -216,31 +210,22 @@ Chunk *World::getChunk(int x, int y, int z) {
     return NULL;
 }
 
-World::~World() {
-    if (this->genThread != NULL) {
-        this->updateWorld = false;
-        this->genThread->join();
-    }
-
-    this->saveWorld();
-}
-
 void World::saveWorld() {
     std::ofstream file("saves/" + this->name + "/playerdata.txt");
 
-    file << p->getCam()->getX() << "\t" << p->getCam()->getY() << "\t" << p->getCam()->getZ();
+    file << game->player->getCam()->getX() << "\t" << game->player->getCam()->getY() << "\t" << game->player->getCam()->getZ();
 
     file.close();
 
-    for (int i = 0; i < this->chunks.size(); i++) {
-        delete (this->chunks[i]);
+    for (auto c: this->chunks) {
+        delete(c);
     }
 }
 
 int World::getCubesDrawn() {
     int c = 0;
-    for (int i = 0; i < this->chunks.size(); i++) {
-        c += this->chunks[i]->getCubeCount();
+    for (auto chunk: this->chunks) {
+        c += chunk->getCubeCount();
     }
     return c;
 }
@@ -260,7 +245,16 @@ void World::setCube(Cube *c, FixedPosition pos) {
 
     Chunk *chunk = this->getChunk(x, y, z);
     if (chunk != NULL) {
-        FixedPosition newPos = pos.move(FixedPosition(-1*x*Chunk::W, -1*y*Chunk::H, -1*z*Chunk::Z));
+        FixedPosition newPos = pos.move(FixedPosition(-1 * x * Chunk::W, -1 * y * Chunk::H, -1 * z * Chunk::Z));
         chunk->setCube(c, newPos);
     }
 };
+
+World::~World() {
+    if (this->genThread != NULL) {
+        this->updateWorld = false;
+        this->genThread->join();
+    }
+
+    this->saveWorld();
+}

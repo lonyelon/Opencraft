@@ -2,12 +2,11 @@
 
 #include <cstdio>
 
-#include "../../../engine/model/Model.hpp"
+#include <game/Game.hpp>
+#include <engine/model/Model.hpp>
+#include <memory>
 
-extern GLuint shaderProgram;
-extern Model *cubeModel;
-extern Model *grassModel;
-extern Model *fluidModel;
+extern std::unique_ptr<Game> game;
 
 Cube::Cube(Chunk *c, int xpos, int ypos, int zpos) {
     this->x = xpos;
@@ -28,13 +27,13 @@ Cube::Cube() {
 }
 
 void Cube::setPosition(int x, int y, int z) {
-    Cube::x = x;
-    Cube::y = y;
-    Cube::z = z;
+    this->x = x;
+    this->y = y;
+    this->z = z;
 }
 
 void Cube::setType(CubeType t) {
-    Cube::type = t;
+    this->type = t;
 }
 
 CubeType Cube::getType() {
@@ -42,26 +41,27 @@ CubeType Cube::getType() {
 }
 
 void Cube::getVertex(std::vector<float> *v, std::vector<int> *i, int n) {
-    const int texFileSize = 512 / 32;
+    const int texFileSize = 16;
+    const int texFileSizeX = 6;
 
-    std::vector<double> vertex;
+    std::vector<float> vertex;
     std::vector<int> textureCoords;
 
     switch (this->type) {
         case CubeType::grass:
-            vertex = grassModel->getVertex();
-            textureCoords = grassModel->getTextureCoords();
+            vertex = game->grassModel->getVertex();
+            textureCoords = game->grassModel->getTextureCoords();
             break;
         case CubeType::water:
-            vertex = fluidModel->getVertex();
-            textureCoords = fluidModel->getTextureCoords();
+            vertex = game->fluidModel->getVertex();
+            textureCoords = game->fluidModel->getTextureCoords();
             break;
         default:
-            vertex = cubeModel->getVertex();
-            textureCoords = cubeModel->getTextureCoords();
+            vertex = game->cubeModel->getVertex();
+            textureCoords = game->cubeModel->getTextureCoords();
     }
 
-    for (int k = 0; k < vertex.size(); k += 3) {
+    for (std::size_t k = 0; k < vertex.size(); k += 3) {
         if (this->type != CubeType::grass) {
             if (k >= 0 * 3 && k < 6 * 3 && this->sides % 11 != 0) continue;
             if (k >= 6 * 3 && k < 12 * 3 && this->sides % 2 != 0) continue;
@@ -75,43 +75,11 @@ void Cube::getVertex(std::vector<float> *v, std::vector<int> *i, int n) {
         v->push_back(vertex[k + 1] + this->y);
         v->push_back(vertex[k + 2] + this->z);
 
-        double texCoordX = textureCoords[2 * (k / 3)];
-        double texCoordY = textureCoords[2 * (k / 3) + 1];
+        float texCoordX = textureCoords[2 * (k / 3)];
+        float texCoordY = textureCoords[2 * (k / 3) + 1];
 
-        switch (this->type) {
-            case CubeType::grassyDirt:
-                v->push_back(texCoordX / (double) texFileSize);
-                v->push_back(texCoordY / (double) texFileSize + 0 / (double) texFileSize);
-                break;
-            case CubeType::dirt:
-                v->push_back(texCoordX / (double) texFileSize);
-                v->push_back(texCoordY / (double) texFileSize + 1 / (double) texFileSize);
-                break;
-            case CubeType::water:
-                v->push_back(texCoordX / (double) texFileSize);
-                v->push_back(texCoordY / (double) texFileSize + 4 / (double) texFileSize);
-                break;
-            case CubeType::stone:
-                v->push_back(texCoordX / (double) texFileSize);
-                v->push_back(texCoordY / (double) texFileSize + 3 / (double) texFileSize);
-                break;
-            case CubeType::sand:
-                v->push_back(texCoordX / (double) texFileSize);
-                v->push_back(texCoordY / (double) texFileSize + 2 / (double) texFileSize);
-                break;
-            case CubeType::lava:
-                v->push_back(texCoordX / (double) texFileSize);
-                v->push_back(texCoordY / (double) texFileSize + 5 / (double) texFileSize);
-                break;
-            case CubeType::grass:
-                v->push_back(texCoordX / (double) texFileSize);
-                v->push_back(texCoordY / (double) texFileSize + 0 / (double) texFileSize);
-                break;
-            case CubeType::wood:
-                v->push_back(texCoordX / (double) texFileSize);
-                v->push_back(texCoordY / (double) texFileSize + 7 / (double) texFileSize);
-                break;
-        }
+        v->push_back(texCoordX / (float) texFileSizeX);
+        v->push_back(texCoordY / (float) texFileSize + (this->getType() - 1) / (float) texFileSize);
     }
 
     for (int k = 0; k < vertex.size() / 3; k++) {

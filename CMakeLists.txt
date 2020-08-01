@@ -54,7 +54,7 @@ add_executable(
     ./src/engine/keyboard/KeyboardInput.hpp
     ./src/engine/keyboard/KeyHandler.hpp
     ./src/engine/config/ConfigLoader.hpp
-    ./src/engine/glfw.hpp
+		src/engine/Engine.hpp
     ./src/engine/LoadTexture.hpp
     ./src/engine/mouse/MouseInput.hpp
     ./src/engine/mouse/Camera.hpp
@@ -66,7 +66,7 @@ add_executable(
     ./src/engine/model/Model.hpp
     ./src/engine/model/ModelLoader.cc
     ./src/engine/model/ModelLoader.hpp
-		src/engine/position/FixedPosition.cc src/engine/position/FixedPosition.hpp src/game/world/cube/GrassyDirt.cc src/engine/position/Position.cc src/engine/position/Position.hpp src/game/world/strcuture/Tree.cc src/game/world/strcuture/Tree.hpp src/game/world/cube/Wood.cc src/game/world/cube/Wood.hpp)
+		src/engine/position/FixedPosition.cc src/engine/position/FixedPosition.hpp src/game/world/cube/GrassyDirt.cc src/engine/position/Position.cc src/engine/position/Position.hpp src/game/world/strcuture/TreeGenerator.cc src/game/world/strcuture/TreeGenerator.hpp src/game/world/cube/Wood.cc src/game/world/cube/Wood.hpp src/game/world/strcuture/StructureGenerator.cc src/game/world/strcuture/StructureGenerator.hpp src/game/world/cube/TreeLeaves.cc src/game/world/cube/TreeLeaves.hpp src/game/Game.cc src/game/Game.hpp)
 
 target_include_directories(Opencraft PUBLIC src PRIVATE src)
 target_link_libraries(Opencraft glfw GL GLU dl m boost_thread pthread noise)

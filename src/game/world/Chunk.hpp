@@ -2,25 +2,24 @@
 #define _CHUNK_HPP_
 
 #include <vector>
+#include <memory>
 
-//#include "World.hpp"
 #include "Chunk.hpp"
 #include "cube/Cube.hpp"
 #include "cube/Dirt.hpp"
+#include <engine/model/Model.hpp>
 
 class World;
 
 class Chunk {
 private:
     int x, y, z;
-    unsigned int VAO;
     std::vector<Cube *> cubes;
     std::vector<Cube *> renderedCubes;
     bool generated;
     World *world;
-    std::vector<float> v;
-    std::vector<int> i;
     bool updated = false;
+    std::unique_ptr<Model> chunkModel;
 
 public:
     static const int W = 16, H = 16, Z = 16;
@@ -30,7 +29,6 @@ public:
     void genTerrain();
 
     Cube *getCube(unsigned int x, int y, int z); // TODO remove this
-
     Cube *getCube(FixedPosition pos);
 
     void setCube(Cube *c, int x, int y, int z); // TODO remove this
@@ -54,8 +52,6 @@ public:
 
     int getZ() { return this->z; };
 
-    int getVao() { return this->VAO; };
-
     void Save();
 
     void Load();
@@ -63,6 +59,12 @@ public:
     void draw();
 
     World *getWorld();
+
+    void setUpdated(bool update) { this->updated = update; };
+
+    bool isDrawn() {
+        return this->chunkModel->getVao() != 0;
+    }
 
     ~Chunk();
 };

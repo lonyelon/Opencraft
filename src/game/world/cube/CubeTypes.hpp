@@ -10,7 +10,8 @@ enum CubeType {
     water = 5,
     lava = 6,
     grass = 7,
-    wood = 8
+    wood = 8,
+    treeleaves = 9
 };
 
 #endif

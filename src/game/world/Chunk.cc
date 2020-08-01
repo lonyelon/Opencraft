@@ -2,7 +2,7 @@
 #include "World.hpp"
 #include "cube/Cubes.hpp"
 #include <game/world/cube/CubeTypes.hpp>
-#include <game/world/strcuture/Tree.hpp>
+#include <game/world/strcuture/TreeGenerator.hpp>
 
 #include <noise/noise.h>
 
@@ -10,9 +10,11 @@
 #include <vector>
 #include <sstream>
 
+#include <memory>
 
-extern GLuint shaderProgram;
-extern int pint;
+#include <game/Game.hpp>
+
+extern std::unique_ptr<Game> game;
 
 Chunk::Chunk(World *w, int xpos, int ypos, int zpos) {
     this->world = w;
@@ -23,7 +25,7 @@ Chunk::Chunk(World *w, int xpos, int ypos, int zpos) {
     this->generated = false;
 
     this->cubes = std::vector<Cube *>(this->W * this->H * this->Z);
-    this->VAO = 0;
+    this->chunkModel = std::make_unique<Model>();
 }
 
 void Chunk::genTerrain() {
@@ -73,7 +75,7 @@ void Chunk::genTerrain() {
     }
 
     p.SetSeed(this->world->getSeed() * 2);
-	p.SetLacunarity(1);
+    p.SetLacunarity(1);
 
     for (int x = 0; x < this->W; x++) {
         for (int z = 0; z < this->Z; z++) {
@@ -100,11 +102,6 @@ void Chunk::genTerrain() {
                             this->setCube(new Sand(), x, y, z);
                         } else if (dirtCount == 0 && y + this->y * Chunk::H >= waterHeight - 1) {
                             this->setCube(new GrassyDirt(), x, y, z);
-
-                            if (rand() % 100 == 1) {
-                                Tree t = Tree(this->world);
-                                t.construct(FixedPosition(x + this->x*Chunk::W,y + this->y*Chunk::H + 1,z + this->z*Chunk::Z));
-                            }
                         } else {
                             this->setCube(new Dirt(), x, y, z);
                         }
@@ -144,7 +141,7 @@ void Chunk::genTerrain() {
             }
         }
     }
-/*
+    /*
     for (int x = 0; x < this->W; x++) {
         for (int z = 0; z < this->Z; z++) {
             int dirtCount = 0;
@@ -199,13 +196,45 @@ void Chunk::setCube(Cube *c, FixedPosition pos) {
 
     this->cubes[pos.getX() + pos.getY() * Chunk::W + pos.getZ() * Chunk::H * Chunk::W] = c;
 
+    if (this->generated) {
+        Chunk *c = this->world->getChunk(this->x + 1, this->y, this->z);
+        if (pos.getX() == Chunk::W - 1 && c != NULL) {
+            c->setUpdated(false);
+        }
+
+        c = this->world->getChunk(this->x - 1, this->y, this->z);
+        if (pos.getX() == 0 && c != NULL) {
+            c->setUpdated(false);
+        }
+
+        c = this->world->getChunk(this->x, this->y + 1, this->z);
+        if (pos.getY() == Chunk::H - 1 && c != NULL) {
+            c->setUpdated(false);
+        }
+
+        c = this->world->getChunk(this->x, this->y - 1, this->z);
+        if (pos.getY() == 0 && c != NULL) {
+            c->setUpdated(false);
+        }
+
+        c = this->world->getChunk(this->x, this->y, this->z + 1);
+        if (pos.getZ() == Chunk::Z - 1 && c != NULL) {
+            c->setUpdated(false);
+        }
+
+        c = this->world->getChunk(this->x, this->y, this->z - 1);
+        if (pos.getZ() == 0 && c != NULL) {
+            c->setUpdated(false);
+        }
+    }
+
+
     this->updated = false;
 }
 
 
 std::vector<Cube *> Chunk::getCubes() {
     return this->cubes;
-    //return NULL;
 }
 
 int Chunk::isIllated(int x, int y, int z) {
@@ -296,62 +325,27 @@ void Chunk::getVisibleCubes() {
 }
 
 void Chunk::updateModel() {
-    this->v.clear();
-    this->i.clear();
+    this->chunkModel = std::make_unique<Model>();
+    std::vector<float> v;
+    std::vector<int> i;
     for (std::size_t k = 0; k < this->renderedCubes.size(); k++) {
-        this->renderedCubes[k]->getVertex(&this->v, &this->i, k);
+        this->renderedCubes[k]->getVertex(&v, &i, k);
     }
+    this->chunkModel->setVertex(v);
+    this->chunkModel->setTextureCoords(i);
 }
 
 
 void Chunk::genVao() {
-    if (this->VAO != 0) {
-        glDeleteVertexArrays(1, &(this->VAO));
-    }
-
-    unsigned int VBO, EBO;
-
-    this->getVisibleCubes();
-
-    float *vertices = &this->v[0];
-    int *indices = &this->i[0];
-
-    glGenVertexArrays(1, &(this->VAO));
-    glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
-
-    glBindVertexArray(this->VAO);
-
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * v.size(), vertices, GL_STATIC_DRAW);
-
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * i.size(), indices, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
-    glEnableVertexAttribArray(0);
-
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) (3 * sizeof(float)));
-    glEnableVertexAttribArray(1);
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindVertexArray(0);
-
-    glDeleteBuffers(1, &VBO);
-    glDeleteBuffers(1, &EBO);
+    this->chunkModel->genVao();
 }
 
 void Chunk::draw() {
-    if (this->VAO == 0) return;
-
-
-    glBindVertexArray(this->VAO);
-    glDrawElements(GL_TRIANGLES, 36 * this->renderedCubes.size(), GL_UNSIGNED_INT, 0);
+    this->chunkModel->draw();
 }
 
 Chunk::~Chunk() {
     this->Save();
-    glDeleteVertexArrays(1, &(this->VAO));
     for (int i = 0; i < this->W * this->H * this->Z; i++) {
         delete (this->cubes[i]);
     }

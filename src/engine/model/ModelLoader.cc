@@ -6,22 +6,22 @@ ModelLoader::ModelLoader() {
     this->path = "";
 }
 
-Model *ModelLoader::loadModel( std::string path ) {
-    Model *m;
+std::shared_ptr<Model> ModelLoader::loadModel(std::string path) {
+    std::shared_ptr<Model> m;
     FILE *f;
-    std::vector<double> vertex;
+    std::vector<float> vertex;
     std::vector<int> textureCoords;
     int size;
-    float v0, v1, v2; 
+    float v0, v1, v2;
     int t0, t1;
 
     path = "./bin/models/" + path;
     printf("%s\n", path.c_str());
 
-    m = new Model();
-    f = fopen( path.c_str(), "r" );
+    m = std::make_shared<Model>();
+    f = fopen(path.c_str(), "r");
 
-    if ( f == NULL ) {
+    if (f == NULL) {
         return NULL;
     }
 
@@ -42,8 +42,8 @@ Model *ModelLoader::loadModel( std::string path ) {
         textureCoords.push_back(t1);
     }
 
-    m->setVertex( vertex );
-    m->setTextureCoords( textureCoords );
+    m->setVertex(vertex);
+    m->setTextureCoords(textureCoords);
 
     return m;
 }

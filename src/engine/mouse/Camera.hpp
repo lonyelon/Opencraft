@@ -1,7 +1,7 @@
 #ifndef ENGINE_MOUSE_CAMERA_HPP
 #define ENGINE_MOUSE_CAMERA_HPP
 
-#include "../glfw.hpp"
+#include "../Engine.hpp"
 
 class Player;
 

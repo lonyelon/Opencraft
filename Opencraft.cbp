@@ -73,6 +73,9 @@
 		<Unit filename="/home/lonyelon/Documentos/Opencraft/src/Main.cc">
 			<Option target="Opencraft"/>
 		</Unit>
+		<Unit filename="/home/lonyelon/Documentos/Opencraft/src/engine/Engine.hpp">
+			<Option target="Opencraft"/>
+		</Unit>
 		<Unit filename="/home/lonyelon/Documentos/Opencraft/src/engine/LoadTexture.cc">
 			<Option target="Opencraft"/>
 		</Unit>
@@ -89,9 +92,6 @@
 			<Option target="Opencraft"/>
 		</Unit>
 		<Unit filename="/home/lonyelon/Documentos/Opencraft/src/engine/glad/glad.h">
-			<Option target="Opencraft"/>
-		</Unit>
-		<Unit filename="/home/lonyelon/Documentos/Opencraft/src/engine/glfw.hpp">
 			<Option target="Opencraft"/>
 		</Unit>
 		<Unit filename="/home/lonyelon/Documentos/Opencraft/src/engine/keyboard/KeyConverter.cc">
@@ -149,6 +149,12 @@
 			<Option target="Opencraft"/>
 		</Unit>
 		<Unit filename="/home/lonyelon/Documentos/Opencraft/src/engine/position/Position.hpp">
+			<Option target="Opencraft"/>
+		</Unit>
+		<Unit filename="/home/lonyelon/Documentos/Opencraft/src/game/Game.cc">
+			<Option target="Opencraft"/>
+		</Unit>
+		<Unit filename="/home/lonyelon/Documentos/Opencraft/src/game/Game.hpp">
 			<Option target="Opencraft"/>
 		</Unit>
 		<Unit filename="/home/lonyelon/Documentos/Opencraft/src/game/Hitbox.cc">
@@ -223,6 +229,12 @@
 		<Unit filename="/home/lonyelon/Documentos/Opencraft/src/game/world/cube/Stone.hpp">
 			<Option target="Opencraft"/>
 		</Unit>
+		<Unit filename="/home/lonyelon/Documentos/Opencraft/src/game/world/cube/TreeLeaves.cc">
+			<Option target="Opencraft"/>
+		</Unit>
+		<Unit filename="/home/lonyelon/Documentos/Opencraft/src/game/world/cube/TreeLeaves.hpp">
+			<Option target="Opencraft"/>
+		</Unit>
 		<Unit filename="/home/lonyelon/Documentos/Opencraft/src/game/world/cube/Water.hpp">
 			<Option target="Opencraft"/>
 		</Unit>
@@ -232,10 +244,16 @@
 		<Unit filename="/home/lonyelon/Documentos/Opencraft/src/game/world/cube/Wood.hpp">
 			<Option target="Opencraft"/>
 		</Unit>
-		<Unit filename="/home/lonyelon/Documentos/Opencraft/src/game/world/strcuture/Tree.cc">
+		<Unit filename="/home/lonyelon/Documentos/Opencraft/src/game/world/strcuture/StructureGenerator.cc">
 			<Option target="Opencraft"/>
 		</Unit>
-		<Unit filename="/home/lonyelon/Documentos/Opencraft/src/game/world/strcuture/Tree.hpp">
+		<Unit filename="/home/lonyelon/Documentos/Opencraft/src/game/world/strcuture/StructureGenerator.hpp">
+			<Option target="Opencraft"/>
+		</Unit>
+		<Unit filename="/home/lonyelon/Documentos/Opencraft/src/game/world/strcuture/TreeGenerator.cc">
+			<Option target="Opencraft"/>
+		</Unit>
+		<Unit filename="/home/lonyelon/Documentos/Opencraft/src/game/world/strcuture/TreeGenerator.hpp">
 			<Option target="Opencraft"/>
 		</Unit>
 		<Unit filename="/home/lonyelon/Documentos/Opencraft/CMakeLists.txt">

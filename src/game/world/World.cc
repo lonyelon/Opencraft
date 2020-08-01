@@ -15,7 +15,7 @@ World::World(std::string name, int seed) {
     this->seed = seed;
     this->size = 15;
     this->chunkCount = 0;
-    this->genThread = NULL;
+    this->genThread = nullptr;
     this->updateWorld = false;
 
     if (!std::filesystem::is_directory("saves/" + name)) {
@@ -32,7 +32,7 @@ void World::setSize(const int size) {
 	drawn when generated.
 */
 void World::genChunkAt(bool draw, int x, int y, int z) {
-    if (this->getChunk(x, y, z) != NULL) {
+    if (this->getChunk(x, y, z) != nullptr) {
         return;
     }
 
@@ -78,14 +78,14 @@ void World::genChunks() {
     printf("Reserving memory for the world...\n");
 
     this->updateWorld = false;
-    if (this->genThread != NULL) this->genThread->join();
+    if (this->genThread != nullptr) this->genThread->join();
     for (int i = 0; i < this->chunkCount; i++) {
         delete (this->chunks[i]);
     }
     this->chunks.clear();
     this->chunkCount = 0;
 
-    this->chunks = std::vector<Chunk *>(size * size * size, NULL);
+    this->chunks = std::vector<Chunk *>(size * size * size, nullptr);
 
     printf("Generating world...\n");
 
@@ -143,7 +143,7 @@ Cube *World::getCube(int x, int y, int z) {
 }
 
 Cube *World::getCube(FixedPosition pos) {
-    Chunk *c = NULL;
+    Chunk *c = nullptr;
 
     int chunkX = floor((float) pos.getX() / Chunk::W);
     int chunkY = floor((float) pos.getY() / Chunk::H);
@@ -151,8 +151,8 @@ Cube *World::getCube(FixedPosition pos) {
 
     c = this->getChunk(chunkX, chunkY, chunkZ);
 
-    if (c == NULL) {
-        return NULL;
+    if (c == nullptr) {
+        return nullptr;
     }
 
     return c->getCube(pos.getX() - c->getX() * 16, pos.getY() - c->getY() * 16, pos.getZ() - c->getZ() * 16);
@@ -170,7 +170,7 @@ Cube *World::getCube(Chunk *k, FixedPosition pos) {
     int chunkY = floor((float) pos.getY() / 16);
     int chunkZ = floor((float) pos.getZ() / 16);
 
-    if (k != NULL && k->getX() == chunkX && k->getY() == chunkY && k->getZ() == chunkZ) {
+    if (k != nullptr && k->getX() == chunkX && k->getY() == chunkY && k->getZ() == chunkZ) {
         Cube *cube = k->getCube(pos.getX() - k->getX() * Chunk::W, pos.getY() - k->getY() * Chunk::H,
                                 pos.getZ() - k->getZ() * Chunk::Z);
         return cube;
@@ -200,14 +200,14 @@ std::vector<Chunk *> World::getChunks() {
 */
 Chunk *World::getChunk(int x, int y, int z) {
     for (int i = 0; i < this->chunkCount; i++) {
-        if (this->chunks[i] == NULL) {
+        if (this->chunks[i] == nullptr) {
             continue;
         }
         if (this->chunks[i]->getX() == x && this->chunks[i]->getY() == y && this->chunks[i]->getZ() == z) {
             return this->chunks[i];
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 void World::saveWorld() {
@@ -244,14 +244,14 @@ void World::setCube(Cube *c, FixedPosition pos) {
     int z = floor((float) pos.getZ() / Chunk::Z);
 
     Chunk *chunk = this->getChunk(x, y, z);
-    if (chunk != NULL) {
+    if (chunk != nullptr) {
         FixedPosition newPos = pos.move(FixedPosition(-1 * x * Chunk::W, -1 * y * Chunk::H, -1 * z * Chunk::Z));
         chunk->setCube(c, newPos);
     }
 };
 
 World::~World() {
-    if (this->genThread != NULL) {
+    if (this->genThread != nullptr) {
         this->updateWorld = false;
         this->genThread->join();
     }

@@ -22,7 +22,7 @@ Cube::Cube() {
     this->y = 0;
     this->z = 0;
     this->type = CubeType::air;
-    this->chunk = NULL;
+    this->chunk = nullptr;
     this->sides = 1;
 }
 
@@ -82,7 +82,7 @@ void Cube::getVertex(std::vector<float> *v, std::vector<int> *i, int n) {
         v->push_back(texCoordY / (float) texFileSize + (this->getType() - 1) / (float) texFileSize);
     }
 
-    for (int k = 0; k < vertex.size() / 3; k++) {
+    for (std::size_t k = 0; k < vertex.size() / 3; k++) {
         if (this->type != CubeType::grass) {
             if (k >= 0 && k < 6 && this->sides % 11 != 0) continue;
             if (k >= 6 && k < 12 && this->sides % 2 != 0) continue;

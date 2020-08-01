@@ -39,7 +39,7 @@ Game::Game() {
 
 void Game::start() {
     // Random seed for rand()
-    srand(time(NULL));
+    srand(time(nullptr));
 
     // TODO move this to main
     std::string worldName;
@@ -64,7 +64,7 @@ void Game::start() {
     this->cubeModel = md->loadModel("Cube.model");
     this->grassModel = md->loadModel("Grass.model");
     this->fluidModel = md->loadModel("Fluid.model");
-    if (this->cubeModel == NULL || this->grassModel == NULL || this->fluidModel == NULL) {
+    if (this->cubeModel == nullptr || this->grassModel == nullptr || this->fluidModel == nullptr) {
         printf("Error loading models.\n");
     }
 
@@ -82,8 +82,8 @@ void Game::start() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    this->window = glfwCreateWindow(this->SCR_WIDTH, this->SCR_HEIGHT, "Clases", NULL, NULL);
-    if (this->window == NULL) {
+    this->window = glfwCreateWindow(this->SCR_WIDTH, this->SCR_HEIGHT, "Clases", nullptr, nullptr);
+    if (this->window == nullptr) {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();
         return;
@@ -147,7 +147,7 @@ void Game::loop() {
         unsigned int selCubeLoc = glGetUniformLocation(shaderProgram, "selectedCube");
         Cube *cs = game->player->getPointedCube();
 
-        if (cs != NULL) {
+        if (cs != nullptr) {
             glUniform3f(selCubeLoc, cs->getX(), cs->getY(), cs->getZ());
         } else {
             glUniform3f(selCubeLoc, 0, 0, 0);

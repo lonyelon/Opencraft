@@ -32,25 +32,25 @@ void Player::move(float mx, float my, float mz) {
 
     //? Can fall
     c = this->world->getCube( this->cam->getX() + right, this->cam->getY() - bot + my, this->cam->getZ() + front );
-    if ( c != NULL && !c->isTransparent() && my < 0 ) {
+    if ( c != nullptr && !c->isTransparent() && my < 0 ) {
         my = 0;
         this->vspd = 0;
         //this->cam->setPos(this->cam->getX(), c->getY() + 0.5 + bot, this->cam->getZ());
     }
     c = this->world->getCube( this->cam->getX() + right, this->cam->getY() - bot + my, this->cam->getZ() - back );
-    if ( c != NULL && !c->isTransparent() && my < 0 ) {
+    if ( c != nullptr && !c->isTransparent() && my < 0 ) {
         my = 0;
         this->vspd = 0;
         //this->cam->setPos(this->cam->getX(), c->getY() + 0.5 + bot, this->cam->getZ());
     }
     c = this->world->getCube( this->cam->getX() - left, this->cam->getY() - bot + my, this->cam->getZ() + front );
-    if ( c != NULL && !c->isTransparent() && my < 0 ) {
+    if ( c != nullptr && !c->isTransparent() && my < 0 ) {
         my = 0;
         this->vspd = 0;
         //this->cam->setPos(this->cam->getX(), c->getY() + 0.5 + bot, this->cam->getZ());
     }
     c = this->world->getCube( this->cam->getX() - left, this->cam->getY() - bot + my, this->cam->getZ() - back );
-    if ( c != NULL && !c->isTransparent() && my < 0 ) {
+    if ( c != nullptr && !c->isTransparent() && my < 0 ) {
         my = 0;
         this->vspd = 0;
         //this->cam->setPos(this->cam->getX(), c->getY() + 0.5 + bot, this->cam->getZ());
@@ -58,110 +58,110 @@ void Player::move(float mx, float my, float mz) {
 
     //? Positive Y
     c = this->world->getCube( this->cam->getX() + right, this->cam->getY() + top + my, this->cam->getZ() + front );
-    if ( c != NULL && !c->isTransparent() && my > 0 ) {
+    if ( c != nullptr && !c->isTransparent() && my > 0 ) {
         my = 0;
         if (this->vspd > 0) this->vspd = 0;
     }
     c = this->world->getCube( this->cam->getX() + right, this->cam->getY() + top + my, this->cam->getZ() + front );
-    if ( c != NULL && !c->isTransparent() && my > 0 ) {
+    if ( c != nullptr && !c->isTransparent() && my > 0 ) {
         my = 0;
         if (this->vspd > 0) this->vspd = 0;
     }
     c = this->world->getCube( this->cam->getX() - left, this->cam->getY() +top + my, this->cam->getZ() - back );
-    if ( c != NULL && !c->isTransparent() && my > 0 ) {
+    if ( c != nullptr && !c->isTransparent() && my > 0 ) {
         my = 0;
         if (this->vspd > 0) this->vspd = 0;
     }
     c = this->world->getCube( this->cam->getX() - left, this->cam->getY() + top + my, this->cam->getZ() - back );
-    if ( c != NULL && !c->isTransparent() && my > 0 ) {
+    if ( c != nullptr && !c->isTransparent() && my > 0 ) {
         my = 0;
         if (this->vspd > 0) this->vspd = 0;
     }
 
     //? Positive Z
     c = this->world->getCube( this->cam->getX() + right, this->cam->getY() - bot, this->cam->getZ() + front + mz );
-    if ( c != NULL && !c->isTransparent() && mz > 0 ) {
+    if ( c != nullptr && !c->isTransparent() && mz > 0 ) {
         mz = 0;
         //this->cam->setPos(this->cam->getX(), this->cam->getY(), c->getZ()-0.5-front);
     }
     c = this->world->getCube( this->cam->getX() - left, this->cam->getY() - bot, this->cam->getZ() + front + mz );
-    if ( c != NULL && !c->isTransparent() && mz > 0 ) {
+    if ( c != nullptr && !c->isTransparent() && mz > 0 ) {
         mz = 0;
         //this->cam->setPos(this->cam->getX(), this->cam->getY(), c->getZ()-0.5-front);
     }
     c = this->world->getCube( this->cam->getX() + right, this->cam->getY() + top, this->cam->getZ() + front + mz );
-    if ( c != NULL && !c->isTransparent() && mz > 0 ) {
+    if ( c != nullptr && !c->isTransparent() && mz > 0 ) {
         mz = 0;
         //this->cam->setPos(this->cam->getX(), this->cam->getY(), c->getZ()-0.5-front);
     }
     c = this->world->getCube( this->cam->getX() - left, this->cam->getY() + top, this->cam->getZ() + front + mz );
-    if ( c != NULL && !c->isTransparent() && mz > 0 ) {
+    if ( c != nullptr && !c->isTransparent() && mz > 0 ) {
         mz = 0;
         //this->cam->setPos(this->cam->getX(), this->cam->getY(), c->getZ()-0.5-front);
     }
 
     //? Negative Z
     c = this->world->getCube( this->cam->getX() + right, this->cam->getY() - bot, this->cam->getZ() - back + mz );
-    if ( c != NULL && !c->isTransparent() && mz < 0 ) {
+    if ( c != nullptr && !c->isTransparent() && mz < 0 ) {
         mz = 0;
         //this->cam->setPos(this->cam->getX(), this->cam->getY(), c->getZ()+0.5+back);
     }
     c = this->world->getCube( this->cam->getX() - left, this->cam->getY() - bot, this->cam->getZ() - back + mz );
-    if ( c != NULL && !c->isTransparent() && mz < 0 ) {
+    if ( c != nullptr && !c->isTransparent() && mz < 0 ) {
         mz = 0;
         //this->cam->setPos(this->cam->getX(), this->cam->getY(), c->getZ()+0.5+back);
     }
     c = this->world->getCube( this->cam->getX() + right, this->cam->getY() + top, this->cam->getZ() - back + mz );
-    if ( c != NULL && !c->isTransparent() && mz < 0 ) {
+    if ( c != nullptr && !c->isTransparent() && mz < 0 ) {
         mz = 0;
         //this->cam->setPos(this->cam->getX(), this->cam->getY(), c->getZ()+0.5+back);
     }
     c = this->world->getCube( this->cam->getX() - left, this->cam->getY() + top, this->cam->getZ() - back + mz );
-    if ( c != NULL && !c->isTransparent() && mz < 0 ) {
+    if ( c != nullptr && !c->isTransparent() && mz < 0 ) {
         mz = 0;
         //this->cam->setPos(this->cam->getX(), this->cam->getY(), c->getZ()+0.5+back);
     }
 
     //? Positive X
     c = this->world->getCube( this->cam->getX() + right + mx, this->cam->getY() - bot, this->cam->getZ() + front );
-    if ( c != NULL && !c->isTransparent() && mx > 0 ) {
+    if ( c != nullptr && !c->isTransparent() && mx > 0 ) {
         mx = 0;
         //this->cam->setPos(c->getX()-0.5-right, this->cam->getY(), this->cam->getZ());
     }
     c = this->world->getCube( this->cam->getX() + right + mx, this->cam->getY() - bot, this->cam->getZ() - back );
-    if ( c != NULL && !c->isTransparent() && mx > 0 ) {
+    if ( c != nullptr && !c->isTransparent() && mx > 0 ) {
         mx = 0;
         //this->cam->setPos(c->getX()-0.5-right, this->cam->getY(), this->cam->getZ());
     }
     c = this->world->getCube( this->cam->getX() + right + mx, this->cam->getY() + top, this->cam->getZ() + front );
-    if ( c != NULL && !c->isTransparent() && mx > 0 ) {
+    if ( c != nullptr && !c->isTransparent() && mx > 0 ) {
         mx = 0;
         //this->cam->setPos(c->getX()-0.5-right, this->cam->getY(), this->cam->getZ());
     }
     c = this->world->getCube( this->cam->getX() + right + mx, this->cam->getY() + top, this->cam->getZ() - back );
-    if ( c != NULL && !c->isTransparent() && mx > 0 ) {
+    if ( c != nullptr && !c->isTransparent() && mx > 0 ) {
         mx = 0;
         //this->cam->setPos(c->getX()-0.5-right, this->cam->getY(), this->cam->getZ());
     }
 
     //? Negative X
     c = this->world->getCube( this->cam->getX() - left + mx, this->cam->getY() - bot, this->cam->getZ() + front );
-    if ( c != NULL && !c->isTransparent() && mx < 0 ) {
+    if ( c != nullptr && !c->isTransparent() && mx < 0 ) {
         mx = 0;
         //this->cam->setPos(c->getX()-0.5-right, this->cam->getY(), this->cam->getZ());
     }
     c = this->world->getCube( this->cam->getX() - left + mx, this->cam->getY() - bot, this->cam->getZ() - back );
-    if ( c != NULL && !c->isTransparent() && mx < 0 ) {
+    if ( c != nullptr && !c->isTransparent() && mx < 0 ) {
         mx = 0;
         //this->cam->setPos(c->getX()-0.5-right, this->cam->getY(), this->cam->getZ());
     }
     c = this->world->getCube( this->cam->getX() - left + mx, this->cam->getY() + top, this->cam->getZ() + front );
-    if ( c != NULL && !c->isTransparent() && mx < 0 ) {
+    if ( c != nullptr && !c->isTransparent() && mx < 0 ) {
         mx = 0;
         //this->cam->setPos(c->getX()-0.5-right, this->cam->getY(), this->cam->getZ());
     }
     c = this->world->getCube( this->cam->getX() - left + mx, this->cam->getY() + top, this->cam->getZ() - back );
-    if ( c != NULL && !c->isTransparent() && mx < 0 ) {
+    if ( c != nullptr && !c->isTransparent() && mx < 0 ) {
         mx = 0;
         //this->cam->setPos(c->getX()-0.5-right, this->cam->getY(), this->cam->getZ());
     }
@@ -182,7 +182,7 @@ Cube *Player::getPointer( float *x, float *y, float *z ) {
         int zz = round(this->cam->getZ()+i*sin(rx)*cos(ry)/iter);
 
         Cube *c = this->world->getCube(xx, yy, zz);
-        if (c != NULL && !c->isTransparent()) {
+        if (c != nullptr && !c->isTransparent()) {
             *x = this->cam->getX()-(i-1)*cos(rx)*cos(ry)/iter;
             *y = this->cam->getY()+(i-1)*sin(ry)/iter;
             *z = this->cam->getZ()+(i-1)*sin(rx)*cos(ry)/iter;
@@ -190,7 +190,7 @@ Cube *Player::getPointer( float *x, float *y, float *z ) {
             return c;
         }
     }
-    return NULL;
+    return nullptr;
 }
 
 Cube *Player::getPointedCube() {
@@ -199,7 +199,7 @@ Cube *Player::getPointedCube() {
 }
 
 bool Player::getPointedPosition( float *x, float *y, float *z ) {
-    if (this->getPointer( x, y, z ) == NULL) {
+    if (this->getPointer( x, y, z ) == nullptr) {
         return false;
     }
     return true;
@@ -207,7 +207,7 @@ bool Player::getPointedPosition( float *x, float *y, float *z ) {
 
 void Player::breakCube() {
     Cube *c = this->getPointedCube();
-    if (c == NULL) {
+    if (c == nullptr) {
         return;
     }
 
@@ -256,7 +256,7 @@ void Player::breakCube() {
 */
 void Player::placeCube() {
     Cube *c = this->getPointedCube();
-    if (c == NULL) {
+    if (c == nullptr) {
         return;
     }
 
@@ -266,7 +266,7 @@ void Player::placeCube() {
     }
 
     Cube *c0 = this->world->getCube(x, y, z);
-    if (c0 == NULL) {
+    if (c0 == nullptr) {
         return;
     }
 

@@ -60,7 +60,7 @@ void KeyHandler::keyHandler() {
         auto k = this->keys[i];
 
         std::string keyname = this->kc->getKeyName(k.key);
-        if (keyname.compare("") == 0 || kc == NULL) {
+        if (keyname.compare("") == 0 || kc == nullptr) {
             continue;
         }
 

@@ -36,14 +36,14 @@ void WorldGenerator::worldUpdate(World *world, Player *player) {
     while (world->isWorldUpdating()) {
 
         Cube *c = world->getCube(player->getCam()->getX(), player->getCam()->getY(), player->getCam()->getZ());
-        if (c == NULL) continue;
+        if (c == nullptr) continue;
         Chunk *ck = c->getChunk();
 
         for (int radius = 0; radius < maxDist; radius++) {
             for (int x = -radius; x < radius; x++) {
                 for (int y = -radius; y < radius; y++) {
                     for (int z = -radius; z < radius; z++) {
-                        if (world->getChunk(ck->getX() + x, ck->getY() + y, ck->getZ() + z) == NULL) {
+                        if (world->getChunk(ck->getX() + x, ck->getY() + y, ck->getZ() + z) == nullptr) {
                             world->genChunkAt(true, ck->getX() + x, ck->getY() + y, ck->getZ() + z);
                         } else if (world->getChunk(ck->getX() + x, ck->getY() + y, ck->getZ() + z)->isDrawn()) {
                             Chunk *chunk = world->getChunk(ck->getX() + x, ck->getY() + y, ck->getZ() + z);

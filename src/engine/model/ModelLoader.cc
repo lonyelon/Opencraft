@@ -21,8 +21,8 @@ std::shared_ptr<Model> ModelLoader::loadModel(std::string path) {
     m = std::make_shared<Model>();
     f = fopen(path.c_str(), "r");
 
-    if (f == NULL) {
-        return NULL;
+    if (f == nullptr) {
+        return nullptr;
     }
 
     fscanf(f, "V %d", &size);

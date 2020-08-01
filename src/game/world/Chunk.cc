@@ -160,14 +160,14 @@ void Chunk::genTerrain() {
 
 Cube *Chunk::getCube(unsigned int x, int y, int z) {
     if (x + y * this->W + z * this->W * this->H > this->W * this->H * this->Z) {
-        return NULL;
+        return nullptr;
     }
     return this->cubes[x + y * this->W + z * this->W * this->H];
 }
 
 Cube *Chunk::getCube(FixedPosition pos) {
     if (pos.getX() + pos.getY() * this->W + pos.getZ() * this->W * this->H > this->W * this->H * this->Z) {
-        return NULL;
+        return nullptr;
     }
     return this->cubes[pos.getX() + pos.getY() * this->W + pos.getZ() * this->W * this->H];
 }
@@ -198,32 +198,32 @@ void Chunk::setCube(Cube *c, FixedPosition pos) {
 
     if (this->generated) {
         Chunk *c = this->world->getChunk(this->x + 1, this->y, this->z);
-        if (pos.getX() == Chunk::W - 1 && c != NULL) {
+        if (pos.getX() == Chunk::W - 1 && c != nullptr) {
             c->setUpdated(false);
         }
 
         c = this->world->getChunk(this->x - 1, this->y, this->z);
-        if (pos.getX() == 0 && c != NULL) {
+        if (pos.getX() == 0 && c != nullptr) {
             c->setUpdated(false);
         }
 
         c = this->world->getChunk(this->x, this->y + 1, this->z);
-        if (pos.getY() == Chunk::H - 1 && c != NULL) {
+        if (pos.getY() == Chunk::H - 1 && c != nullptr) {
             c->setUpdated(false);
         }
 
         c = this->world->getChunk(this->x, this->y - 1, this->z);
-        if (pos.getY() == 0 && c != NULL) {
+        if (pos.getY() == 0 && c != nullptr) {
             c->setUpdated(false);
         }
 
         c = this->world->getChunk(this->x, this->y, this->z + 1);
-        if (pos.getZ() == Chunk::Z - 1 && c != NULL) {
+        if (pos.getZ() == Chunk::Z - 1 && c != nullptr) {
             c->setUpdated(false);
         }
 
         c = this->world->getChunk(this->x, this->y, this->z - 1);
-        if (pos.getZ() == 0 && c != NULL) {
+        if (pos.getZ() == 0 && c != nullptr) {
             c->setUpdated(false);
         }
     }
@@ -238,53 +238,53 @@ std::vector<Cube *> Chunk::getCubes() {
 }
 
 int Chunk::isIllated(int x, int y, int z) {
-    Cube *c = NULL;
+    Cube *c = nullptr;
     Cube *k = this->world->getCube(this, x, y, z);
     int n = 1;
 
-    if (k == NULL) {
+    if (k == nullptr) {
         return 1;
     }
 
     c = this->world->getCube(this, x, y + 1, z);
-    if (c != NULL && c->isTransparent() && k->getType() != c->getType()) {
+    if (c != nullptr && c->isTransparent() && k->getType() != c->getType()) {
         n *= 2;
-    } else if (c == NULL) {
+    } else if (c == nullptr) {
         n *= 2;
     }
 
     c = this->world->getCube(this, x, y - 1, z);
-    if (c != NULL && c->isTransparent() && k->getType() != c->getType()) {
+    if (c != nullptr && c->isTransparent() && k->getType() != c->getType()) {
         n *= 3;
-    } else if (c == NULL) {
+    } else if (c == nullptr) {
         n *= 3;
     }
 
     c = this->world->getCube(this, x + 1, y, z);
-    if (c != NULL && c->isTransparent() && k->getType() != c->getType()) {
+    if (c != nullptr && c->isTransparent() && k->getType() != c->getType()) {
         n *= 5;
-    } else if (c == NULL) {
+    } else if (c == nullptr) {
         n *= 5;
     }
 
     c = this->world->getCube(this, x - 1, y, z);
-    if (c != NULL && c->isTransparent() && k->getType() != c->getType()) {
+    if (c != nullptr && c->isTransparent() && k->getType() != c->getType()) {
         n *= 7;
-    } else if (c == NULL) {
+    } else if (c == nullptr) {
         n *= 7;
     }
 
     c = this->world->getCube(this, x, y, z + 1);
-    if (c != NULL && c->isTransparent() && k->getType() != c->getType()) {
+    if (c != nullptr && c->isTransparent() && k->getType() != c->getType()) {
         n *= 11;
-    } else if (c == NULL) {
+    } else if (c == nullptr) {
         n *= 11;
     }
 
     c = this->world->getCube(this, x, y, z - 1);
-    if (c != NULL && c->isTransparent() && k->getType() != c->getType()) {
+    if (c != nullptr && c->isTransparent() && k->getType() != c->getType()) {
         n *= 13;
-    } else if (c == NULL) {
+    } else if (c == nullptr) {
         n *= 13;
     }
 
@@ -347,7 +347,7 @@ void Chunk::draw() {
 Chunk::~Chunk() {
     this->Save();
     for (int i = 0; i < this->W * this->H * this->Z; i++) {
-        delete (this->cubes[i]);
+        //delete (this->cubes[i]);
     }
     this->cubes.clear();
     this->renderedCubes.clear();

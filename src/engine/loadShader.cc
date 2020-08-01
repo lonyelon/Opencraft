@@ -26,14 +26,14 @@ char *textFileRead(const char *fn) {
 
 
 	FILE *fp;
-	char *content = NULL;
+	char *content = nullptr;
 
 	int count = 0;
 	
-	if (fn != NULL) {
+	if (fn != nullptr) {
 		fp = fopen(fn, "rt");
 
-		if (fp != NULL) {
+		if (fp != nullptr) {
 
 			fseek(fp, 0, SEEK_END);
 			count = ftell(fp);
@@ -57,10 +57,10 @@ int textFileWrite(const char *fn, const char *s) {
 	FILE *fp;
 	int status = 0;
 
-	if (fn != NULL) {
+	if (fn != nullptr) {
 		fp = fopen(fn, "w");
 
-		if (fp != NULL) {
+		if (fp != nullptr) {
 
 			if (fwrite(s, sizeof(char), strlen(s), fp) == strlen(s))
 				status = 1;
@@ -131,10 +131,10 @@ void printProgramInfoLog(GLuint obj)
 
 GLuint setShaders(const char *nVertx, const char *nFrag) {
 
-	char *ficherovs = NULL;
-	char *ficherofs = NULL;
-	const char * codigovs = NULL;
-	const char * codigofs = NULL;
+	char *ficherovs = nullptr;
+	char *ficherofs = nullptr;
+	const char * codigovs = nullptr;
+	const char * codigofs = nullptr;
 
 	//Creo el vertexShader y el FragmentShader
 	vertexShader = glCreateShader(GL_VERTEX_SHADER); 
@@ -148,8 +148,8 @@ GLuint setShaders(const char *nVertx, const char *nFrag) {
 	codigovs = ficherovs;
 	codigofs = ficherofs;
     //Los cargo
-	glShaderSource(vertexShader, 1, &codigovs,NULL);
-	glShaderSource(fragmentShader, 1, &codigofs,NULL);
+	glShaderSource(vertexShader, 1, &codigovs,nullptr);
+	glShaderSource(fragmentShader, 1, &codigofs,nullptr);
 
 	//Libero los ficheros
 	free(ficherovs);free(ficherofs);

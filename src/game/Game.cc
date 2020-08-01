@@ -34,7 +34,6 @@ void windowResize(GLFWwindow *window, int width, int height) {
 }
 
 Game::Game() {
-
 }
 
 void Game::start() {

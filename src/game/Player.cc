@@ -7,7 +7,7 @@
 extern int pint;
 
 Player::Player( std::shared_ptr<World> world ) {
-    this->cam = new Camera(this);
+    this->cam = std::make_unique<Camera>(this);
     this->cam->setPos( 0, 100, 0 );
     this->world = world;
     this->vspd = 0;
@@ -277,7 +277,7 @@ void Player::placeCube() {
     c0->getChunk()->genVao();
 }
 
-Camera *Player::getCam() {
+std::shared_ptr<Camera> Player::getCam() {
     return this->cam;
 }
 

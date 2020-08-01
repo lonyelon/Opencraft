@@ -24,6 +24,7 @@ private:
     std::shared_ptr<KeyHandler> keyHandler;
 
     Sphere skybox;
+    std::unique_ptr<Model> sky;
 public:
     std::shared_ptr<Model> cubeModel, grassModel, fluidModel;
 

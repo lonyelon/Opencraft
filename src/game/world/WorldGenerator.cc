@@ -12,7 +12,7 @@ void WorldGenerator::genChunk(std::vector<Chunk *> *chunks, int *chunkCount, int
     for (int x = 0; x < size; x++) {
         for (int z = 0; z < size; z++) {
             for (int y = threadNumber; y < size; y += threadCount) {
-                (*chunks)[x * size * size + z * size + y] = new Chunk(w, x - size / 2, z - size / 2, y - size / 2);
+                (*chunks)[x * size * size + z * size + y] = new Chunk(game->getWorld(), x - size / 2, z - size / 2, y - size / 2);
                 (*chunks)[x * size * size + z * size + y]->genTerrain();
                 (*chunkCount)++;
             }

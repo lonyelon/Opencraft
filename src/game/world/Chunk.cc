@@ -16,7 +16,7 @@
 
 extern std::unique_ptr<Game> game;
 
-Chunk::Chunk(World *w, int xpos, int ypos, int zpos) {
+Chunk::Chunk(std::shared_ptr<World> w, int xpos, int ypos, int zpos) {
     this->world = w;
     this->x = xpos;
     this->y = ypos;
@@ -410,6 +410,6 @@ void Chunk::Load() {
     }
 }
 
-World *Chunk::getWorld() {
+std::shared_ptr<World> Chunk::getWorld() {
     return this->world;
 }

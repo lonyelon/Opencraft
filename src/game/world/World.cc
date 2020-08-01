@@ -36,7 +36,7 @@ void World::genChunkAt(bool draw, int x, int y, int z) {
         return;
     }
 
-    Chunk *c = new Chunk(this, x, y, z);
+    Chunk *c = new Chunk(game->getWorld(), x, y, z);
     this->chunks.push_back(c);
     this->chunkCount++;
     c->genTerrain();

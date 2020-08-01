@@ -5,7 +5,7 @@ Opencraft is a 3D open source sandbox game based on Minecraft. The game is fully
 ## Compatibility
 The game currently **runs on ArchLinux and Ubuntu** without problems. A port to other Linux distros is being worked on. The Windows version will have to wait, since threading works differently on Windows.
 
-## Build and installation
+## Build
 
 To build the game you first need the following libraries:
 * GLFW3
@@ -29,7 +29,7 @@ sudo pacman glfw-x11 # Change for glfw-wayland if you use gnome.
 sudo pacman glu libnoise glm
 ```
 
-### Download and install the game (distro independent)
+### Download and build the game (distro independent)
 You can download the latest version with:
 ```bash
 git clone https://github.com/lonyelon/Opencraft

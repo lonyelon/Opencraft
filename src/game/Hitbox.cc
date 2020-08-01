@@ -20,7 +20,7 @@ void HitBox::setPos( float x, float y, float z ) {
 
 int HitBox::isColliding() {
     int where = 1;
-    Cube *c;
+    std::shared_ptr<Cube> c;
         
     // Block collition
     //c = this->p->getWorld()->getCube( this->x + );

@@ -33,18 +33,18 @@ public:
 
     void setSize(const int size);
 
-    void setCube(Cube *c, FixedPosition pos);
+    void setCube(std::shared_ptr<Cube> c, FixedPosition pos);
 
-    Cube *getCube(FixedPosition pos);
+    std::shared_ptr<Cube> getCube(FixedPosition pos);
 
-    Cube *getCube(Chunk *c, FixedPosition pos);
+    std::shared_ptr<Cube> getCube(Chunk *c, FixedPosition pos);
 
-    Cube *getCube(int x, int y, int z); // TODO delete this
-    Cube *getCube(Chunk *c, int x, int y, int z); // TODO delete this
-    Cube *getCube(float x, float y, float z) {
+    std::shared_ptr<Cube> getCube(int x, int y, int z); // TODO delete this
+    std::shared_ptr<Cube> getCube(Chunk *c, int x, int y, int z); // TODO delete this
+    std::shared_ptr<Cube> getCube(float x, float y, float z) {
         return this->getCube((int) round(x), (int) round(y), (int) round(z));
     }; // TODO delete this
-    Cube *getCube(double x, double y, double z) {
+    std::shared_ptr<Cube> getCube(double x, double y, double z) {
         return this->getCube((int) round(x), (int) round(y), (int) round(z));
     }; // TODO delete this
     void setSeed(int seed);

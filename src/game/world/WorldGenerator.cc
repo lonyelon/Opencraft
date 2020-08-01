@@ -35,7 +35,7 @@ void WorldGenerator::worldUpdate(std::shared_ptr<World> world, std::shared_ptr<P
 
     while (world->isWorldUpdating()) {
 
-        Cube *c = world->getCube(player->getCam()->getX(), player->getCam()->getY(), player->getCam()->getZ());
+        std::shared_ptr<Cube> c = world->getCube(player->getCam()->getX(), player->getCam()->getY(), player->getCam()->getZ());
         if (c == nullptr) continue;
         Chunk *ck = c->getChunk();
 

@@ -138,11 +138,11 @@ int sign(int x) {
 /*
 	Returns a cube by it's coordinates.
 */
-Cube *World::getCube(int x, int y, int z) {
+std::shared_ptr<Cube> World::getCube(int x, int y, int z) {
     return this->getCube(FixedPosition(x, y, z));
 }
 
-Cube *World::getCube(FixedPosition pos) {
+std::shared_ptr<Cube> World::getCube(FixedPosition pos) {
     Chunk *c = nullptr;
 
     int chunkX = floor((float) pos.getX() / Chunk::W);
@@ -161,17 +161,17 @@ Cube *World::getCube(FixedPosition pos) {
 /*
 	Returns a cube by it's coordinates, but first it checks it's own chunk.
 */
-Cube *World::getCube(Chunk *k, int x, int y, int z) {
+std::shared_ptr<Cube> World::getCube(Chunk *k, int x, int y, int z) {
     return this->getCube(k, FixedPosition(x, y, z));
 }
 
-Cube *World::getCube(Chunk *k, FixedPosition pos) {
+std::shared_ptr<Cube> World::getCube(Chunk *k, FixedPosition pos) {
     int chunkX = floor((float) pos.getX() / 16);
     int chunkY = floor((float) pos.getY() / 16);
     int chunkZ = floor((float) pos.getZ() / 16);
 
     if (k != nullptr && k->getX() == chunkX && k->getY() == chunkY && k->getZ() == chunkZ) {
-        Cube *cube = k->getCube(pos.getX() - k->getX() * Chunk::W, pos.getY() - k->getY() * Chunk::H,
+        std::shared_ptr<Cube> cube = k->getCube(pos.getX() - k->getX() * Chunk::W, pos.getY() - k->getY() * Chunk::H,
                                 pos.getZ() - k->getZ() * Chunk::Z);
         return cube;
     }
@@ -216,10 +216,6 @@ void World::saveWorld() {
     file << game->getPlayer()->getCam()->getX() << "\t" << game->getPlayer()->getCam()->getY() << "\t" << game->getPlayer()->getCam()->getZ();
 
     file.close();
-
-    for (auto c: this->chunks) {
-        delete(c);
-    }
 }
 
 int World::getCubesDrawn() {
@@ -238,7 +234,7 @@ std::string World::getName() {
     return this->name;
 };
 
-void World::setCube(Cube *c, FixedPosition pos) {
+void World::setCube(std::shared_ptr<Cube> c, FixedPosition pos) {
     int x = floor((float) pos.getX() / Chunk::W);
     int y = floor((float) pos.getY() / Chunk::H);
     int z = floor((float) pos.getZ() / Chunk::Z);
@@ -257,4 +253,5 @@ World::~World() {
     }
 
     this->saveWorld();
+    this->chunks.clear();
 }

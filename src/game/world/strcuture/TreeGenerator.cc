@@ -14,7 +14,7 @@ void TreeGenerator::constructAt(FixedPosition at) {
     // trunk
     int height = 5 + rand() % 5;
     for (int i = 0; i < height; i++) {
-        this->world->setCube(new Wood(), at.move(FixedPosition(0, i, 0)));
+        this->world->setCube(std::make_shared<Wood>(), at.move(FixedPosition(0, i, 0)));
     }
 
     for (int i = height - 4; i < height; i++) {
@@ -24,7 +24,7 @@ void TreeGenerator::constructAt(FixedPosition at) {
                 if (j == 0 && k == 0) {
                     continue;
                 }
-                this->world->setCube(new TreeLeaves(), at.move(FixedPosition(j, i, k)));
+                this->world->setCube(std::make_shared<TreeLeaves>(), at.move(FixedPosition(j, i, k)));
             }
         }
     }

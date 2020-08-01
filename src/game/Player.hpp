@@ -21,9 +21,9 @@ public:
     void setSprint(bool sprint);
 
     Camera *getCam();
-    
-    Cube* getPointer(float *x, float *y, float *z);
-    Cube* getPointedCube();
+
+    std::shared_ptr<Cube> getPointer(float *x, float *y, float *z);
+    std::shared_ptr<Cube> getPointedCube();
     bool getPointedPosition(float *x, float *y, float *z);
 
     float getSpeed() { return this->movementSpeed; };

@@ -14,8 +14,8 @@ class World;
 class Chunk {
 private:
     int x, y, z;
-    std::vector<Cube *> cubes;
-    std::vector<Cube *> renderedCubes;
+    std::vector<std::shared_ptr<Cube>> cubes;
+    std::vector<std::shared_ptr<Cube>> renderedCubes;
     bool generated;
     World *world;
     bool updated = false;
@@ -28,13 +28,13 @@ public:
 
     void genTerrain();
 
-    Cube *getCube(unsigned int x, int y, int z); // TODO remove this
-    Cube *getCube(FixedPosition pos);
+    std::shared_ptr<Cube> getCube(unsigned int x, int y, int z); // TODO remove this
+    std::shared_ptr<Cube> getCube(FixedPosition pos);
 
-    void setCube(Cube *c, int x, int y, int z); // TODO remove this
-    void setCube(Cube *c, FixedPosition pos);
+    void setCube(std::shared_ptr<Cube> c, int x, int y, int z); // TODO remove this
+    void setCube(std::shared_ptr<Cube> c, FixedPosition pos);
 
-    std::vector<Cube *> getCubes();
+    std::vector<std::shared_ptr<Cube> > getCubes();
 
     int isIllated(int x, int y, int z);
 

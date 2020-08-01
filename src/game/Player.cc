@@ -25,7 +25,7 @@ void Player::move(float mx, float my, float mz) {
     const float front = 0.25;
     const float back = 0.25;
 
-    Cube *c;
+    std::shared_ptr<Cube> c;
 
     mx *= this->movementSpeed;
     my *= this->movementSpeed;
@@ -170,7 +170,7 @@ void Player::move(float mx, float my, float mz) {
     this->cam->move(mx, my, mz);
 }
 
-Cube *Player::getPointer( float *x, float *y, float *z ) {
+std::shared_ptr<Cube> Player::getPointer( float *x, float *y, float *z ) {
     const int iter = 1000;
     const int maxdist = 8;
 
@@ -182,7 +182,7 @@ Cube *Player::getPointer( float *x, float *y, float *z ) {
         int yy = round(this->cam->getY()+i*sin(ry)/iter);
         int zz = round(this->cam->getZ()+i*sin(rx)*cos(ry)/iter);
 
-        Cube *c = this->world->getCube(xx, yy, zz);
+        std::shared_ptr<Cube> c = this->world->getCube(xx, yy, zz);
         if (c != nullptr && !c->isTransparent()) {
             *x = this->cam->getX()-(i-1)*cos(rx)*cos(ry)/iter;
             *y = this->cam->getY()+(i-1)*sin(ry)/iter;
@@ -194,7 +194,7 @@ Cube *Player::getPointer( float *x, float *y, float *z ) {
     return nullptr;
 }
 
-Cube *Player::getPointedCube() {
+std::shared_ptr<Cube> Player::getPointedCube() {
     float x, y, z;
     return this->getPointer( &x, &y, &z );
 }
@@ -207,13 +207,13 @@ bool Player::getPointedPosition( float *x, float *y, float *z ) {
 }
 
 void Player::breakCube() {
-    Cube *c = this->getPointedCube();
+    std::shared_ptr<Cube> c = this->getPointedCube();
     if (c == nullptr) {
         return;
     }
 
 	FixedPosition pos = c->getChunkPos();
-    c->getChunk()->setCube(new Air(), pos.getX(), pos.getY(), pos.getZ());
+    c->getChunk()->setCube(std::make_shared<Air>(), pos.getX(), pos.getY(), pos.getZ());
     c->getChunk()->getVisibleCubes();
     c->getChunk()->genVao();
 
@@ -256,7 +256,7 @@ void Player::breakCube() {
 	TODO: Optimize for cubes as objects
 */
 void Player::placeCube() {
-    Cube *c = this->getPointedCube();
+    std::shared_ptr<Cube> c = this->getPointedCube();
     if (c == nullptr) {
         return;
     }
@@ -266,13 +266,13 @@ void Player::placeCube() {
         return;
     }
 
-    Cube *c0 = this->world->getCube(x, y, z);
+    std::shared_ptr<Cube> c0 = this->world->getCube(x, y, z);
     if (c0 == nullptr) {
         return;
     }
 
 	FixedPosition pos = c0->getChunkPos();
-    c0->getChunk()->setCube(new Stone(), pos.getX(), pos.getY(), pos.getZ());
+    c0->getChunk()->setCube(std::make_shared<Stone>(), pos.getX(), pos.getY(), pos.getZ());
     c0->getChunk()->getVisibleCubes();
     c0->getChunk()->genVao();
 }

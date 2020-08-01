@@ -145,7 +145,7 @@ void Game::loop() {
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
         unsigned int selCubeLoc = glGetUniformLocation(shaderProgram, "selectedCube");
-        Cube *cs = game->getPlayer()->getPointedCube();
+        std::shared_ptr<Cube> cs = game->getPlayer()->getPointedCube();
 
         if (cs != nullptr) {
             glUniform3f(selCubeLoc, cs->getX(), cs->getY(), cs->getZ());

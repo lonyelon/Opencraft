@@ -24,7 +24,7 @@ Chunk::Chunk(World *w, int xpos, int ypos, int zpos) {
 
     this->generated = false;
 
-    this->cubes = std::vector<Cube *>(this->W * this->H * this->Z);
+    this->cubes = std::vector<std::shared_ptr<Cube>>(this->W * this->H * this->Z);
     this->chunkModel = std::make_unique<Model>();
 }
 
@@ -66,9 +66,9 @@ void Chunk::genTerrain() {
                 int noiseValue = (int) ((p.GetValue(noiseX, noiseY, noiseZ) + 1.1) * ystrech) + heightIncrease;
 
                 if (y + this->y * Chunk::H < noiseValue) {
-                    this->setCube(new Stone(), x, y, z);
+                    this->setCube(std::make_shared<Stone>(), x, y, z);
                 } else {
-                    this->setCube(new Air(), x, y, z);
+                    this->setCube(std::make_shared<Air>(), x, y, z);
                 }
             }
         }
@@ -81,7 +81,7 @@ void Chunk::genTerrain() {
         for (int z = 0; z < this->Z; z++) {
             int dirtCount = 0;
             for (int y = Chunk::H - 1; y >= 0; y--) {
-                Cube *c = this->getCube(x, y, z);
+                std::shared_ptr<Cube> c = this->getCube(x, y, z);
 
                 float noiseX = (float) (this->x * this->W + x) / xCoordRed * 10;
                 float noiseY = (float) (this->y * this->H + z) / yCoordRed * 10;
@@ -89,7 +89,7 @@ void Chunk::genTerrain() {
 
                 if (c->getType() == CubeType::air) {
                     if (y + this->y * Chunk::H < waterHeight) {
-                        this->setCube(new Water(), x, y, z);
+                        this->setCube(std::make_shared<Water>(), x, y, z);
                     } else {
                         dirtCount = 0;
                     }
@@ -99,11 +99,11 @@ void Chunk::genTerrain() {
                             heights[x + z * this->W] = y + this->y * Chunk::H;
                         }
                         if ((p.GetValue(noiseX, noiseY, noiseZ) * 5) / (waterHeight - y - this->y * Chunk::H) > 1) {
-                            this->setCube(new Sand(), x, y, z);
+                            this->setCube(std::make_shared<Sand>(), x, y, z);
                         } else if (dirtCount == 0 && y + this->y * Chunk::H >= waterHeight - 1) {
-                            this->setCube(new GrassyDirt(), x, y, z);
+                            this->setCube(std::make_shared<GrassyDirt>(), x, y, z);
                         } else {
-                            this->setCube(new Dirt(), x, y, z);
+                            this->setCube(std::make_shared<Dirt>(), x, y, z);
                         }
                         dirtCount++;
                     }
@@ -124,7 +124,7 @@ void Chunk::genTerrain() {
     for (int x = 0; x < this->W; x++) {
         for (int z = 0; z < this->Z; z++) {
             for (int y = this->H - 1; y >= 0; y--) {
-                Cube *c = this->getCube(x, y, z);
+                std::shared_ptr<Cube> c = this->getCube(x, y, z);
 
                 float noiseX = (float) (this->x * this->W + x) / xCoordRed * 10;
                 float noiseY = (float) (this->y * this->H + y) / yCoordRed * 10;
@@ -136,7 +136,7 @@ void Chunk::genTerrain() {
                 }
 
                 if ((caveNoise.GetValue(noiseX, noiseY, noiseZ) < caveProb) && c->getType() != CubeType::water) {
-                    this->setCube(new Air(), x, y, z);
+                    this->setCube(std::make_shared<Air>(), x, y, z);
                 }
             }
         }
@@ -146,7 +146,7 @@ void Chunk::genTerrain() {
         for (int z = 0; z < this->Z; z++) {
             int dirtCount = 0;
             for (int y = this->H-1; y > 0; y--) {
-                Cube *c = this->getCube( x, y, z );
+                std::shared_ptr<Cube> c = this->getCube( x, y, z );
 
                 if ( y < 12 && c->getType() == CubeType::air ) {
                     this->setCube(new Lava(), x, y, z);
@@ -158,26 +158,26 @@ void Chunk::genTerrain() {
     this->Save();
 }
 
-Cube *Chunk::getCube(unsigned int x, int y, int z) {
+std::shared_ptr<Cube> Chunk::getCube(unsigned int x, int y, int z) {
     if (x + y * this->W + z * this->W * this->H > this->W * this->H * this->Z) {
         return nullptr;
     }
     return this->cubes[x + y * this->W + z * this->W * this->H];
 }
 
-Cube *Chunk::getCube(FixedPosition pos) {
+std::shared_ptr<Cube> Chunk::getCube(FixedPosition pos) {
     if (pos.getX() + pos.getY() * this->W + pos.getZ() * this->W * this->H > this->W * this->H * this->Z) {
         return nullptr;
     }
     return this->cubes[pos.getX() + pos.getY() * this->W + pos.getZ() * this->W * this->H];
 }
 
-void Chunk::setCube(Cube *c, int x, int y, int z) {
+void Chunk::setCube(std::shared_ptr<Cube> c, int x, int y, int z) {
 
     this->setCube(c, FixedPosition(x, y, z));
 }
 
-void Chunk::setCube(Cube *c, FixedPosition pos) {
+void Chunk::setCube(std::shared_ptr<Cube> c, FixedPosition pos) {
     if (pos.getX() >= this->W || pos.getY() >= this->H || pos.getZ() >= this->Z) {
         return;
     }
@@ -233,13 +233,13 @@ void Chunk::setCube(Cube *c, FixedPosition pos) {
 }
 
 
-std::vector<Cube *> Chunk::getCubes() {
+std::vector<std::shared_ptr<Cube> > Chunk::getCubes() {
     return this->cubes;
 }
 
 int Chunk::isIllated(int x, int y, int z) {
-    Cube *c = nullptr;
-    Cube *k = this->world->getCube(this, x, y, z);
+    std::shared_ptr<Cube> c = nullptr;
+    std::shared_ptr<Cube> k = this->world->getCube(this, x, y, z);
     int n = 1;
 
     if (k == nullptr) {
@@ -375,7 +375,7 @@ void Chunk::Load() {
     std::stringstream name;
     name << "saves/" << this->world->getName() << "/world/" << this->x << "_" << this->y << "_" << this->z << ".chunk";
 
-    std::ifstream file(name.str(), std::ios::binary);
+    std::ifstream file(name.str());
 
     if (file.is_open()) {
         while (!file.eof()) {
@@ -383,25 +383,25 @@ void Chunk::Load() {
             file >> type >> x >> y >> z;
             switch (type) {
                 case CubeType::air:
-                    this->setCube(new Air(), x, y, z);
+                    this->setCube(std::make_shared<Air>(), x, y, z);
                     break;
                 case CubeType::dirt:
-                    this->setCube(new Dirt(), x, y, z);
+                    this->setCube(std::make_shared<Dirt>(), x, y, z);
                     break;
                 case CubeType::grassyDirt:
-                    this->setCube(new GrassyDirt(), x, y, z);
+                    this->setCube(std::make_shared<GrassyDirt>(), x, y, z);
                     break;
                 case CubeType::sand:
-                    this->setCube(new Sand(), x, y, z);
+                    this->setCube(std::make_shared<Sand>(), x, y, z);
                     break;
                 case CubeType::water:
-                    this->setCube(new Water(), x, y, z);
+                    this->setCube(std::make_shared<Water>(), x, y, z);
                     break;
                 case CubeType::lava:
-                    this->setCube(new Lava(), x, y, z);
+                    this->setCube(std::make_shared<Lava>(), x, y, z);
                     break;
                 default:
-                    this->setCube(new Stone(), x, y, z);
+                    this->setCube(std::make_shared<Stone>(), x, y, z);
                     break;
             }
         }

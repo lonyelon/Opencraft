@@ -7,7 +7,7 @@ The game currently **runs on ArchLinux and Ubuntu** without problems. A port to 
 
 ## Build
 
-To build the game you first need the following libraries:
+To build the game you first need the following external libraries:
 * GLFW3
 * GLM
 * Libnoise

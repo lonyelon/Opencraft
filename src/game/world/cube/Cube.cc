@@ -100,11 +100,11 @@ void Cube::getVertex(std::vector<float> *v, std::vector<int> *i, int n) {
     }
 }
 
-FixedPosition Cube::getPos() {
+Position<int> Cube::getPos() {
     int x = this->getX();
     int y = this->getY();
     int z = this->getZ();
-    return FixedPosition(x, y, z);
+    return Position<int>(x, y, z);
 }
 
 Cube::~Cube() {

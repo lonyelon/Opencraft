@@ -6,7 +6,7 @@
 #define OPENCRAFT_TREEGENERATOR_HPP
 
 #include <game/world/strcuture/StructureGenerator.hpp>
-#include <engine/position/FixedPosition.hpp>
+#include <engine/position/Position.hpp>
 
 class World;
 
@@ -14,7 +14,7 @@ class TreeGenerator : public StructureGenerator {
 public:
     TreeGenerator(std::weak_ptr<World> w);
 
-    void constructAt(FixedPosition at);
+    void constructAt(Position<int> at);
 };
 
 

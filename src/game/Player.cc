@@ -212,7 +212,7 @@ void Player::breakCube() {
         return;
     }
 
-	FixedPosition pos = c->getChunkPos();
+	Position<int> pos = c->getChunkPos();
     c->getChunk()->setCube(std::make_shared<Air>(), pos.getX(), pos.getY(), pos.getZ());
     c->getChunk()->getVisibleCubes();
     c->getChunk()->genVao();
@@ -271,7 +271,7 @@ void Player::placeCube() {
         return;
     }
 
-	FixedPosition pos = c0->getChunkPos();
+	Position<int>pos = c0->getChunkPos();
     c0->getChunk()->setCube(std::make_shared<Stone>(), pos.getX(), pos.getY(), pos.getZ());
     c0->getChunk()->getVisibleCubes();
     c0->getChunk()->genVao();

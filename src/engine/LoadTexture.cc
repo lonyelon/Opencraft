@@ -9,7 +9,7 @@
 #include <game/Game.hpp>
 
 #define STB_IMAGE_IMPLEMENTATION
-#include <engine/stb/stb_image.h>
+#include <stb/stb_image.h>
 
 extern std::unique_ptr<Game> game;
 

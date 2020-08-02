@@ -6,7 +6,7 @@
 //#include "Cube.hpp"
 #include "CubeTypes.hpp"
 #include "../../../engine/Engine.hpp"
-#include "engine/position/FixedPosition.hpp"
+#include "engine/position/Position.hpp"
 
 class Chunk;
 
@@ -15,7 +15,7 @@ protected:
     Chunk *chunk;
     CubeType type;
     int x, y, z;
-	FixedPosition chunkPos;
+	Position<int> chunkPos;
     int sides;
 	bool transparent;
 
@@ -40,9 +40,9 @@ public:
     void setY(int y) { this->y = y; };
     void setZ(int z) { this->z = z; };
 
-	void setChunkPos(FixedPosition pos) { this->chunkPos = pos; };
-	FixedPosition getChunkPos() {return this->chunkPos; };
-	FixedPosition getPos();
+	void setChunkPos(Position<int> pos) { this->chunkPos = pos; };
+	Position<int> getChunkPos() {return this->chunkPos; };
+	Position<int> getPos();
 
     Chunk * getChunk() { return this->chunk; };
 	void setChunk(Chunk *c) { this->chunk = c; };

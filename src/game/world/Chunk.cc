@@ -165,7 +165,7 @@ std::shared_ptr<Cube> Chunk::getCube(unsigned int x, int y, int z) {
     return this->cubes[x + y * this->W + z * this->W * this->H];
 }
 
-std::shared_ptr<Cube> Chunk::getCube(FixedPosition pos) {
+std::shared_ptr<Cube> Chunk::getCube(Position<int> pos) {
     if (pos.getX() + pos.getY() * this->W + pos.getZ() * this->W * this->H > this->W * this->H * this->Z) {
         return nullptr;
     }
@@ -174,10 +174,10 @@ std::shared_ptr<Cube> Chunk::getCube(FixedPosition pos) {
 
 void Chunk::setCube(std::shared_ptr<Cube> c, int x, int y, int z) {
 
-    this->setCube(c, FixedPosition(x, y, z));
+    this->setCube(c, Position<int>(x, y, z));
 }
 
-void Chunk::setCube(std::shared_ptr<Cube> c, FixedPosition pos) {
+void Chunk::setCube(std::shared_ptr<Cube> c, Position<int> pos) {
     if (pos.getX() >= this->W || pos.getY() >= this->H || pos.getZ() >= this->Z) {
         return;
     }
@@ -362,7 +362,7 @@ void Chunk::Save() {
 
     for (int i = 0; i < Chunk::W * Chunk::H * Chunk::Z; i++) {
         file << this->cubes[i]->getType() << "\t";
-        FixedPosition p = this->cubes[i]->getChunkPos();
+        Position<int>p = this->cubes[i]->getChunkPos();
         file << p.getX() << "\t";
         file << p.getY() << "\t";
         file << p.getZ() << "\n";

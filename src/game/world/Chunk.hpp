@@ -29,10 +29,10 @@ public:
     void genTerrain();
 
     std::shared_ptr<Cube> getCube(unsigned int x, int y, int z); // TODO remove this
-    std::shared_ptr<Cube> getCube(FixedPosition pos);
+    std::shared_ptr<Cube> getCube(Position<int> pos);
 
     void setCube(std::shared_ptr<Cube> c, int x, int y, int z); // TODO remove this
-    void setCube(std::shared_ptr<Cube> c, FixedPosition pos);
+    void setCube(std::shared_ptr<Cube> c, Position<int> pos);
 
     std::vector<std::shared_ptr<Cube> > getCubes();
 

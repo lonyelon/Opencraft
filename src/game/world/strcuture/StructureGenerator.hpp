@@ -5,7 +5,7 @@
 #ifndef OPENCRAFT_STRUCTUREGENERATOR_HPP
 #define OPENCRAFT_STRUCTUREGENERATOR_HPP
 
-#include <engine/position/FixedPosition.hpp>
+#include <engine/position/Position.hpp>
 
 #include <memory>
 
@@ -17,7 +17,7 @@ protected:
 public:
     StructureGenerator(std::weak_ptr<World> w);
 
-    virtual void constructAt(FixedPosition at) = 0;
+    virtual void constructAt(Position<int> at) = 0;
 };
 
 

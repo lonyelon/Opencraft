@@ -9,7 +9,7 @@
 // UPDATED: 2018-03-23
 ///////////////////////////////////////////////////////////////////////////////
 #pragma warning(disable:4996)
-#include <engine/glad/glad.h>
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <stdio.h>
 #include <math.h>

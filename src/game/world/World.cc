@@ -139,10 +139,10 @@ int sign(int x) {
 	Returns a cube by it's coordinates.
 */
 std::shared_ptr<Cube> World::getCube(int x, int y, int z) {
-    return this->getCube(FixedPosition(x, y, z));
+    return this->getCube(Position<int>(x, y, z));
 }
 
-std::shared_ptr<Cube> World::getCube(FixedPosition pos) {
+std::shared_ptr<Cube> World::getCube(Position<int> pos) {
     Chunk *c = nullptr;
 
     int chunkX = floor((float) pos.getX() / Chunk::W);
@@ -162,10 +162,10 @@ std::shared_ptr<Cube> World::getCube(FixedPosition pos) {
 	Returns a cube by it's coordinates, but first it checks it's own chunk.
 */
 std::shared_ptr<Cube> World::getCube(Chunk *k, int x, int y, int z) {
-    return this->getCube(k, FixedPosition(x, y, z));
+    return this->getCube(k, Position(x, y, z));
 }
 
-std::shared_ptr<Cube> World::getCube(Chunk *k, FixedPosition pos) {
+std::shared_ptr<Cube> World::getCube(Chunk *k, Position<int> pos) {
     int chunkX = floor((float) pos.getX() / 16);
     int chunkY = floor((float) pos.getY() / 16);
     int chunkZ = floor((float) pos.getZ() / 16);
@@ -238,14 +238,14 @@ std::string World::getName() {
     return this->name;
 };
 
-void World::setCube(std::shared_ptr<Cube> c, FixedPosition pos) {
+void World::setCube(std::shared_ptr<Cube> c, Position<int> pos) {
     int x = floor((float) pos.getX() / Chunk::W);
     int y = floor((float) pos.getY() / Chunk::H);
     int z = floor((float) pos.getZ() / Chunk::Z);
 
     Chunk *chunk = this->getChunk(x, y, z);
     if (chunk != nullptr) {
-        FixedPosition newPos = pos.move(FixedPosition(-1 * x * Chunk::W, -1 * y * Chunk::H, -1 * z * Chunk::Z));
+        Position<int>newPos = pos.move(Position(-1 * x * Chunk::W, -1 * y * Chunk::H, -1 * z * Chunk::Z));
         chunk->setCube(c, newPos);
     }
 };

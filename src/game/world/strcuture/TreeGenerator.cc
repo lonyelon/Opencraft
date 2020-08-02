@@ -10,11 +10,11 @@ TreeGenerator::TreeGenerator(std::weak_ptr<World> w) : StructureGenerator(w) {
     this->world = w;
 }
 
-void TreeGenerator::constructAt(FixedPosition at) {
+void TreeGenerator::constructAt(Position<int> at) {
     // trunk
     int height = 5 + rand() % 5;
     for (int i = 0; i < height; i++) {
-        this->world.lock()->setCube(std::make_shared<Wood>(), at.move(FixedPosition(0, i, 0)));
+        this->world.lock()->setCube(std::make_shared<Wood>(), at.move(Position(0, i, 0)));
     }
 
     for (int i = height - 4; i < height; i++) {
@@ -24,7 +24,7 @@ void TreeGenerator::constructAt(FixedPosition at) {
                 if (j == 0 && k == 0) {
                     continue;
                 }
-                this->world.lock()->setCube(std::make_shared<TreeLeaves>(), at.move(FixedPosition(j, i, k)));
+                this->world.lock()->setCube(std::make_shared<TreeLeaves>(), at.move(Position(j, i, k)));
             }
         }
     }

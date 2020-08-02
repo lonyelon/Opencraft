@@ -33,11 +33,11 @@ public:
 
     void setSize(const int size);
 
-    void setCube(std::shared_ptr<Cube> c, FixedPosition pos);
+    void setCube(std::shared_ptr<Cube> c, Position<int> pos);
 
-    std::shared_ptr<Cube> getCube(FixedPosition pos);
+    std::shared_ptr<Cube> getCube(Position<int> pos);
 
-    std::shared_ptr<Cube> getCube(Chunk *c, FixedPosition pos);
+    std::shared_ptr<Cube> getCube(Chunk *c, Position<int> pos);
 
     std::shared_ptr<Cube> getCube(int x, int y, int z); // TODO delete this
     std::shared_ptr<Cube> getCube(Chunk *c, int x, int y, int z); // TODO delete this

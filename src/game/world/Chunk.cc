@@ -4,7 +4,7 @@
 #include <game/world/cube/CubeTypes.hpp>
 #include <game/world/strcuture/TreeGenerator.hpp>
 
-#include <noise/noise.h>
+#include <libnoise/noise.h>
 
 #include <cstdio>
 #include <vector>

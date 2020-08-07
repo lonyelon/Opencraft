@@ -13,7 +13,7 @@ class World;
 
 class Chunk {
 private:
-    int x, y, z;
+    Position<int> pos;
     std::vector<std::shared_ptr<Cube>> cubes;
     std::vector<std::shared_ptr<Cube>> renderedCubes;
     std::weak_ptr<World> world;
@@ -46,11 +46,11 @@ public:
 
     int getCubeCount() { return this->renderedCubes.size(); };
 
-    int getX() { return this->x; };
+    int getX() { return this->pos.getX(); };
 
-    int getY() { return this->y; };
+    int getY() { return this->pos.getY(); };
 
-    int getZ() { return this->z; };
+    int getZ() { return this->pos.getZ(); };
 
     void Save();
 

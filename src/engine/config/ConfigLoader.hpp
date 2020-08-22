@@ -5,24 +5,25 @@
 #include <string>
 #include <fstream>
 #include <vector>
-
-typedef struct sP {
-    std::string variable;
-    std::string value;
-} StringPair;
+#include <tuple>
 
 class ConfigLoader {
 private:
     std::string path;
     std::ifstream file;
-    std::vector<StringPair> data;
+    std::vector<std::tuple<std::string, std::string>> data;
 public:
-    void loadConfigPair( std::string input, std::string *name, std::string *value );
-    ConfigLoader( std::string path );
-    std::string getString( std::string name );
-    int getInt( std::string name );
-    float getFloat( std::string name );
-    std::vector<std::string> getVariables( );
+    ConfigLoader(std::string path);
+
+    std::tuple<std::string, std::string> loadConfigPair(std::string input);
+
+    std::string getString(std::string name);
+
+    int getInt(std::string name);
+
+    float getFloat(std::string name);
+
+    std::vector<std::string> getVariables();
 };
 
 #endif

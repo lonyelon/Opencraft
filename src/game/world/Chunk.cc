@@ -313,7 +313,7 @@ void Chunk::updateModel() {
     std::vector<float> v;
     std::vector<int> i;
     for (std::size_t k = 0; k < this->renderedCubes.size(); k++) {
-        this->renderedCubes[k]->getVertex(&v, &i, k);
+        this->renderedCubes[k]->getVertex(&v, &i);
     }
     this->chunkModel->setVertex(v);
     this->chunkModel->setTextureCoords(i);
@@ -328,17 +328,11 @@ void Chunk::draw() {
     this->chunkModel->draw();
 }
 
-Chunk::~Chunk() {
-    this->save();
-    for (int i = 0; i < this->W * this->H * this->Z; i++) {
-        //delete (this->cubes[i]);
-    }
-    this->cubes.clear();
-    this->renderedCubes.clear();
-}
-
-
 void Chunk::save() const {
+    if (!this->generated) {
+        return;
+    }
+
     std::stringstream name;
     name << "saves/" << this->world.lock()->getName() << "/world/" << this->position.getX() << "_"
          << this->position.getY() << "_"
@@ -403,4 +397,8 @@ void Chunk::load() {
 
 std::weak_ptr<World> Chunk::getWorld() {
     return this->world;
+}
+
+Chunk::~Chunk() {
+
 }

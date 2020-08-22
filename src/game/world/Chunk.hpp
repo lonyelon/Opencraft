@@ -36,6 +36,8 @@ public:
 
     int isIllated(int x, int y, int z);
 
+    bool isGenerated() const { return this->generated; };
+
     void genVao();
 
     void getVisibleCubes();

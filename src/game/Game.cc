@@ -1,7 +1,3 @@
-//
-// Created by lonyelon on 1/8/20.
-//
-
 #include "Game.hpp"
 
 #include <filesystem>

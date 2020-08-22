@@ -32,6 +32,7 @@ public:
 
     void setZ(T z);
 
+    bool operator==(Position<T> other) const;
 };
 
 template<typename T>
@@ -70,6 +71,11 @@ Position<T> Position<T>::move(Position<T> desp) {
     T ny = this->getY() + desp.getY();
     T nz = this->getZ() + desp.getZ();
     return Position(nx, ny, nz);
+}
+
+template<typename T>
+bool Position<T>::operator==(Position<T> other) const {
+    return this->getX() == other.getX() && this->getY() == other.getY() && this->getZ() == other.getZ();
 }
 
 

@@ -42,7 +42,7 @@ public:
 
     int getSides() const { return this->sides; };
 
-    void getVertex(std::vector<float> *v, std::vector<int> *i, int n) const;
+    void getVertex(std::vector<float> *v, std::vector<int> *i) const;
 
     int getX() const { return this->position.getX(); };
 

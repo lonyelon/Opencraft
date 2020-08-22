@@ -17,10 +17,10 @@ void Cube::setType(CubeType t) {
 }
 
 CubeType Cube::getType() const {
-    return Cube::type;
+    return this->type;
 }
 
-void Cube::getVertex(std::vector<float> *v, std::vector<int> *i, int n) const {
+void Cube::getVertex(std::vector<float> *v, std::vector<int> *i) const {
     const int texFileSize = 16;
     const int texFileSizeX = 6;
 

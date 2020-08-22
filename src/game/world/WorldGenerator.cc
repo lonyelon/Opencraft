@@ -12,7 +12,8 @@ void WorldGenerator::genChunk(std::vector<Chunk *> *chunks, int *chunkCount, int
     for (int x = 0; x < size; x++) {
         for (int z = 0; z < size; z++) {
             for (int y = threadNumber; y < size; y += threadCount) {
-                (*chunks)[x * size * size + z * size + y] = new Chunk(game->getWorld(), x - size / 2, z - size / 2, y - size / 2);
+                (*chunks)[x * size * size + z * size + y] = new Chunk(game->getWorld(), x - size / 2, z - size / 2,
+                                                                      y - size / 2);
                 (*chunks)[x * size * size + z * size + y]->genTerrain();
                 (*chunkCount)++;
             }
@@ -35,7 +36,8 @@ void WorldGenerator::worldUpdate(std::shared_ptr<World> world, std::shared_ptr<P
 
     while (world->isWorldUpdating()) {
 
-        std::shared_ptr<Cube> c = world->getCube(player->getCam()->getX(), player->getCam()->getY(), player->getCam()->getZ());
+        std::shared_ptr<Cube> c = world->getCube(player->getCam()->getX(), player->getCam()->getY(),
+                                                 player->getCam()->getZ());
         if (c == nullptr) continue;
         Chunk *ck = c->getChunk();
 
@@ -45,7 +47,8 @@ void WorldGenerator::worldUpdate(std::shared_ptr<World> world, std::shared_ptr<P
                     for (int z = -radius; z < radius; z++) {
                         if (world->getChunk(ck->getX() + x, ck->getY() + y, ck->getZ() + z) == nullptr) {
                             world->genChunkAt(true, ck->getX() + x, ck->getY() + y, ck->getZ() + z);
-                        } else if (world->getChunk(ck->getX() + x, ck->getY() + y, ck->getZ() + z)->isDrawn()) {
+                        } else if (world->getChunk(ck->getX() + x, ck->getY() + y, ck->getZ() + z)->isGenerated() &&
+                                   world->getChunk(ck->getX() + x, ck->getY() + y, ck->getZ() + z)->isDrawn()) {
                             Chunk *chunk = world->getChunk(ck->getX() + x, ck->getY() + y, ck->getZ() + z);
                             chunk->getVisibleCubes();
                             chunk->genVao();

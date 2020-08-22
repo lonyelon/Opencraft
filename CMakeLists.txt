@@ -5,6 +5,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall")
 
 project(Opencraft)
 
+file(COPY bin DESTINATION ${CMAKE_BINARY_DIR})
+
 add_executable(
         Opencraft
 

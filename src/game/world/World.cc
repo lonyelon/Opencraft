@@ -155,7 +155,9 @@ std::shared_ptr<Cube> World::getCube(Position<int> pos) {
         return nullptr;
     }
 
-    return c->getCube(pos.getX() - c->getX() * 16, pos.getY() - c->getY() * 16, pos.getZ() - c->getZ() * 16);
+    auto newPos = Position(pos.getX() - c->getX() * 16, pos.getY() - c->getY() * 16, pos.getZ() - c->getZ() * 16);
+
+    return c->getCube(newPos);
 }
 
 /*
@@ -171,8 +173,9 @@ std::shared_ptr<Cube> World::getCube(Chunk *k, Position<int> pos) {
     int chunkZ = floor((float) pos.getZ() / 16);
 
     if (k != nullptr && k->getX() == chunkX && k->getY() == chunkY && k->getZ() == chunkZ) {
-        std::shared_ptr<Cube> cube = k->getCube(pos.getX() - k->getX() * Chunk::W, pos.getY() - k->getY() * Chunk::H,
+        auto cubePos = Position(pos.getX() - k->getX() * Chunk::W, pos.getY() - k->getY() * Chunk::H,
                                 pos.getZ() - k->getZ() * Chunk::Z);
+        std::shared_ptr<Cube> cube = k->getCube(cubePos);
         return cube;
     }
 
@@ -213,10 +216,11 @@ Chunk *World::getChunk(int x, int y, int z) {
 void World::saveWorld() {
     std::ofstream file("saves/" + this->name + "/playerdata.txt");
 
-    file << game->getPlayer()->getCam()->getX() << "\t" << game->getPlayer()->getCam()->getY() << "\t" << game->getPlayer()->getCam()->getZ();
+    file << game->getPlayer()->getCam()->getX() << "\t" << game->getPlayer()->getCam()->getY() << "\t"
+         << game->getPlayer()->getCam()->getZ();
 
     for (auto c: this->chunks) {
-        c->Save();
+        c->save();
     }
 
     file.close();
@@ -245,7 +249,7 @@ void World::setCube(std::shared_ptr<Cube> c, Position<int> pos) {
 
     Chunk *chunk = this->getChunk(x, y, z);
     if (chunk != nullptr) {
-        Position<int>newPos = pos.move(Position(-1 * x * Chunk::W, -1 * y * Chunk::H, -1 * z * Chunk::Z));
+        Position<int> newPos = pos.move(Position(-1 * x * Chunk::W, -1 * y * Chunk::H, -1 * z * Chunk::Z));
         chunk->setCube(c, newPos);
     }
 };

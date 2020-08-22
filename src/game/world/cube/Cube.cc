@@ -8,39 +8,19 @@
 
 extern std::unique_ptr<Game> game;
 
-Cube::Cube(Chunk *c, int xpos, int ypos, int zpos) {
-    this->x = xpos;
-    this->y = ypos;
-    this->z = zpos;
-    this->type = CubeType::air;
-    this->chunk = c;
-    this->sides = 1;
-}
-
-Cube::Cube() {
-    this->x = 0;
-    this->y = 0;
-    this->z = 0;
-    this->type = CubeType::air;
-    this->chunk = nullptr;
-    this->sides = 1;
-}
-
-void Cube::setPosition(int x, int y, int z) {
-    this->x = x;
-    this->y = y;
-    this->z = z;
+void Cube::setPos(Position<int> p) {
+    this->position = p;
 }
 
 void Cube::setType(CubeType t) {
     this->type = t;
 }
 
-CubeType Cube::getType() {
+CubeType Cube::getType() const {
     return Cube::type;
 }
 
-void Cube::getVertex(std::vector<float> *v, std::vector<int> *i, int n) {
+void Cube::getVertex(std::vector<float> *v, std::vector<int> *i, int n) const {
     const int texFileSize = 16;
     const int texFileSizeX = 6;
 
@@ -71,9 +51,9 @@ void Cube::getVertex(std::vector<float> *v, std::vector<int> *i, int n) {
             if (k >= 30 * 3 && k < 36 * 3 && this->sides % 13 != 0) continue;
         }
 
-        v->push_back(vertex[k + 0] + this->x);
-        v->push_back(vertex[k + 1] + this->y);
-        v->push_back(vertex[k + 2] + this->z);
+        v->push_back(vertex[k + 0] + this->position.getX());
+        v->push_back(vertex[k + 1] + this->position.getY());
+        v->push_back(vertex[k + 2] + this->position.getZ());
 
         float texCoordX = textureCoords[2 * (k / 3)];
         float texCoordY = textureCoords[2 * (k / 3) + 1];
@@ -100,11 +80,8 @@ void Cube::getVertex(std::vector<float> *v, std::vector<int> *i, int n) {
     }
 }
 
-Position<int> Cube::getPos() {
-    int x = this->getX();
-    int y = this->getY();
-    int z = this->getZ();
-    return Position<int>(x, y, z);
+Position<int> Cube::getPos() const {
+    return this->position;
 }
 
 Cube::~Cube() {

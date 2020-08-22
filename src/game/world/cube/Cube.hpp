@@ -3,53 +3,62 @@
 
 #include <vector>
 
-//#include "Cube.hpp"
+#include <game/world/WorldObject.hpp>
+
 #include "CubeTypes.hpp"
 #include "../../../engine/Engine.hpp"
 #include "engine/position/Position.hpp"
 
 class Chunk;
 
-class Cube {
+class Cube : public WorldObject {
 protected:
-    Chunk *chunk;
-    CubeType type;
-    int x, y, z;
-	Position<int> chunkPos;
-    int sides;
-	bool transparent;
+    Chunk *chunk = nullptr;
+    CubeType type = CubeType::air;
+
+    int sides = 1;
+    Position<int> chunkPos = Position(0, 0, 0);
+
+    bool transparent = true;
 
 public:
-    Cube ();
-    Cube ( Chunk *c, int xpos, int ypos, int zpos );
+    Cube() {};
 
-    void setPosition( int x, int y, int z );
+    Cube(Chunk *c, int x, int y, int z) : chunk(c), WorldObject(Position(x, y, z)) {};
 
-    void setType( CubeType t );
-    CubeType getType();
+    Cube(Chunk *c, Position<int> p) : chunk(c), WorldObject(p) {};
+
+    void setPos(Position<int> p);
+
+    void setType(CubeType t);
 
     void setSides(int s) { this->sides = s; };
-    int getSides() { return this->sides; };
 
-    void getVertex( std::vector<float> *v, std::vector<int> *i, int n );
+    void setChunkPos(Position<int> pos) { this->chunkPos = pos; };
 
-    int getX() { return this->x; };
-    int getY() { return this->y; };
-    int getZ() { return this->z; };
-	void setX(int x) { this->x = x; };
-    void setY(int y) { this->y = y; };
-    void setZ(int z) { this->z = z; };
+    void setChunk(Chunk *c) { this->chunk = c; };
 
-	void setChunkPos(Position<int> pos) { this->chunkPos = pos; };
-	Position<int> getChunkPos() {return this->chunkPos; };
-	Position<int> getPos();
+    CubeType getType() const;
 
-    Chunk * getChunk() { return this->chunk; };
-	void setChunk(Chunk *c) { this->chunk = c; };
+    int getSides() const { return this->sides; };
 
-	bool isTransparent() { return this->transparent; }
+    void getVertex(std::vector<float> *v, std::vector<int> *i, int n) const;
 
-	virtual void update() = 0;
+    int getX() const { return this->position.getX(); };
+
+    int getY() const { return this->position.getY(); };
+
+    int getZ() const { return this->position.getZ(); };
+
+    Chunk *getChunk() const { return this->chunk; };
+
+    bool isTransparent() const { return this->transparent; }
+
+    Position<int> getChunkPos() const { return this->chunkPos; };
+
+    Position<int> getPos() const;
+
+    virtual void update() = 0;
 
     ~Cube();
 };

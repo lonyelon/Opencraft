@@ -5,36 +5,34 @@
 #include <memory>
 
 #include "Chunk.hpp"
+#include <game/world/WorldObject.hpp>
 #include "cube/Cube.hpp"
 #include "cube/Dirt.hpp"
 #include <engine/model/Model.hpp>
 
 class World;
 
-class Chunk {
+class Chunk : public WorldObject {
 private:
-    Position<int> pos;
-    std::vector<std::shared_ptr<Cube>> cubes;
+    std::vector<std::shared_ptr<Cube>> cubes = std::vector<std::shared_ptr<Cube>>(Chunk::W * Chunk::H * Chunk::Z);
     std::vector<std::shared_ptr<Cube>> renderedCubes;
     std::weak_ptr<World> world;
-    bool generated;
+    std::unique_ptr<Model> chunkModel = std::make_unique<Model>();
+    bool generated = false;
     bool updated = false;
-    std::unique_ptr<Model> chunkModel;
 
 public:
     static const int W = 16, H = 16, Z = 16;
 
-    Chunk(std::weak_ptr<World> w, int posX, int posY, int posZ);
+    Chunk(std::weak_ptr<World> w, int posX, int posY, int posZ) : world(w), WorldObject(Position(posX, posY, posZ)) {};
 
     void genTerrain();
 
-    std::shared_ptr<Cube> getCube(unsigned int x, int y, int z); // TODO remove this
     std::shared_ptr<Cube> getCube(Position<int> pos);
 
-    void setCube(std::shared_ptr<Cube> c, int x, int y, int z); // TODO remove this
     void setCube(std::shared_ptr<Cube> c, Position<int> pos);
 
-    std::vector<std::shared_ptr<Cube> > getCubes();
+    std::vector<std::shared_ptr<Cube>> getCubes() const;
 
     int isIllated(int x, int y, int z);
 
@@ -46,15 +44,15 @@ public:
 
     int getCubeCount() { return this->renderedCubes.size(); };
 
-    int getX() { return this->pos.getX(); };
+    int getX() const { return this->position.getX(); };
 
-    int getY() { return this->pos.getY(); };
+    int getY() const { return this->position.getY(); };
 
-    int getZ() { return this->pos.getZ(); };
+    int getZ() const { return this->position.getZ(); };
 
-    void Save();
+    void save() const;
 
-    void Load();
+    void load();
 
     void draw();
 
@@ -62,9 +60,11 @@ public:
 
     void setUpdated(bool update) { this->updated = update; };
 
-    bool isDrawn() {
+    bool isDrawn() const {
         return this->chunkModel->getVao() != 0;
     }
+
+    void update() {};
 
     ~Chunk();
 };

@@ -9,47 +9,33 @@
 template<typename T>
 class Position {
 private:
-    T x, y, z;
+    T x = 0, y = 0, z = 0;
 public:
     // Constructor that sets the coordinates to 0.
-    Position();
+    Position() = default;
 
     // Constructor with coordinates.
-    Position(T x, T y, T z);
+    Position(T x, T y, T z) : x(x), y(y), z(z) {};
 
     // Moves the coordinates of the current position and returns a new one with the new coordinates.
     Position<T> move(Position<T> desp);
 
-    T getX();
+    T getX() const;
 
     void setX(T x);
 
-    T getY();
+    T getY() const;
 
     void setY(T y);
 
-    T getZ();
+    T getZ() const;
 
     void setZ(T z);
 
 };
 
 template<typename T>
-Position<T>::Position(T x, T y, T z) {
-    this->x = x;
-    this->y = y;
-    this->z = z;
-}
-
-template<typename T>
-Position<T>::Position() {
-    this->x = 0;
-    this->y = 0;
-    this->z = 0;
-}
-
-template<typename T>
-T Position<T>::getX() {
+T Position<T>::getX() const {
     return this->x;
 }
 
@@ -59,7 +45,7 @@ void Position<T>::setX(T x) {
 }
 
 template<typename T>
-T Position<T>::getY() {
+T Position<T>::getY() const {
     return this->y;
 }
 
@@ -69,7 +55,7 @@ void Position<T>::setY(T y) {
 }
 
 template<typename T>
-T Position<T>::getZ() {
+T Position<T>::getZ() const {
     return this->z;
 }
 

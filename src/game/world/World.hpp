@@ -4,6 +4,7 @@
 #include <vector>
 #include <thread>
 #include <memory>
+#include <map>
 
 #include <game/world/Chunk.hpp>
 #include <game/world/cube/Cubes.hpp>
@@ -20,7 +21,7 @@ private:
     int chunkCount;
     bool updateWorld;
 
-    std::vector<Chunk *> chunks;
+    std::map<Position<int>, Chunk*> chunks;
     std::vector<Chunk *> drawQueue;
     std::unique_ptr<std::thread> genThread;
 
@@ -49,17 +50,17 @@ public:
     }; // TODO delete this
     void setSeed(int seed);
 
-    int getSeed();
+    int getSeed() const;
 
-    int getChunkCount();
+    int getChunkCount() const;
 
-    std::vector<Chunk *> getChunks();
+    std::map<Position<int>, Chunk*> getChunks() const;
 
     Chunk *getChunk(int x, int y, int z);
 
     void deleteChunk(Chunk *c);
 
-    bool isWorldUpdating();
+    bool isWorldUpdating() const;
 
     void addChunkToQueue(Chunk *c);
 

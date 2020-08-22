@@ -33,6 +33,8 @@ public:
     void setZ(T z);
 
     bool operator==(Position<T> other) const;
+
+    bool operator<(Position<T> other) const;
 };
 
 template<typename T>
@@ -78,5 +80,10 @@ bool Position<T>::operator==(Position<T> other) const {
     return this->getX() == other.getX() && this->getY() == other.getY() && this->getZ() == other.getZ();
 }
 
+template<typename T>
+bool Position<T>::operator<(Position<T> other) const {
+    return this->getX() < other.getX() || (this->getX() == other.getX() && this->getY() < other.getY()) ||
+           (this->getX() == other.getX() && this->getY() == other.getY() && this->getZ() < other.getZ());
+}
 
 #endif //OPENCRAFT_POSITION_HPP

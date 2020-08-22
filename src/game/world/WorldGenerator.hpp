@@ -15,9 +15,9 @@ class Player;
 
 class WorldGenerator {
 public:
-    static void genChunk(std::vector<Chunk *> *chunks, int *chunkCount, int size, World *w, int threadNumber, int threadCount);
+    static void genChunk(std::map<Position<int>, Chunk*> *chunks, int *chunkCount, int size, World *w, int threadNumber, int threadCount);
 
-    static void genVAOs(std::vector<Chunk *> *chunks, int threadNumber, int threadCount);
+    static void genVAOs(std::map<Position<int>, Chunk*> *chunks, int threadNumber, int threadCount);
 
     static void worldUpdate(std::shared_ptr<World> world, std::shared_ptr<Player> player);
 };

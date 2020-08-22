@@ -154,9 +154,10 @@ void Chunk::genTerrain() {
 }
 
 std::shared_ptr<Cube> Chunk::getCube(Position<int> pos) {
-    if (pos.getX() + pos.getY() * Chunk::W + pos.getZ() * Chunk::W * Chunk::H > Chunk::W * Chunk::H * Chunk::Z) {
+    /*if (pos.getX() >= Chunk::W || pos.getY() >= Chunk::H || pos.getZ() >= Chunk::Z || pos.getX() < 0 ||
+        pos.getY() < 0 || pos.getZ() < 0) {
         return nullptr;
-    }
+    }*/
     return this->cubes[pos.getX() + pos.getY() * Chunk::W + pos.getZ() * Chunk::W * Chunk::H];
 }
 

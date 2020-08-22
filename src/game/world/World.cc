@@ -37,7 +37,7 @@ void World::genChunkAt(bool draw, int x, int y, int z) {
     }
 
     Chunk *c = new Chunk(game->getWorld(), x, y, z);
-    this->chunks.push_back(c);
+    this->chunks.insert(std::make_pair(Position(x, y, z), c));
     this->chunkCount++;
     c->genTerrain();
 
@@ -58,34 +58,26 @@ void World::addChunkToQueue(Chunk *c) {
 	Deletes a chunk from memory.
 */
 void World::deleteChunk(Chunk *c) {
-    for (int i = 0; i < this->chunkCount; i++) {
-        int chunX = this->chunks[i]->getX();
-        int chunY = this->chunks[i]->getY();
-        int chunZ = this->chunks[i]->getZ();
-
-        if (chunX == c->getX() && chunY == c->getY() && chunZ == c->getZ()) {
-            delete (c);
-            this->chunks.erase(this->chunks.begin() + i);
-            this->chunkCount--;
-            break;
-        }
+    Chunk *k = this->chunks[c->getPos()];
+    if (k != nullptr) {
+        delete (c);
+        this->chunks.erase(k->getPos());
+        this->chunkCount--;
     }
 }
 
 void World::genChunks() {
-    const int threadCount = 8;
+    const int threadCount = 1;
 
     printf("Reserving memory for the world...\n");
 
     this->updateWorld = false;
     if (this->genThread != nullptr) this->genThread->join();
-    for (int i = 0; i < this->chunkCount; i++) {
-        delete (this->chunks[i]);
+    for (auto mapPair: this->chunks) {
+        delete (mapPair.second);
     }
     this->chunks.clear();
     this->chunkCount = 0;
-
-    this->chunks = std::vector<Chunk *>(size * size * size, nullptr);
 
     printf("Generating world...\n");
 
@@ -108,11 +100,14 @@ void World::genChunks() {
 	for (int i = 0; i < threadCount; i++) {
 		t[i].join();
     }*/
-    int count = this->chunkCount;
-    for (int i = 0; i < count; i++) {
-        printf("%d/%d\n", i, count);
-        this->chunks[i]->getVisibleCubes();
+    int size = this->chunks.size(), i = 1;
+    for (auto c: this->chunks) {
+        printf("%d/%d: %p\n", i, size, c.second);
+        c.second->getVisibleCubes();
         //this->chunks[i]->genVao();
+        if (++i == size) {
+            break;
+        }
     }
 
     this->updateWorld = true;
@@ -123,7 +118,7 @@ void World::genChunks() {
 
 void World::draw() {
     for (auto c: this->chunks) {
-        c->draw();
+        c.second->draw();
     }
 }
 
@@ -155,7 +150,8 @@ std::shared_ptr<Cube> World::getCube(Position<int> pos) {
         return nullptr;
     }
 
-    auto newPos = Position(pos.getX() - c->getX() * 16, pos.getY() - c->getY() * 16, pos.getZ() - c->getZ() * 16);
+    auto newPos = Position(pos.getX() - c->getX() * Chunk::W, pos.getY() - c->getY() * Chunk::H,
+                           pos.getZ() - c->getZ() * Chunk::Z);
 
     return c->getCube(newPos);
 }
@@ -186,15 +182,15 @@ void World::setSeed(int seed) {
     this->seed = seed;
 }
 
-int World::getSeed() {
+int World::getSeed() const {
     return this->seed;
 }
 
-int World::getChunkCount() {
+int World::getChunkCount() const {
     return this->chunkCount;
 }
 
-std::vector<Chunk *> World::getChunks() {
+std::map<Position<int>, Chunk *> World::getChunks() const {
     return this->chunks;
 }
 
@@ -202,15 +198,11 @@ std::vector<Chunk *> World::getChunks() {
 	Get's a chunk by it's coordinates.
 */
 Chunk *World::getChunk(int x, int y, int z) {
-    for (int i = 0; i < this->chunkCount; i++) {
-        if (this->chunks[i] == nullptr) {
-            continue;
-        }
-        if (this->chunks[i]->getX() == x && this->chunks[i]->getY() == y && this->chunks[i]->getZ() == z) {
-            return this->chunks[i];
-        }
+    try {
+        return this->chunks.at(Position(x, y, z));
+    } catch (const std::out_of_range &) {
+        return nullptr;
     }
-    return nullptr;
 }
 
 void World::saveWorld() {
@@ -220,7 +212,7 @@ void World::saveWorld() {
          << game->getPlayer()->getCam()->getZ();
 
     for (auto c: this->chunks) {
-        c->save();
+        c.second->save();
     }
 
     file.close();
@@ -229,12 +221,12 @@ void World::saveWorld() {
 int World::getCubesDrawn() {
     int c = 0;
     for (auto chunk: this->chunks) {
-        c += chunk->getCubeCount();
+        c += chunk.second->getCubeCount();
     }
     return c;
 }
 
-bool World::isWorldUpdating() {
+bool World::isWorldUpdating() const {
     return this->updateWorld;
 };
 
@@ -255,7 +247,6 @@ void World::setCube(std::shared_ptr<Cube> c, Position<int> pos) {
 };
 
 World::~World() {
-    printf("sadada\n");
     if (this->genThread != nullptr) {
         this->updateWorld = false;
         this->genThread->join();

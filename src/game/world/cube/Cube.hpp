@@ -22,7 +22,7 @@ protected:
     bool transparent = true;
 
 public:
-    Cube() {};
+    Cube() = default;
 
     Cube(Chunk *c, int x, int y, int z) : chunk(c), WorldObject(Position(x, y, z)) {};
 

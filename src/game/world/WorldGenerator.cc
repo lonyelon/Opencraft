@@ -7,24 +7,25 @@
 
 extern std::unique_ptr<Game> game;
 
-void WorldGenerator::genChunk(std::vector<Chunk *> *chunks, int *chunkCount, int size, World *w, int threadNumber,
-                              int threadCount) {
+void WorldGenerator::genChunk(std::map<Position<int>, Chunk *> *chunks, int *chunkCount, int size, World *w,
+                              int threadNumber, int threadCount) {
     for (int x = 0; x < size; x++) {
         for (int z = 0; z < size; z++) {
             for (int y = threadNumber; y < size; y += threadCount) {
-                (*chunks)[x * size * size + z * size + y] = new Chunk(game->getWorld(), x - size / 2, z - size / 2,
-                                                                      y - size / 2);
-                (*chunks)[x * size * size + z * size + y]->genTerrain();
+                Position p(x - size / 2, z - size / 2, y - size / 2);
+                (*chunks)[p] = new Chunk(game->getWorld(), x - size / 2, z - size / 2,
+                                         y - size / 2);
+                (*chunks).at(p)->genTerrain();
                 (*chunkCount)++;
             }
         }
     }
 }
 
-void WorldGenerator::genVAOs(std::vector<Chunk *> *chunks, int threadNumber, int threadCount) {
-    for (std::size_t i = threadNumber; i < (*chunks).size(); i += threadCount) {
-        (*chunks)[i]->getVisibleCubes();
-        (*chunks)[i]->genVao();
+void WorldGenerator::genVAOs(std::map<Position<int>, Chunk *> *chunks, int threadNumber, int threadCount) {
+    for (auto c: *chunks) {
+        c.second->getVisibleCubes();
+        c.second->genVao();
     }
 }
 
@@ -62,15 +63,15 @@ void WorldGenerator::worldUpdate(std::shared_ptr<World> world, std::shared_ptr<P
         /*
             Delete far away chunks.
         */
-        std::vector<Chunk *> chunks = world->getChunks();
-        for (std::size_t i = 0; i < chunks.size(); i++) {
-            float dist = pow(chunks[i]->getX() - ck->getX(), 2);
-            dist += pow(chunks[i]->getY() - ck->getY(), 2);
-            dist += pow(chunks[i]->getZ() - ck->getZ(), 2);
+        auto chunks = world->getChunks();
+        for (auto c: chunks) {
+            float dist = pow(c.second->getX() - ck->getX(), 2);
+            dist += pow(c.second->getY() - ck->getY(), 2);
+            dist += pow(c.second->getZ() - ck->getZ(), 2);
             dist = sqrt(dist);
 
             if (dist >= (float) maxDist * 1.25) {
-                world->deleteChunk(chunks[i]);
+                world->deleteChunk(c.second);
             }
         }
     }

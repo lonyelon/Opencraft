@@ -218,7 +218,7 @@ void Chunk::setCube(std::shared_ptr<Cube> c, Position<int> pos) {
 }
 
 
-std::vector<std::shared_ptr<Cube> > Chunk::getCubes() const {
+std::array<std::shared_ptr<Cube>, Chunk::W * Chunk::H * Chunk::Z> Chunk::getCubes() const {
     return this->cubes;
 }
 

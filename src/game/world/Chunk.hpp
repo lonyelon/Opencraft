@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <memory>
+#include <array>
 
 #include "Chunk.hpp"
 #include <game/world/WorldObject.hpp>
@@ -14,7 +15,7 @@ class World;
 
 class Chunk : public WorldObject {
 private:
-    std::vector<std::shared_ptr<Cube>> cubes = std::vector<std::shared_ptr<Cube>>(Chunk::W * Chunk::H * Chunk::Z);
+    std::array<std::shared_ptr<Cube>, 16*16*16> cubes;
     std::vector<std::shared_ptr<Cube>> renderedCubes;
     std::weak_ptr<World> world;
     std::unique_ptr<Model> chunkModel = std::make_unique<Model>();
@@ -32,7 +33,7 @@ public:
 
     void setCube(std::shared_ptr<Cube> c, Position<int> pos);
 
-    std::vector<std::shared_ptr<Cube>> getCubes() const;
+    std::array<std::shared_ptr<Cube>, Chunk::W * Chunk::H * Chunk::Z> getCubes() const;
 
     int isIllated(int x, int y, int z);
 

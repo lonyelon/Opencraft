@@ -36,7 +36,7 @@ void World::genChunkAt(bool draw, int x, int y, int z) {
         return;
     }
 
-    Chunk *c = new Chunk(game->getWorld(), x, y, z);
+    Chunk *c = new Chunk(game->getWorld().get(), x, y, z);
 
     chunkMutex.lock();
     this->chunks.insert(std::make_pair(Position(x, y, z), c));

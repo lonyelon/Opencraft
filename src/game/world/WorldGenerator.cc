@@ -1,8 +1,7 @@
 #include "WorldGenerator.hpp"
 
-#include "World.hpp"
+#include <game/world/World.hpp>
 #include <game/Player.hpp>
-
 #include <game/Game.hpp>
 
 extern std::unique_ptr<Game> game;
@@ -14,7 +13,7 @@ void WorldGenerator::genChunk(std::map<Position<int>, Chunk *> *chunks, int *chu
             for (int y = threadNumber; y < size; y += threadCount) {
                 Position p(x - size / 2, z - size / 2, y - size / 2);
                 game->getWorld()->chunkMutex.lock();
-                (*chunks)[p] = new Chunk(game->getWorld(), p);
+                (*chunks)[p] = new Chunk(game->getWorld().get(), p);
                 (*chunkCount)++;
                 game->getWorld()->chunkMutex.unlock();
                 (*chunks).at(p)->genTerrain();
@@ -89,7 +88,7 @@ void WorldGenerator::worldUpdate(std::shared_ptr<World> world, std::shared_ptr<P
             dist = sqrt(dist);
 
             if (dist >= (float) maxDist * 1.25) {
-                world->deleteChunk(c.second);
+                chunks.erase(c.first);
             }
         }
     }

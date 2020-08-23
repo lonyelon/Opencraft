@@ -29,25 +29,7 @@ void windowResize(GLFWwindow *window, int width, int height) {
     game->SCR_HEIGHT = height;
 }
 
-Game::Game() {
-}
-
-void Game::start() {
-    // Random seed for rand()
-    srand(time(nullptr));
-
-    // TODO move this to main
-    std::string worldName;
-    int seed;
-
-    std::cout << "Enter a world name: ";
-    std::cin >> worldName;
-
-    if (!std::filesystem::is_directory("saves/" + worldName)) {
-        std::cout << "Enter a world seed: ";
-        std::cin >> seed;
-    }
-
+void Game::start(std::string worldName, int seed) {
     this->world = std::make_shared<World>(worldName, seed);
     this->player = std::make_shared<Player>(this->world);
 

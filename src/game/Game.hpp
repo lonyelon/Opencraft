@@ -38,9 +38,9 @@ public:
     GLuint dirtTex;
     GLuint skyTex;
 
-    Game();
+    Game() = default;
 
-    void start();
+    void start(std::string worldName, int seed);
 
     void loop();
 

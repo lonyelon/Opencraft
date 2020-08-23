@@ -1,6 +1,10 @@
 #ifndef _CUBE_TYPES_HPP_
 #define _CUBE_TYPES_HPP_
 
+#include <memory>
+
+class Cube;
+
 enum CubeType {
 	air = 0,
 	stone = 1,
@@ -13,5 +17,7 @@ enum CubeType {
     wood = 8,
     treeleaves = 9
 };
+
+std::shared_ptr<Cube> getCubeObj(CubeType t);
 
 #endif

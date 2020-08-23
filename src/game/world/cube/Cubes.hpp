@@ -2,6 +2,8 @@
 	Includes all types of cubes
 */
 
+#include "Cube.hpp"
+
 #include "Air.hpp"
 
 #include "Dirt.hpp"

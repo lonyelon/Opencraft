@@ -69,7 +69,7 @@ add_executable(
         src/game/world/cube/TreeLeaves.hpp
         src/game/Game.cc
         src/game/Game.hpp
-        src/game/world/WorldObject.hpp)
+        src/game/world/WorldObject.hpp src/game/world/cube/CubeTypes.cc)
 target_include_directories(Opencraft PUBLIC src PRIVATE src)
 target_include_directories(Opencraft PUBLIC lib/include PRIVATE lib/include)
 

@@ -2,6 +2,7 @@
 #define GAME_PLAYER
 
 #include "../engine/Engine.hpp"
+#include <game/world/cube/CubeTypes.hpp>
 
 #include <memory>
 
@@ -13,6 +14,7 @@ class Player {
 private:
     std::weak_ptr<World> world;
     std::shared_ptr<Camera> cam;
+    CubeType selectedCube;
     float vspd;
     float movementSpeed;
 public:
@@ -24,19 +26,21 @@ public:
 
     std::shared_ptr<Camera> getCam();
 
-    std::shared_ptr<Cube> getPointer(float *x, float *y, float *z);
+    std::shared_ptr<Cube> getPointer(float *x, float *y, float *z) const;
 
-    std::shared_ptr<Cube> getPointedCube();
+    std::shared_ptr<Cube> getPointedCube() const;
 
-    bool getPointedPosition(float *x, float *y, float *z);
+    bool getPointedPosition(float *x, float *y, float *z) const;
 
     float getSpeed() { return this->movementSpeed; };
 
     std::weak_ptr<World> getWorld() { return this->world; };
 
-    void breakCube();
+    void selectCube();
 
-    void placeCube();
+    void breakCube() const;
+
+    void placeCube() const;
 
     void gravity(float ammount);
 

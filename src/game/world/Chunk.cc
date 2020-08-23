@@ -48,12 +48,11 @@ void Chunk::genTerrain() {
     for (int y = 0; y < Chunk::H; y++) {
         for (int x = 0; x < Chunk::W; x++) {
             for (int z = 0; z < Chunk::Z; z++) {
-                auto cubePos = Position<int>(static_cast<float>(this->position.getX() * Chunk::W + x) / xCoordRed,
-                                             static_cast<float>(this->position.getY() * Chunk::H + y) / yCoordRed,
-                                             static_cast<float>(this->position.getZ() * Chunk::Z + z) / zCoordRed);
+                float cX = static_cast<float>(this->position.getX() * Chunk::W + x) / xCoordRed;
+                float cY = static_cast<float>(this->position.getY() * Chunk::H + y) / yCoordRed;
+                float cZ = static_cast<float>(this->position.getZ() * Chunk::Z + z) / zCoordRed;
 
-                int noiseValue = (int) ((p.GetValue(cubePos.getX(), cubePos.getY(), cubePos.getZ()) + 1.1) * ystrech) +
-                                 heightIncrease;
+                int noiseValue = (int) ((p.GetValue(cX, cY, cZ) + 1.1) * ystrech) + heightIncrease;
 
                 if (y + this->position.getY() * Chunk::H < noiseValue) {
                     this->setCube(std::make_shared<Stone>(), Position(x, y, z));
@@ -172,12 +171,10 @@ void Chunk::setCube(std::shared_ptr<Cube> c, Position<int> pos) {
 
     auto p = Position(pos.getX() + this->position.getX() * Chunk::W, pos.getY() + this->position.getY() * Chunk::H,
                       pos.getZ() + this->position.getZ() * Chunk::Z);
+    this->mutex.lock();
     c->setPos(p);
-
     c->setChunkPos(pos);
-
     c->setChunk(this);
-
     this->cubes[pos.getX() + pos.getY() * Chunk::W + pos.getZ() * Chunk::H * Chunk::W] = c;
 
     if (this->generated) {
@@ -212,9 +209,8 @@ void Chunk::setCube(std::shared_ptr<Cube> c, Position<int> pos) {
             c->setUpdated(false);
         }
     }
-
-
     this->updated = false;
+    this->mutex.unlock();
 }
 
 
@@ -278,7 +274,7 @@ int Chunk::isIllated(int x, int y, int z) {
 }
 
 void Chunk::getVisibleCubes() {
-    if (this->updated == true) {
+    if (this->updated) {
         return;
     }
 
@@ -293,6 +289,7 @@ void Chunk::getVisibleCubes() {
     this->world.lock()->genChunkAt(false, this->position.getX(), this->position.getY() - 1, this->position.getZ());
     this->world.lock()->genChunkAt(false, this->position.getX(), this->position.getY() + 1, this->position.getZ());
 
+    this->mutex.lock();
     for (int i = 0; i < this->W * this->H * this->Z; i++) {
         if (this->cubes[i]->getType() != CubeType::air) {
             if (this->isIllated(this->cubes[i]->getX(), this->cubes[i]->getY(), this->cubes[i]->getZ()) == 1) {
@@ -303,13 +300,18 @@ void Chunk::getVisibleCubes() {
             this->renderedCubes.push_back(this->cubes[i]);
         }
     }
+    this->mutex.unlock();
 
     this->updateModel();
 
+    this->mutex.lock();
     this->updated = true;
+    this->mutex.unlock();
+
 }
 
 void Chunk::updateModel() {
+    this->mutex.lock();
     this->chunkModel = std::make_unique<Model>();
     std::vector<float> v;
     std::vector<int> i;
@@ -318,6 +320,7 @@ void Chunk::updateModel() {
     }
     this->chunkModel->setVertex(v);
     this->chunkModel->setTextureCoords(i);
+    this->mutex.unlock();
 }
 
 
@@ -326,7 +329,11 @@ void Chunk::genVao() {
 }
 
 void Chunk::draw() {
-    this->chunkModel->draw();
+    if (this->chunkModel != nullptr) {
+        this->mutex.lock();
+        this->chunkModel->draw();
+        this->mutex.unlock();
+    }
 }
 
 void Chunk::save() const {
@@ -363,6 +370,7 @@ void Chunk::load() {
     std::ifstream file(name.str());
 
     if (file.is_open()) {
+        this->mutex.lock();
         while (!file.eof()) {
             int type, x, y, z;
             file >> type >> x >> y >> z;
@@ -393,6 +401,7 @@ void Chunk::load() {
         }
 
         this->generated = true;
+        this->mutex.unlock();
     }
 }
 

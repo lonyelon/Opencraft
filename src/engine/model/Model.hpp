@@ -7,10 +7,10 @@ class Model {
 private:
     std::vector<float> vertex;
     std::vector<int> textureCoords;
-    unsigned int vao;
+    unsigned int vao = 0;
 
 public:
-    Model();
+    Model() = default;
 
     void setVertex(std::vector<float> vertex);
 

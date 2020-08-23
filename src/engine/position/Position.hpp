@@ -34,6 +34,8 @@ public:
 
     bool operator==(Position<T> other) const;
 
+    bool operator!=(Position<T> other) const;
+
     bool operator<(Position<T> other) const;
 };
 
@@ -78,6 +80,11 @@ Position<T> Position<T>::move(Position<T> desp) {
 template<typename T>
 bool Position<T>::operator==(Position<T> other) const {
     return this->getX() == other.getX() && this->getY() == other.getY() && this->getZ() == other.getZ();
+}
+
+template<typename T>
+bool Position<T>::operator!=(Position<T> other) const {
+    return !(*this == other);
 }
 
 template<typename T>

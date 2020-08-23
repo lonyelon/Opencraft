@@ -37,8 +37,12 @@ void World::genChunkAt(bool draw, int x, int y, int z) {
     }
 
     Chunk *c = new Chunk(game->getWorld(), x, y, z);
+
+    chunkMutex.lock();
     this->chunks.insert(std::make_pair(Position(x, y, z), c));
     this->chunkCount++;
+    chunkMutex.unlock();
+
     c->genTerrain();
 
     if (draw) {
@@ -51,7 +55,9 @@ void World::genChunkAt(bool draw, int x, int y, int z) {
 	Adds a chunk to the drawing queue so it can wait to get drawn.
 */
 void World::addChunkToQueue(Chunk *c) {
+    drawMutex.lock();
     this->drawQueue.push_back(c);
+    drawMutex.unlock();
 }
 
 /*
@@ -59,15 +65,17 @@ void World::addChunkToQueue(Chunk *c) {
 */
 void World::deleteChunk(Chunk *c) {
     Chunk *k = this->chunks[c->getPos()];
+    chunkMutex.lock();
     if (k != nullptr) {
         delete (c);
         this->chunks.erase(k->getPos());
         this->chunkCount--;
     }
+    chunkMutex.unlock();
 }
 
 void World::genChunks() {
-    const int threadCount = 1;
+    const int threadCount = 8;
 
     printf("Reserving memory for the world...\n");
 
@@ -81,7 +89,7 @@ void World::genChunks() {
 
     printf("Generating world...\n");
 
-    std::thread t[threadCount];
+    std::array<std::thread, threadCount> t;
     for (int i = 0; i < threadCount; i++) {
         t[i] = std::thread(WorldGenerator::genChunk, &(this->chunks), &(this->chunkCount), this->size, this, i,
                            threadCount);
@@ -100,15 +108,24 @@ void World::genChunks() {
 	for (int i = 0; i < threadCount; i++) {
 		t[i].join();
     }*/
-    int size = this->chunks.size(), i = 1;
-    for (auto c: this->chunks) {
+
+    for (int i = 0; i < threadCount; i++) {
+        t[i] = std::thread(WorldGenerator::genVAOs, &(this->chunks), i, threadCount);
+    }
+
+    for (int i = 0; i < threadCount; i++) {
+        printf("%d/%d\n", i, threadCount);
+        t[i].join();
+    }
+
+    /*for (auto c: this->chunks) {
         printf("%d/%d: %p\n", i, size, c.second);
-        c.second->getVisibleCubes();
+        //c.second->getVisibleCubes();
         //this->chunks[i]->genVao();
         if (++i == size) {
             break;
         }
-    }
+    }*/
 
     this->updateWorld = true;
     this->genThread = std::make_unique<std::thread>(WorldGenerator::worldUpdate, game->getWorld(), game->getPlayer());
@@ -117,17 +134,19 @@ void World::genChunks() {
 }
 
 void World::draw() {
+    chunkMutex.lock();
     for (auto c: this->chunks) {
-        c.second->draw();
-    }
-}
+        if (c.second != nullptr) { // TODO fix whatever is causing this
 
-int sign(int x) {
-    if (x < 0) {
-        return -1;
-    } else {
-        return 1;
+            if (c.first != c.second->getPos()) { // TODO fix whatever is also causing this
+                //std::cout << "What!" << std::endl;
+                continue;
+            }
+
+            c.second->draw();
+        }
     }
+    chunkMutex.unlock();
 }
 
 /*
@@ -218,14 +237,6 @@ void World::saveWorld() {
     file.close();
 }
 
-int World::getCubesDrawn() {
-    int c = 0;
-    for (auto chunk: this->chunks) {
-        c += chunk.second->getCubeCount();
-    }
-    return c;
-}
-
 bool World::isWorldUpdating() const {
     return this->updateWorld;
 };
@@ -253,5 +264,5 @@ World::~World() {
     }
 
     this->saveWorld();
-    //this->chunks.clear();
+    this->chunks.clear();
 }

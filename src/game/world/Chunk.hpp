@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include <array>
+#include <mutex>
 
 #include "Chunk.hpp"
 #include <game/world/WorldObject.hpp>
@@ -15,17 +16,23 @@ class World;
 
 class Chunk : public WorldObject {
 private:
-    std::array<std::shared_ptr<Cube>, 16*16*16> cubes;
-    std::vector<std::shared_ptr<Cube>> renderedCubes;
     std::weak_ptr<World> world;
-    std::unique_ptr<Model> chunkModel = std::make_unique<Model>();
+    std::unique_ptr<Model> chunkModel = nullptr;
+
+    std::mutex mutex;
+
+    std::array<std::shared_ptr<Cube>, 16 * 16 * 16> cubes;
+    std::vector<std::shared_ptr<Cube>> renderedCubes;
     bool generated = false;
     bool updated = false;
 
 public:
     static const int W = 16, H = 16, Z = 16;
 
-    Chunk(std::weak_ptr<World> w, int posX, int posY, int posZ) : world(w), WorldObject(Position(posX, posY, posZ)) {};
+    Chunk(std::weak_ptr<World> w, Position<int> pos) : WorldObject(pos), world(w) {}
+
+    Chunk(std::weak_ptr<World> w, int posX, int posY, int posZ) : WorldObject(Position(posX, posY, posZ)),
+                                                                  world(w) {} // TODO delete this
 
     void genTerrain();
 
@@ -64,7 +71,7 @@ public:
     void setUpdated(bool update) { this->updated = update; };
 
     bool isDrawn() const {
-        return this->chunkModel->getVao() != 0;
+        return this->chunkModel != nullptr && this->chunkModel->getVao() != 0;
     }
 
     void update() {};

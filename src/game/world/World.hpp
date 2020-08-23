@@ -5,6 +5,7 @@
 #include <thread>
 #include <memory>
 #include <map>
+#include <mutex>
 
 #include <game/world/Chunk.hpp>
 #include <game/world/cube/Cubes.hpp>
@@ -26,6 +27,8 @@ private:
     std::unique_ptr<std::thread> genThread;
 
 public:
+    std::mutex chunkMutex, drawMutex;
+
     World(std::string name, int seed);
 
     void genChunks();
@@ -69,8 +72,6 @@ public:
     std::string getName();
 
     void saveWorld();
-
-    int getCubesDrawn();
 
     ~World(); // Free memory
 };

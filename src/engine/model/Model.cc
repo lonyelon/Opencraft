@@ -2,10 +2,6 @@
 
 #include <engine/Engine.hpp>
 
-Model::Model() {
-    this->vao = 0;
-}
-
 void Model::setVertex(std::vector<float> vertex) {
     this->vertex = vertex;
 }
@@ -68,7 +64,7 @@ int Model::getVao() {
 
 void Model::draw() {
 
-    if (this->vao == 0) { // TODO i dont know why some chunks get drawn without previously generating VAO
+    if (this->vao == 0) { // TODO I dont know why some chunks get drawn without previously generating VAO
         this->genVao();
         //return;
     }

@@ -21,7 +21,7 @@ void Chunk::genTerrain() {
     const float xCoordRed = 150;
     const float yCoordRed = 150;
     const float zCoordRed = 150;
-    const float noiseFreq = 1;
+    const float noiseFreq = 1.5;
     const float ystrech = 60;
     const int heightIncrease = -60;
 

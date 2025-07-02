@@ -76,6 +76,8 @@ public:
         return this->chunkModel != nullptr && this->chunkModel->getVao() != 0;
     }
 
+    int isUpdated() const { return this->updated; };
+
     void update() {};
 
     ~Chunk();

@@ -4,6 +4,8 @@
 #include <game/Player.hpp>
 #include <game/Game.hpp>
 
+#include <tuple>
+
 extern std::unique_ptr<Game> game;
 
 void WorldGenerator::genChunk(std::map<Position<int>, Chunk *> *chunks, int *chunkCount, int size, World *w,
@@ -32,6 +34,18 @@ void WorldGenerator::genVAOs(std::map<Position<int>, Chunk *> *chunks, int threa
     }
 }
 
+
+void _genChunkOrItsVAO(Chunk *ck, int x, int y, int z, std::shared_ptr<World> world) {
+    Chunk *chunk = world->getChunk(ck->getX() + x, ck->getY() + y, ck->getZ() + z);
+    if (chunk == nullptr) {
+        world->genChunkAt(true, ck->getX() + x, ck->getY() + y, ck->getZ() + z);
+    } else if (!chunk->isGenerated() || !chunk->isUpdated() || !chunk->isDrawn()) {
+        chunk->getVisibleCubes();
+        chunk->genVao();
+        world->addChunkToQueue(chunk);
+    }
+};
+
 /*
 	Updates the world. Gets executes in a separated thread.
 */
@@ -39,38 +53,46 @@ void WorldGenerator::worldUpdate(std::shared_ptr<World> world, std::shared_ptr<P
     const int maxDist = round(game->renderDistance / 16);
 
     while (world->isWorldUpdating()) {
-
-        std::shared_ptr<Cube> c = world->getCube(player->getCam()->getX(), player->getCam()->getY(),
+        std::shared_ptr<Cube> c = world->getCube(player->getCam()->getX(),
+                                                 player->getCam()->getY(),
                                                  player->getCam()->getZ());
         if (c == nullptr) continue;
         Chunk *ck = c->getChunk();
 
+        c = world->getCube(player->getCam()->getX(),
+                           player->getCam()->getY(),
+                           player->getCam()->getZ());
+
+        std::vector<std::tuple<int, int, int>> data;
         for (int radius = 0; radius < maxDist; radius++) {
-            for (int x = -radius; x < radius; x++) {
-                for (int y = -radius; y < radius; y++) {
-                    for (int z = -radius; z < radius; z++) {
+            for (int x = -radius; x < radius; x++)
+                for (int y = -radius; y < radius; y++)
+                    for (int z = -radius; z < radius; z++)
+                        data.push_back({x, y, z});
+        }
 
-                        c = world->getCube(player->getCam()->getX(), player->getCam()->getY(),
-                                           player->getCam()->getZ());
-                        if (ck->getPos() != c->getChunk()->getPos()) {
-                            y = 1000000;
-                            x = 1000000;
-                            radius = 1000000;
-                            break;
-                        }
-
-                        if (world->getChunk(ck->getX() + x, ck->getY() + y, ck->getZ() + z) == nullptr) {
-                            world->genChunkAt(true, ck->getX() + x, ck->getY() + y, ck->getZ() + z);
-                        } else if (world->getChunk(ck->getX() + x, ck->getY() + y, ck->getZ() + z)->isGenerated() &&
-                                   !world->getChunk(ck->getX() + x, ck->getY() + y, ck->getZ() + z)->isDrawn()) {
-                            Chunk *chunk = world->getChunk(ck->getX() + x, ck->getY() + y, ck->getZ() + z);
-                            chunk->getVisibleCubes();
-                            chunk->genVao();
-                            world->addChunkToQueue(chunk);
-                        }
-                    }
-                }
+        for (std::size_t i = 0; i < data.size(); i += 8) {
+            std::shared_ptr<Cube> cubeBelowPlayer = world->getCube(player->getCam()->getX(),
+                                                                   player->getCam()->getY(),
+                                                                   player->getCam()->getZ());
+            Chunk *chunkBelowPlayer = cubeBelowPlayer->getChunk();
+            if (chunkBelowPlayer->getX() != ck->getX() || chunkBelowPlayer->getY() != ck->getY() || chunkBelowPlayer->getZ() != ck->getZ()){
+                // Player has moved to a new chunk.
+                break;
             }
+
+            std::vector<std::thread> t;
+            for (std::size_t k = 0; k < 16 && k + i < data.size(); k++) {
+                t.push_back(std::thread(_genChunkOrItsVAO, 
+                                        ck,
+                                        std::get<0>(data[i + k]),
+                                        std::get<1>(data[i + k]),
+                                        std::get<2>(data[i + k]),
+                                        world));
+            }
+
+            for (auto& thread: t)
+                thread.join();
         }
 
         /*

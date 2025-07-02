@@ -49,6 +49,7 @@
           packages = [
             pkgs.cmake
             pkgs.gcc
+            pkgs.glm
             pkgs.glfw
             pkgs.libGL
             pkgs.xorg.libX11

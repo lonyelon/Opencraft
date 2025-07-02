@@ -99,7 +99,7 @@ void Game::start(std::string worldName, int seed) {
         playerDataFile >> x >> y >> z;
         this->player->getCam()->setPos(x, y, z);
     } else {
-        this->player->getCam()->setPos(0, 20, 0);
+        this->player->getCam()->setPos(0, 25, 0);
     };
     this->player->getCam()->setRotation(glm::half_pi<float>(), glm::half_pi<float>() / 3);
 

@@ -77,6 +77,7 @@ void WorldGenerator::worldUpdate(std::shared_ptr<World> world, std::shared_ptr<P
             Delete far away chunks.
         */
         auto chunks = world->getChunks();
+        std::vector<Position<int>> chunksToDelete;
         for (auto c: chunks) {
             if (c.second == nullptr) { // TODO fix whatever is causing this
                 break;
@@ -88,8 +89,11 @@ void WorldGenerator::worldUpdate(std::shared_ptr<World> world, std::shared_ptr<P
             dist = sqrt(dist);
 
             if (dist >= (float) maxDist * 1.25) {
-                chunks.erase(c.first);
+                chunksToDelete.push_back(c.first);
             }
+        }
+        for (auto c: chunksToDelete) {
+            chunks.erase(c);
         }
     }
 }

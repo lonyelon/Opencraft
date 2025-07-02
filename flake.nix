@@ -54,6 +54,7 @@
             pkgs.xorg.libX11
             pkgs.libnoise
             pkgs.libGLU
+            pkgs.gdb
           ];
         };
         defaultPackage = cmakeProject;

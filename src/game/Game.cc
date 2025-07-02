@@ -91,7 +91,16 @@ void Game::start(std::string worldName, int seed) {
     world->genChunks();
     printf("World generation completed\n");
 
-    this->player->getCam()->setPos(0, 20, 0);
+    std::stringstream playerDataFilePath;
+    playerDataFilePath << "saves/" << this->world->getName() << "/playerData.txt";
+    std::ifstream playerDataFile(playerDataFilePath.str());
+    if (playerDataFile.is_open()) {
+        float x, y, z;
+        playerDataFile >> x >> y >> z;
+        this->player->getCam()->setPos(x, y, z);
+    } else {
+        this->player->getCam()->setPos(0, 20, 0);
+    };
     this->player->getCam()->setRotation(glm::half_pi<float>(), glm::half_pi<float>() / 3);
 
     unsigned int windowSizeLoc = glGetUniformLocation(shaderProgram, "windowSize");

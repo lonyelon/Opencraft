@@ -225,7 +225,7 @@ Chunk *World::getChunk(int x, int y, int z) {
 }
 
 void World::saveWorld() {
-    std::ofstream file("saves/" + this->name + "/playerdata.txt");
+    std::ofstream file("saves/" + this->name + "/playerData.txt");
 
     file << game->getPlayer()->getCam()->getX() << "\t" << game->getPlayer()->getCam()->getY() << "\t"
          << game->getPlayer()->getCam()->getZ();

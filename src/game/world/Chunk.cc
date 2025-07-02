@@ -370,7 +370,6 @@ void Chunk::load() {
     std::ifstream file(name.str());
 
     if (file.is_open()) {
-        this->mutex.lock();
         while (!file.eof()) {
             int type, x, y, z;
             file >> type >> x >> y >> z;
@@ -401,7 +400,6 @@ void Chunk::load() {
         }
 
         this->generated = true;
-        this->mutex.unlock();
     }
 }
 

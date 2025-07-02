@@ -89,6 +89,8 @@ void World::genChunks() {
 
     printf("Generating world...\n");
 
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+
     std::array<std::thread, threadCount> t;
     for (int i = 0; i < threadCount; i++) {
         t[i] = std::thread(WorldGenerator::genChunk, &(this->chunks), &(this->chunkCount), this->size, this, i,
@@ -99,7 +101,13 @@ void World::genChunks() {
         t[i].join();
     }
 
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+
+    std::cout << "Took " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
+
     printf("Rendering chunks...\n");
+
+    begin = std::chrono::steady_clock::now();
 
     /*for (int i = 0; i < threadCount; i++) {
 		t[i] = boost::thread( genVAOs, &(this->chunks), i, threadCount );
@@ -114,9 +122,13 @@ void World::genChunks() {
     }
 
     for (int i = 0; i < threadCount; i++) {
-        printf("%d/%d\n", i, threadCount);
+        printf("Rendered chunk %d/%d\n", i + 1, threadCount);
         t[i].join();
     }
+
+    end = std::chrono::steady_clock::now();
+
+    std::cout << "Took " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
 
     /*for (auto c: this->chunks) {
         printf("%d/%d: %p\n", i, size, c.second);

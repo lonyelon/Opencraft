@@ -42,7 +42,9 @@ public:
 
     std::array<std::shared_ptr<Cube>, Chunk::W * Chunk::H * Chunk::Z> getCubes() const;
 
-    int isIllated(int x, int y, int z);
+    bool isCubeCovered(int x, int y, int z);
+
+    void getCubeVisibleSides(int x, int y, int z);
 
     bool isGenerated() const { return this->generated; };
 

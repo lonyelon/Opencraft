@@ -218,59 +218,91 @@ std::array<std::shared_ptr<Cube>, Chunk::W * Chunk::H * Chunk::Z> Chunk::getCube
     return this->cubes;
 }
 
-int Chunk::isIllated(int x, int y, int z) {
+bool Chunk::isCubeCovered(int x, int y, int z) {
     std::shared_ptr<Cube> c = nullptr;
     std::shared_ptr<Cube> k = this->world->getCube(this, x, y, z);
     int n = 1;
 
-    if (k == nullptr) {
-        return 1;
-    }
+    if (k == nullptr)
+        return false;
 
     c = this->world->getCube(this, x, y + 1, z);
-    if (c != nullptr && c->isTransparent() && k->getType() != c->getType()) {
-        n *= 2;
-    } else if (c == nullptr) {
-        n *= 2;
-    }
+    if (c != nullptr && c->isTransparent() && k->getType() != c->getType())
+        return false;
 
     c = this->world->getCube(this, x, y - 1, z);
-    if (c != nullptr && c->isTransparent() && k->getType() != c->getType()) {
-        n *= 3;
-    } else if (c == nullptr) {
-        n *= 3;
-    }
+    if (c != nullptr && c->isTransparent() && k->getType() != c->getType())
+        return false;
 
     c = this->world->getCube(this, x + 1, y, z);
-    if (c != nullptr && c->isTransparent() && k->getType() != c->getType()) {
-        n *= 5;
-    } else if (c == nullptr) {
-        n *= 5;
-    }
+    if (c != nullptr && c->isTransparent() && k->getType() != c->getType())
+        return false;
 
     c = this->world->getCube(this, x - 1, y, z);
-    if (c != nullptr && c->isTransparent() && k->getType() != c->getType()) {
-        n *= 7;
-    } else if (c == nullptr) {
-        n *= 7;
-    }
+    if (c != nullptr && c->isTransparent() && k->getType() != c->getType())
+        return false;
 
     c = this->world->getCube(this, x, y, z + 1);
-    if (c != nullptr && c->isTransparent() && k->getType() != c->getType()) {
-        n *= 11;
-    } else if (c == nullptr) {
-        n *= 11;
-    }
+    if (c != nullptr && c->isTransparent() && k->getType() != c->getType())
+        return false;
 
     c = this->world->getCube(this, x, y, z - 1);
-    if (c != nullptr && c->isTransparent() && k->getType() != c->getType()) {
-        n *= 13;
-    } else if (c == nullptr) {
-        n *= 13;
-    }
+    if (c != nullptr && c->isTransparent() && k->getType() != c->getType())
+        return false;
 
-    k->setSides(n);
-    return n;
+    return true;
+}
+
+void Chunk::getCubeVisibleSides(int x, int y, int z) {
+    std::shared_ptr<Cube> c = nullptr;
+    std::shared_ptr<Cube> k = this->world->getCube(this, x, y, z);
+    int n = 1;
+
+    if (k != nullptr) {
+        c = this->world->getCube(this, x, y + 1, z);
+        if (c != nullptr && c->isTransparent() && k->getType() != c->getType()) {
+            n *= 2;
+        } else if (c == nullptr) {
+            n *= 2;
+        }
+
+        c = this->world->getCube(this, x, y - 1, z);
+        if (c != nullptr && c->isTransparent() && k->getType() != c->getType()) {
+            n *= 3;
+        } else if (c == nullptr) {
+            n *= 3;
+        }
+
+        c = this->world->getCube(this, x + 1, y, z);
+        if (c != nullptr && c->isTransparent() && k->getType() != c->getType()) {
+            n *= 5;
+        } else if (c == nullptr) {
+            n *= 5;
+        }
+
+        c = this->world->getCube(this, x - 1, y, z);
+        if (c != nullptr && c->isTransparent() && k->getType() != c->getType()) {
+            n *= 7;
+        } else if (c == nullptr) {
+            n *= 7;
+        }
+
+        c = this->world->getCube(this, x, y, z + 1);
+        if (c != nullptr && c->isTransparent() && k->getType() != c->getType()) {
+            n *= 11;
+        } else if (c == nullptr) {
+            n *= 11;
+        }
+
+        c = this->world->getCube(this, x, y, z - 1);
+        if (c != nullptr && c->isTransparent() && k->getType() != c->getType()) {
+            n *= 13;
+        } else if (c == nullptr) {
+            n *= 13;
+        }
+
+        k->setSides(n);
+    }
 }
 
 void Chunk::getVisibleCubes() {
@@ -291,12 +323,8 @@ void Chunk::getVisibleCubes() {
 
     this->mutex.lock();
     for (int i = 0; i < this->W * this->H * this->Z; i++) {
-        if (this->cubes[i]->getType() != CubeType::air) {
-            if (this->isIllated(this->cubes[i]->getX(), this->cubes[i]->getY(), this->cubes[i]->getZ()) == 1) {
-                //delete(this->cubes[i]);
-                continue;
-            }
-
+        if (this->cubes[i]->getType() != CubeType::air && !this->isCubeCovered(this->cubes[i]->getX(), this->cubes[i]->getY(), this->cubes[i]->getZ()) == 1) {
+            this->getCubeVisibleSides(this->cubes[i]->getX(), this->cubes[i]->getY(), this->cubes[i]->getZ());
             this->renderedCubes.push_back(this->cubes[i]);
         }
     }

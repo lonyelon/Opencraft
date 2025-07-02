@@ -108,7 +108,6 @@ void Chunk::genTerrain() {
     noise::module::Perlin caveNoise;
 
     float caveFreq = 1;
-    float caveProb = -0.5;
 
     caveNoise.SetSeed(this->world->getSeed() * 3);
     caveNoise.SetFrequency(caveFreq);
@@ -119,6 +118,12 @@ void Chunk::genTerrain() {
             for (int y = this->H - 1; y >= 0; y--) {
                 auto cubePos = Position(x, y, z);
                 std::shared_ptr<Cube> c = this->getCube(cubePos);
+
+                float caveProb = -(c->getY()+50)/500-0.75;
+                if (caveProb > 0.0)
+                    caveProb = 0.0;
+                if (caveProb < -1.0)
+                    caveProb = -1.0;
 
                 float noiseX = (float) (this->position.getX() * this->W + x) / xCoordRed * 10;
                 float noiseY = (float) (this->position.getY() * this->H + y) / yCoordRed * 10;

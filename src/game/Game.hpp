@@ -30,8 +30,8 @@ public:
 
     int useMipmap = 1;
     float renderDistance, fov;
-    unsigned int SCR_WIDTH = 1920;
-    unsigned int SCR_HEIGHT = 1080;
+    unsigned int SCR_WIDTH = 2560;
+    unsigned int SCR_HEIGHT = 1440;
     GLuint shaderProgram;
 
     GLFWwindow *window;

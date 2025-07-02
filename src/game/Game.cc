@@ -59,7 +59,7 @@ void Game::start(std::string worldName, int seed) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    this->window = glfwCreateWindow(this->SCR_WIDTH, this->SCR_HEIGHT, "Clases", nullptr, nullptr);
+    this->window = glfwCreateWindow(this->SCR_WIDTH, this->SCR_HEIGHT, "Opencraft", glfwGetPrimaryMonitor(), nullptr);
     if (this->window == nullptr) {
         std::cout << "Failed to create GLFW window" << std::endl;
         glfwTerminate();

@@ -6,7 +6,7 @@
 #include <game/world/cube/CubeTypes.hpp>
 #include <engine/position/Position.hpp>
 
-#include <libnoise/noise.h>
+#include <noise/noise.h>
 
 #include <cstdio>
 #include <vector>

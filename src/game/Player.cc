@@ -290,8 +290,8 @@ std::shared_ptr<Camera> Player::getCam() {
 }
 
 void Player::setSprint(bool sprint) {
-    float sprintSpeed = 0.125f;
-    float normalSpeed = 0.07f;
+    float sprintSpeed = 0.07f;
+    float normalSpeed = 0.03f;
 
     if (sprint) {
         if (this->vspd == 0 && this->movementSpeed < sprintSpeed) {
@@ -311,5 +311,5 @@ void Player::gravity(float ammount) {
 
 void Player::jump() {
     if (this->vspd == 0)
-        this->vspd = 2;
+        this->vspd = 3;
 }

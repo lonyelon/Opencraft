@@ -7,8 +7,6 @@ class Player;
 
 class Camera {
 private:
-    const float correction = 0.01f;
-
     Player *player;
 
     float speed;
@@ -16,6 +14,8 @@ private:
     float camRotY;
 
     float x, y, z;
+
+    float correction = 0.01f;
 public:
     Camera(Player *p);
 

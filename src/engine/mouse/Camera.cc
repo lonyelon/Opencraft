@@ -13,13 +13,11 @@ void Camera::moveCoords( int xpos, int ypos ) {
     this->camRotY -= ypos*this->speed;
     this->camRotX -= xpos*this->speed;
 
-    if ( this->camRotY <= -glm::half_pi<float>() ) {
+    if (this->camRotY <= -glm::half_pi<float>())
         this->camRotY = -glm::half_pi<float>() + this->correction;
-    }
 
-    if ( this->camRotY >= glm::half_pi<float>() ) {
+    if (this->camRotY >= glm::half_pi<float>())
         this->camRotY = glm::half_pi<float>() - this->correction;
-    }
 }
 
 void Camera::move(float x, float y, float z) {

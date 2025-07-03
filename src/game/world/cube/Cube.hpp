@@ -24,9 +24,9 @@ protected:
 public:
     Cube() = default;
 
-    Cube(Chunk *c, int x, int y, int z) : chunk(c), WorldObject(Position(x, y, z)) {};
+    Cube(Chunk *c, int x, int y, int z) : WorldObject(Position(x, y, z)), chunk(c) {};
 
-    Cube(Chunk *c, Position<int> p) : chunk(c), WorldObject(p) {};
+    Cube(Chunk *c, Position<int> p) : WorldObject(p), chunk(c) {};
 
     void setPos(Position<int> p);
 

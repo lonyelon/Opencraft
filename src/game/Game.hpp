@@ -15,8 +15,6 @@
 #include <game/Player.hpp>
 #include <engine/model/ModelLoader.hpp>
 
-#include <memory>
-
 class Game {
 private:
     std::shared_ptr<World> world;
@@ -44,11 +42,11 @@ public:
 
     void loop();
 
-    std::shared_ptr<World> getWorld();
+    std::shared_ptr<World> getWorld() { return this->world; }
 
-    std::shared_ptr<Player> getPlayer();
+    std::shared_ptr<Player> getPlayer() { return this->player; }
 
-    std::shared_ptr<KeyHandler> getKeyHandler();
+    std::shared_ptr<KeyHandler> getKeyHandler() { return this->keyHandler; }
 
     ~Game();
 };

@@ -4,7 +4,6 @@
 
 #include <game/Game.hpp>
 #include <engine/model/Model.hpp>
-#include <memory>
 
 extern std::unique_ptr<Game> game;
 

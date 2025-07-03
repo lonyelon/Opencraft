@@ -26,7 +26,7 @@ void WorldGenerator::genChunk(std::map<Position<int>, Chunk *> *chunks, int *chu
 
 void WorldGenerator::genVAOs(std::map<Position<int>, Chunk *> *chunks, int threadNumber, int threadCount) {
     auto c = std::next(chunks->begin(), threadNumber);
-    auto a = threadNumber;
+    std::size_t a = threadNumber;
     auto max = chunks->size();
     for (; a < max; std::advance(c, threadCount), a += threadCount) {
         c->second->getVisibleCubes();

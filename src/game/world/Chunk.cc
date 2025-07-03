@@ -226,7 +226,6 @@ std::array<std::shared_ptr<Cube>, Chunk::W * Chunk::H * Chunk::Z> Chunk::getCube
 bool Chunk::isCubeCovered(int x, int y, int z) {
     std::shared_ptr<Cube> c = nullptr;
     std::shared_ptr<Cube> k = this->world->getCube(this, x, y, z);
-    int n = 1;
 
     if (k == nullptr)
         return false;

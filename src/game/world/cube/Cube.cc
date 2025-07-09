@@ -50,9 +50,9 @@ void Cube::getVertex(std::vector<float> *v, std::vector<int> *i) const {
             if (k >= 30 * 3 && k < 36 * 3 && this->sides % 13 != 0) continue;
         }
 
-        v->push_back(vertex[k + 0] + this->position.getX());
-        v->push_back(vertex[k + 1] + this->position.getY());
-        v->push_back(vertex[k + 2] + this->position.getZ());
+        v->push_back(vertex[k + 0] + this->position.x);
+        v->push_back(vertex[k + 1] + this->position.y);
+        v->push_back(vertex[k + 2] + this->position.z);
 
         float texCoordX = textureCoords[2 * (k / 3)];
         float texCoordY = textureCoords[2 * (k / 3) + 1];

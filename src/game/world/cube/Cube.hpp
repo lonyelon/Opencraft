@@ -44,11 +44,11 @@ public:
 
     void getVertex(std::vector<float> *v, std::vector<int> *i) const;
 
-    int getX() const { return this->position.getX(); };
+    int getX() const { return this->position.x; };
 
-    int getY() const { return this->position.getY(); };
+    int getY() const { return this->position.y; };
 
-    int getZ() const { return this->position.getZ(); };
+    int getZ() const { return this->position.z; };
 
     Chunk *getChunk() const { return this->chunk; };
 

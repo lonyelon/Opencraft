@@ -171,9 +171,9 @@ std::shared_ptr<Cube> World::getCube(int x, int y, int z) {
 std::shared_ptr<Cube> World::getCube(Position<int> pos) {
     Chunk *c = nullptr;
 
-    int chunkX = floor((float) pos.getX() / Chunk::W);
-    int chunkY = floor((float) pos.getY() / Chunk::H);
-    int chunkZ = floor((float) pos.getZ() / Chunk::Z);
+    int chunkX = floor((float) pos.x / Chunk::W);
+    int chunkY = floor((float) pos.y / Chunk::H);
+    int chunkZ = floor((float) pos.z / Chunk::Z);
 
     c = this->getChunk(chunkX, chunkY, chunkZ);
 
@@ -181,8 +181,8 @@ std::shared_ptr<Cube> World::getCube(Position<int> pos) {
         return nullptr;
     }
 
-    auto newPos = Position(pos.getX() - c->getX() * Chunk::W, pos.getY() - c->getY() * Chunk::H,
-                           pos.getZ() - c->getZ() * Chunk::Z);
+    auto newPos = Position(pos.x - c->getX() * Chunk::W, pos.y - c->getY() * Chunk::H,
+                           pos.z - c->getZ() * Chunk::Z);
 
     return c->getCube(newPos);
 }
@@ -195,13 +195,13 @@ std::shared_ptr<Cube> World::getCube(Chunk *k, int x, int y, int z) {
 }
 
 std::shared_ptr<Cube> World::getCube(Chunk *k, Position<int> pos) {
-    int chunkX = floor((float) pos.getX() / 16);
-    int chunkY = floor((float) pos.getY() / 16);
-    int chunkZ = floor((float) pos.getZ() / 16);
+    int chunkX = floor((float) pos.x / 16);
+    int chunkY = floor((float) pos.y / 16);
+    int chunkZ = floor((float) pos.z / 16);
 
     if (k != nullptr && k->getX() == chunkX && k->getY() == chunkY && k->getZ() == chunkZ) {
-        auto cubePos = Position(pos.getX() - k->getX() * Chunk::W, pos.getY() - k->getY() * Chunk::H,
-                                pos.getZ() - k->getZ() * Chunk::Z);
+        auto cubePos = Position(pos.x - k->getX() * Chunk::W, pos.y - k->getY() * Chunk::H,
+                                pos.z - k->getZ() * Chunk::Z);
         std::shared_ptr<Cube> cube = k->getCube(cubePos);
         return cube;
     }
@@ -258,9 +258,9 @@ std::string World::getName() {
 };
 
 void World::setCube(std::shared_ptr<Cube> c, Position<int> pos) {
-    int x = floor((float) pos.getX() / Chunk::W);
-    int y = floor((float) pos.getY() / Chunk::H);
-    int z = floor((float) pos.getZ() / Chunk::Z);
+    int x = floor((float) pos.x / Chunk::W);
+    int y = floor((float) pos.y / Chunk::H);
+    int z = floor((float) pos.z / Chunk::Z);
 
     Chunk *chunk = this->getChunk(x, y, z);
     if (chunk != nullptr) {

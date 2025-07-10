@@ -37,19 +37,34 @@ void Chunk::genTerrain() {
         heights[i] = -1;
 
     // Generate stone world and water
-    for (int y = 0; y < Chunk::H; y++) {
-        for (int x = 0; x < Chunk::W; x++) {
-            for (int z = 0; z < Chunk::Z; z++) {
-                float cX = static_cast<float>(this->position.x * Chunk::W + x) / xCoordRed;
+    for (int x = 0; x < Chunk::W; x++) {
+        float cX = static_cast<float>(this->position.x * Chunk::W + x) / xCoordRed;
+        for (int z = 0; z < Chunk::Z; z++) {
+            float cZ = static_cast<float>(this->position.z * Chunk::Z + z) / zCoordRed;
+            for (int y = 0; y < Chunk::H; y++) {
                 float cY = static_cast<float>(this->position.y * Chunk::H + y) / yCoordRed;
-                float cZ = static_cast<float>(this->position.z * Chunk::Z + z) / zCoordRed;
 
                 int noiseValue = (int) ((this->world->terrainNoise.GetValue(cX, cY, cZ) + 1.1) * ystrech) + heightIncrease;
 
-                if (y + this->position.y * Chunk::H < noiseValue) {
-                    this->setCube(std::make_shared<Stone>(), Position(x, y, z));
-                } else {
+                float caveProb = -(y + cY*Chunk::H + 50)/500-0.75;
+                if (caveProb > 0.0)
+                    caveProb = 0.0;
+                if (caveProb < -1.0)
+                    caveProb = -1.0;
+
+                float noiseY = (float) (this->position.y * this->H + y) / yCoordRed * 10;
+
+                float caveHeightRedux = y + this->position.y * Chunk::H;
+                if (caveHeightRedux < 1)
+                    caveHeightRedux = 1;
+
+                if ((this->world->caveNoise.GetValue(cX, cY, cZ) < caveProb))
                     this->setCube(std::make_shared<Air>(), Position(x, y, z));
+                else {
+                    if (y + this->position.y * Chunk::H < noiseValue)
+                        this->setCube(std::make_shared<Stone>(), Position(x, y, z));
+                    else
+                        this->setCube(std::make_shared<Air>(), Position(x, y, z));
                 }
             }
         }
@@ -57,35 +72,33 @@ void Chunk::genTerrain() {
 
     // Water and Dirt.
     for (int x = 0; x < this->W; x++) {
+        float noiseX = (float) (this->position.x * this->W + x) / xCoordRed * 10;
         for (int z = 0; z < this->Z; z++) {
+            float noiseZ = (float) (this->position.z * this->Z + z) / zCoordRed * 10;
             int dirtCount = 0;
             for (int y = Chunk::H - 1; y >= 0; y--) {
                 auto cubePos = Position(x, y, z);
                 std::shared_ptr<Cube> c = this->getCube(cubePos);
 
-                float noiseX = (float) (this->position.x * this->W + x) / xCoordRed * 10;
                 float noiseY = (float) (this->position.y * this->H + z) / yCoordRed * 10;
-                float noiseZ = (float) (this->position.z * this->Z + z) / zCoordRed * 10;
 
                 if (c->getType() == CubeType::air) {
-                    if (y + this->position.y * Chunk::H < waterHeight) {
+                    if (y + this->position.y * Chunk::H < waterHeight)
                         this->setCube(std::make_shared<Water>(), cubePos);
-                    } else {
+                    else
                         dirtCount = 0;
-                    }
                 } else {
                     if (dirtCount < 4) {
                         if (y + this->position.y * Chunk::H < heights[x + z * this->W] ||
                             heights[x + z * this->W] == -1) {
                             heights[x + z * this->W] = y + this->position.y * Chunk::H;
                         }
-                        if ((this->world->sandNoise.GetValue(noiseX, noiseY, noiseZ) * 5) / (waterHeight - y - this->position.y * Chunk::H) > 1) {
+                        if ((this->world->sandNoise.GetValue(noiseX, noiseY, noiseZ) * 5) / (waterHeight - y - this->position.y * Chunk::H) > 1)
                             this->setCube(std::make_shared<Sand>(), cubePos);
-                        } else if (dirtCount == 0 && y + this->position.y * Chunk::H >= waterHeight - 1) {
+                        else if (dirtCount == 0 && y + this->position.y * Chunk::H >= waterHeight - 1)
                             this->setCube(std::make_shared<GrassyDirt>(), cubePos);
-                        } else {
+                        else
                             this->setCube(std::make_shared<Dirt>(), cubePos);
-                        }
                         dirtCount++;
                     }
                 }
@@ -93,35 +106,6 @@ void Chunk::genTerrain() {
         }
     }
 
-    // Caves.
-    for (int x = 0; x < this->W; x++) {
-        for (int z = 0; z < this->Z; z++) {
-            for (int y = this->H - 1; y >= 0; y--) {
-                auto cubePos = Position(x, y, z);
-                std::shared_ptr<Cube> c = this->getCube(cubePos);
-
-                float caveProb = -(c->getY()+50)/500-0.75;
-                if (caveProb > 0.0)
-                    caveProb = 0.0;
-                if (caveProb < -1.0)
-                    caveProb = -1.0;
-
-                float noiseX = (float) (this->position.x * this->W + x) / xCoordRed * 10;
-                float noiseY = (float) (this->position.y * this->H + y) / yCoordRed * 10;
-                float noiseZ = (float) (this->position.z * this->Z + z) / zCoordRed * 10;
-
-                float caveHeightRedux = y + this->position.y * Chunk::H;
-                if (caveHeightRedux < 1) {
-                    caveHeightRedux = 1;
-                }
-
-                if ((this->world->caveNoise.GetValue(noiseX, noiseY, noiseZ) < caveProb) && c->getType() != CubeType::water) {
-                    this->setCube(std::make_shared<Air>(), cubePos);
-                }
-            }
-        }
-    }
-    
     // Magma.
     // Disabled since the world is now of infinite depth, I have to find a cool
     // way to re-implement this.
@@ -138,7 +122,7 @@ void Chunk::genTerrain() {
         }
     }*/
 
-    this->save();
+    //this->save();
 }
 
 std::shared_ptr<Cube> Chunk::getCube(Position<int> pos) {

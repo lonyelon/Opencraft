@@ -13,8 +13,7 @@
 class World;
 class Player;
 
-class WorldGenerator {
-public:
+struct WorldGenerator {
     static void genChunk(std::map<Position<int>, Chunk*> *chunks, int *chunkCount, int size, World *w, int threadNumber, int threadCount);
 
     static void genVAOs(std::map<Position<int>, Chunk*> *chunks, int threadNumber, int threadCount);

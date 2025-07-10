@@ -21,7 +21,6 @@ void Chunk::genTerrain() {
     const float xCoordRed = 150;
     const float yCoordRed = 150;
     const float zCoordRed = 150;
-    const float noiseFreq = 1.5;
     const float ystrech = 60;
     const int heightIncrease = -60;
 
@@ -33,18 +32,11 @@ void Chunk::genTerrain() {
     }
     this->generated = true;
 
-    noise::module::Perlin p;
-
     int heights[this->W * this->Z];
-    for (int i = 0; i < this->W * this->Z; i++) {
+    for (int i = 0; i < this->W * this->Z; i++)
         heights[i] = -1;
-    }
-
-    p.SetSeed(this->world->getSeed());
-    p.SetFrequency(noiseFreq);
 
     // Generate stone world and water
-
     for (int y = 0; y < Chunk::H; y++) {
         for (int x = 0; x < Chunk::W; x++) {
             for (int z = 0; z < Chunk::Z; z++) {
@@ -52,7 +44,7 @@ void Chunk::genTerrain() {
                 float cY = static_cast<float>(this->position.y * Chunk::H + y) / yCoordRed;
                 float cZ = static_cast<float>(this->position.z * Chunk::Z + z) / zCoordRed;
 
-                int noiseValue = (int) ((p.GetValue(cX, cY, cZ) + 1.1) * ystrech) + heightIncrease;
+                int noiseValue = (int) ((this->world->terrainNoise.GetValue(cX, cY, cZ) + 1.1) * ystrech) + heightIncrease;
 
                 if (y + this->position.y * Chunk::H < noiseValue) {
                     this->setCube(std::make_shared<Stone>(), Position(x, y, z));
@@ -63,9 +55,7 @@ void Chunk::genTerrain() {
         }
     }
 
-    p.SetSeed(this->world->getSeed() * 2);
-    p.SetLacunarity(1);
-
+    // Water and Dirt.
     for (int x = 0; x < this->W; x++) {
         for (int z = 0; z < this->Z; z++) {
             int dirtCount = 0;
@@ -89,9 +79,7 @@ void Chunk::genTerrain() {
                             heights[x + z * this->W] == -1) {
                             heights[x + z * this->W] = y + this->position.y * Chunk::H;
                         }
-                        if ((p.GetValue(noiseX, noiseY, noiseZ) * 5) /
-                            (waterHeight - y - this->position.y * Chunk::H) >
-                            1) {
+                        if ((this->world->sandNoise.GetValue(noiseX, noiseY, noiseZ) * 5) / (waterHeight - y - this->position.y * Chunk::H) > 1) {
                             this->setCube(std::make_shared<Sand>(), cubePos);
                         } else if (dirtCount == 0 && y + this->position.y * Chunk::H >= waterHeight - 1) {
                             this->setCube(std::make_shared<GrassyDirt>(), cubePos);
@@ -105,14 +93,7 @@ void Chunk::genTerrain() {
         }
     }
 
-    noise::module::Perlin caveNoise;
-
-    float caveFreq = 1;
-
-    caveNoise.SetSeed(this->world->getSeed() * 3);
-    caveNoise.SetFrequency(caveFreq);
-    caveNoise.SetLacunarity(1);
-
+    // Caves.
     for (int x = 0; x < this->W; x++) {
         for (int z = 0; z < this->Z; z++) {
             for (int y = this->H - 1; y >= 0; y--) {
@@ -134,14 +115,17 @@ void Chunk::genTerrain() {
                     caveHeightRedux = 1;
                 }
 
-                if ((caveNoise.GetValue(noiseX, noiseY, noiseZ) < caveProb) && c->getType() != CubeType::water) {
+                if ((this->world->caveNoise.GetValue(noiseX, noiseY, noiseZ) < caveProb) && c->getType() != CubeType::water) {
                     this->setCube(std::make_shared<Air>(), cubePos);
                 }
             }
         }
     }
-    /*
-    for (int x = 0; x < this->W; x++) {
+    
+    // Magma.
+    // Disabled since the world is now of infinite depth, I have to find a cool
+    // way to re-implement this.
+    /*for (int x = 0; x < this->W; x++) {
         for (int z = 0; z < this->position.z; z++) {
             int dirtCount = 0;
             for (int y = this->H-1; y > 0; y--) {

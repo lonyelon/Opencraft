@@ -21,13 +21,13 @@ private:
 
     std::mutex mutex;
 
-    std::array<std::shared_ptr<Cube>, 16 * 16 * 16> cubes;
+    std::array<std::shared_ptr<Cube>, 32 * 32 * 32> cubes;
     std::vector<std::shared_ptr<Cube>> renderedCubes;
     bool generated = false;
     bool updated = false;
 
 public:
-    static const int W = 16, H = 16, Z = 16;
+    static const int W = 32, H = 32, Z = 32;
 
     Chunk(World *w, Position<int> pos) : WorldObject(pos), world(w) {}
 

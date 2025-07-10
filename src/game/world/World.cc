@@ -202,9 +202,9 @@ std::shared_ptr<Cube> World::getCube(Chunk *k, int x, int y, int z) {
 }
 
 std::shared_ptr<Cube> World::getCube(Chunk *k, Position<int> pos) {
-    int chunkX = floor((float) pos.x / 16);
-    int chunkY = floor((float) pos.y / 16);
-    int chunkZ = floor((float) pos.z / 16);
+    int chunkX = floor((float) pos.x / Chunk::W);
+    int chunkY = floor((float) pos.y / Chunk::H);
+    int chunkZ = floor((float) pos.z / Chunk::Z);
 
     if (k != nullptr && k->getX() == chunkX && k->getY() == chunkY && k->getZ() == chunkZ) {
         auto cubePos = Position(pos.x - k->getX() * Chunk::W, pos.y - k->getY() * Chunk::H,

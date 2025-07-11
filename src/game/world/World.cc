@@ -39,9 +39,8 @@ void World::setSize(const int size) {
 /// Creates a chunk at the specified position. If draw == true the chunk is
 /// drawn when generated.
 void World::genChunkAt(bool draw, int x, int y, int z) {
-    if (this->getChunk(x, y, z) != nullptr) {
+    if (this->getChunk(x, y, z) != nullptr)
         return;
-    }
 
     Chunk *c = new Chunk(game->getWorld().get(), x, y, z);
 
@@ -50,7 +49,7 @@ void World::genChunkAt(bool draw, int x, int y, int z) {
     this->chunkCount++;
     chunkMutex.unlock();
 
-    c->genTerrain();
+    WorldGenerator::genChunkTerrain(c);
 
     if (draw) {
         c->getVisibleCubes();
@@ -88,9 +87,8 @@ void World::genChunks() {
 
     this->updateWorld = false;
     if (this->genThread != nullptr) this->genThread->join();
-    for (auto mapPair: this->chunks) {
+    for (auto mapPair: this->chunks)
         delete (mapPair.second);
-    }
     this->chunks.clear();
     this->chunkCount = 0;
 
@@ -99,14 +97,12 @@ void World::genChunks() {
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
     std::array<std::thread, threadCount> t;
-    for (int i = 0; i < threadCount; i++) {
+    for (int i = 0; i < threadCount; i++)
         t[i] = std::thread(WorldGenerator::genChunk, &(this->chunks), &(this->chunkCount), this->size, this, i,
                            threadCount);
-    }
 
-    for (int i = 0; i < threadCount; i++) {
+    for (int i = 0; i < threadCount; i++)
         t[i].join();
-    }
 
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
@@ -124,9 +120,8 @@ void World::genChunks() {
 		t[i].join();
     }*/
 
-    for (int i = 0; i < threadCount; i++) {
+    for (int i = 0; i < threadCount; i++)
         t[i] = std::thread(WorldGenerator::genVAOs, &(this->chunks), i, threadCount);
-    }
 
     for (int i = 0; i < threadCount; i++) {
         printf("Rendered chunk %d/%d\n", i + 1, threadCount);
@@ -184,9 +179,8 @@ std::shared_ptr<Cube> World::getCube(Position<int> pos) {
 
     c = this->getChunk(chunkX, chunkY, chunkZ);
 
-    if (c == nullptr) {
+    if (c == nullptr)
         return nullptr;
-    }
 
     auto newPos = Position(pos.x - c->getX() * Chunk::W, pos.y - c->getY() * Chunk::H,
                            pos.z - c->getZ() * Chunk::Z);
@@ -249,9 +243,8 @@ void World::saveWorld() {
     file << game->getPlayer()->getCam()->getX() << "\t" << game->getPlayer()->getCam()->getY() << "\t"
          << game->getPlayer()->getCam()->getZ();
 
-    for (auto c: this->chunks) {
+    for (auto c: this->chunks)
         c.second->save();
-    }
 
     file.close();
 }

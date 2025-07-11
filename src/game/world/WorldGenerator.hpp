@@ -14,6 +14,8 @@ class World;
 class Player;
 
 struct WorldGenerator {
+    static void genChunkTerrain(Chunk* chunk);
+
     static void genChunk(std::map<Position<int>, Chunk*> *chunks, int *chunkCount, int size, World *w, int threadNumber, int threadCount);
 
     static void genVAOs(std::map<Position<int>, Chunk*> *chunks, int threadNumber, int threadCount);

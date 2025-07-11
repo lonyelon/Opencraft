@@ -12,6 +12,8 @@
 #include "cube/Dirt.hpp"
 #include <engine/model/Model.hpp>
 
+#define CHUNK_SIZE 32
+
 class World;
 
 class Chunk : public WorldObject {
@@ -21,20 +23,19 @@ private:
 
     std::mutex mutex;
 
-    std::array<std::shared_ptr<Cube>, 32 * 32 * 32> cubes;
+    std::array<std::shared_ptr<Cube>, CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE> cubes;
     std::vector<std::shared_ptr<Cube>> renderedCubes;
-    bool generated = false;
     bool updated = false;
 
 public:
-    static const int W = 32, H = 32, Z = 32;
+    bool generated = false;
+    
+    static const int W = CHUNK_SIZE, H = CHUNK_SIZE, Z = CHUNK_SIZE;
 
     Chunk(World *w, Position<int> pos) : WorldObject(pos), world(w) {}
 
     Chunk(World *w, int posX, int posY, int posZ) : WorldObject(Position(posX, posY, posZ)),
                                                                   world(w) {} // TODO delete this
-
-    void genTerrain();
 
     std::shared_ptr<Cube> getCube(Position<int> pos);
 

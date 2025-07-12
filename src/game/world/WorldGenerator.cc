@@ -19,10 +19,10 @@ void WorldGenerator::genChunkTerrain(Chunk* chunk) {
 
     Position<int> chunkPosition = chunk->getPos();
 
-    //chunk->load();
-    //if (chunk->generated)
-    //    return;
-    //chunk->generated = true;
+    chunk->load();
+    if (chunk->generated)
+        return;
+    chunk->generated = true;
 
     int heights[Chunk::W * Chunk::Z];
     for (int i = 0; i < Chunk::W * Chunk::Z; i++)
@@ -113,7 +113,7 @@ void WorldGenerator::genChunkTerrain(Chunk* chunk) {
         }
     }*/
 
-    //chunk->save();
+    chunk->save();
 }
 
 void WorldGenerator::genChunk(std::map<Position<int>, Chunk *> *chunks, int *chunkCount, int size, World *w,
@@ -163,13 +163,11 @@ std::shared_ptr<Cube> Chunk::getCube(Position<int> pos) {
 }
 
 void Chunk::setCube(std::shared_ptr<Cube> c, Position<int> pos) {
-    if (pos.x >= this->W || pos.y >= this->H || pos.z >= this->Z) {
+    if (pos.x >= this->W || pos.y >= this->H || pos.z >= this->Z)
         return;
-    }
 
-    if (pos.x < 0 && pos.y < 0 && pos.z < 0) {
+    if (pos.x < 0 && pos.y < 0 && pos.z < 0)
         return;
-    }
 
     auto p = Position(pos.x + this->position.x * Chunk::W, pos.y + this->position.y * Chunk::H,
                       pos.z + this->position.z * Chunk::Z);
@@ -180,36 +178,30 @@ void Chunk::setCube(std::shared_ptr<Cube> c, Position<int> pos) {
     this->cubes[pos.x + pos.y * Chunk::W + pos.z * Chunk::H * Chunk::W] = c;
 
     if (this->generated) {
-        Chunk *c = this->world->getChunk(this->position.x + 1, this->position.y,
-                                         this->position.z);
-        if (pos.x == Chunk::W - 1 && c != nullptr) {
+        Chunk *c = this->world->getChunk(this->position.x + 1, this->position.y, this->position.z);
+
+        if (pos.x == Chunk::W - 1 && c != nullptr)
             c->setUpdated(false);
-        }
 
         c = this->world->getChunk(this->position.x - 1, this->position.y, this->position.z);
-        if (pos.x == 0 && c != nullptr) {
+        if (pos.x == 0 && c != nullptr)
             c->setUpdated(false);
-        }
 
         c = this->world->getChunk(this->position.x, this->position.y + 1, this->position.z);
-        if (pos.y == Chunk::H - 1 && c != nullptr) {
+        if (pos.y == Chunk::H - 1 && c != nullptr)
             c->setUpdated(false);
-        }
 
         c = this->world->getChunk(this->position.x, this->position.y - 1, this->position.z);
-        if (pos.y == 0 && c != nullptr) {
+        if (pos.y == 0 && c != nullptr)
             c->setUpdated(false);
-        }
 
         c = this->world->getChunk(this->position.x, this->position.y, this->position.z + 1);
-        if (pos.z == Chunk::Z - 1 && c != nullptr) {
+        if (pos.z == Chunk::Z - 1 && c != nullptr)
             c->setUpdated(false);
-        }
 
         c = this->world->getChunk(this->position.x, this->position.y, this->position.z - 1);
-        if (pos.z == 0 && c != nullptr) {
+        if (pos.z == 0 && c != nullptr)
             c->setUpdated(false);
-        }
     }
     this->updated = false;
     this->mutex.unlock();
@@ -223,7 +215,8 @@ void WorldGenerator::worldUpdate(std::shared_ptr<World> world, std::shared_ptr<P
         std::shared_ptr<Cube> c = world->getCube(player->getCam()->getX(),
                                                  player->getCam()->getY(),
                                                  player->getCam()->getZ());
-        if (c == nullptr) continue;
+        if (c == nullptr)
+            continue;
         Chunk *ck = c->getChunk();
 
         c = world->getCube(player->getCam()->getX(),
@@ -231,58 +224,53 @@ void WorldGenerator::worldUpdate(std::shared_ptr<World> world, std::shared_ptr<P
                            player->getCam()->getZ());
 
         std::vector<std::tuple<int, int, int>> data;
-        for (int radius = 0; radius < maxDist; radius++) {
+        for (int radius = 0; radius < maxDist; radius++)
             for (int x = -radius; x < radius; x++)
                 for (int y = -radius; y < radius; y++)
                     for (int z = -radius; z < radius; z++)
                         data.push_back({x, y, z});
-        }
 
         for (std::size_t i = 0; i < data.size(); i += 8) {
             std::shared_ptr<Cube> cubeBelowPlayer = world->getCube(player->getCam()->getX(),
                                                                    player->getCam()->getY(),
                                                                    player->getCam()->getZ());
             Chunk *chunkBelowPlayer = cubeBelowPlayer->getChunk();
+
+            // Chek if player has moved to a new chunk.
             if (chunkBelowPlayer->getX() != ck->getX() || chunkBelowPlayer->getY() != ck->getY() || chunkBelowPlayer->getZ() != ck->getZ()){
-                // Player has moved to a new chunk.
                 break;
             }
 
             std::vector<std::thread> t;
-            for (std::size_t k = 0; k < 16 && k + i < data.size(); k++) {
+            for (std::size_t k = 0; k < 16 && k + i < data.size(); k++)
                 t.push_back(std::thread(_genChunkOrItsVAO, 
                                         ck,
                                         std::get<0>(data[i + k]),
                                         std::get<1>(data[i + k]),
                                         std::get<2>(data[i + k]),
                                         world));
-            }
 
             for (auto& thread: t)
                 thread.join();
         }
 
-        /*
-            Delete far away chunks.
-        */
+        //Delete far away chunks.
         auto chunks = world->getChunks();
         std::vector<Position<int>> chunksToDelete;
         for (auto c: chunks) {
-            if (c.second == nullptr) { // TODO fix whatever is causing this
+            // TODO fix whatever is causing this
+            if (c.second == nullptr)
                 break;
-            }
 
             float dist = pow(c.second->getX() - ck->getX(), 2);
             dist += pow(c.second->getY() - ck->getY(), 2);
             dist += pow(c.second->getZ() - ck->getZ(), 2);
             dist = sqrt(dist);
 
-            if (dist >= (float) maxDist * 1.25) {
+            if (dist >= (float) maxDist * 1.25)
                 chunksToDelete.push_back(c.first);
-            }
         }
-        for (auto c: chunksToDelete) {
+        for (auto c: chunksToDelete)
             chunks.erase(c);
-        }
     }
 }

@@ -177,7 +177,7 @@ void Chunk::save() const {
          << this->position.z
          << ".chunk";
 
-    std::ofstream file(name.str());
+    std::ofstream file(name.str(), std::ios::out | std::ios::binary);
 
     for (int i = 0; i < Chunk::W * Chunk::H * Chunk::Z; i++) {
         file << this->cubes[i]->getType() << "\t";
@@ -192,12 +192,16 @@ void Chunk::save() const {
 
 void Chunk::load() {
     std::stringstream name;
-    name << "saves/" << this->world->getName() << "/world/" << this->position.x << "_"
-         << this->position.y << "_"
+    name << "saves/" << this->world->getName()
+         << "/world/"
+         << this->position.x
+         << "_"
+         << this->position.y
+         << "_"
          << this->position.z
          << ".chunk";
 
-    std::ifstream file(name.str());
+    std::ifstream file(name.str(), std::ios::in | std::ios::binary);
 
     if (file.is_open()) {
         while (!file.eof()) {
@@ -230,6 +234,7 @@ void Chunk::load() {
         }
 
         this->generated = true;
+        file.close();
     }
 }
 

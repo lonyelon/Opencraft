@@ -27,9 +27,11 @@
           buildInputs = [
             pkgs.glfw
             pkgs.libGL
+            pkgs.glm
             pkgs.xorg.libX11
             pkgs.libnoise
             pkgs.libGLU
+            pkgs.lz4
           ];
 
           buildPhase = ''
@@ -56,6 +58,7 @@
             pkgs.libnoise
             pkgs.libGLU
             pkgs.gdb
+            pkgs.lz4
           ];
         };
         defaultPackage = cmakeProject;

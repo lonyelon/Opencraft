@@ -1,10 +1,10 @@
 #ifndef _CHUNK_HPP_
 #define _CHUNK_HPP_
 
-#include <vector>
-#include <memory>
 #include <array>
+#include <memory>
 #include <mutex>
+#include <vector>
 
 #include "Chunk.hpp"
 #include <game/world/WorldObject.hpp>
@@ -21,14 +21,13 @@ private:
     World *world;
     std::unique_ptr<Model> chunkModel = nullptr;
 
-    std::mutex mutex;
-
     std::array<std::shared_ptr<Cube>, CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE> cubes;
     std::vector<std::shared_ptr<Cube>> renderedCubes;
     bool updated = false;
 
 public:
     bool generated = false;
+    std::mutex mutex;
     
     static const int W = CHUNK_SIZE, H = CHUNK_SIZE, Z = CHUNK_SIZE;
 
@@ -63,7 +62,7 @@ public:
 
     int getZ() const { return this->position.z; };
 
-    void save() const;
+    void save();
 
     void load();
 
@@ -80,6 +79,8 @@ public:
     int isUpdated() const { return this->updated; };
 
     void update() {};
+
+    std::vector<char> toBytes() const;
 
     ~Chunk();
 };

@@ -1,5 +1,7 @@
 #include "WorldGenerator.hpp"
 
+#include <iostream>
+
 #include <game/world/World.hpp>
 #include <game/Player.hpp>
 #include <game/Game.hpp>
@@ -154,59 +156,6 @@ void _genChunkOrItsVAO(Chunk *ck, int x, int y, int z, std::shared_ptr<World> wo
     }
 };
 
-std::shared_ptr<Cube> Chunk::getCube(Position<int> pos) {
-    /*if (pos.x >= Chunk::W || pos.y >= Chunk::H || pos.z >= Chunk::Z || pos.x < 0 ||
-        pos.y < 0 || pos.z < 0) {
-        return nullptr;
-    }*/
-    return this->cubes[pos.x + pos.y * Chunk::W + pos.z * Chunk::W * Chunk::H];
-}
-
-void Chunk::setCube(std::shared_ptr<Cube> c, Position<int> pos) {
-    if (pos.x >= this->W || pos.y >= this->H || pos.z >= this->Z)
-        return;
-
-    if (pos.x < 0 && pos.y < 0 && pos.z < 0)
-        return;
-
-    auto p = Position(pos.x + this->position.x * Chunk::W, pos.y + this->position.y * Chunk::H,
-                      pos.z + this->position.z * Chunk::Z);
-    this->mutex.lock();
-    c->setPos(p);
-    c->setChunkPos(pos);
-    c->setChunk(this);
-    this->cubes[pos.x + pos.y * Chunk::W + pos.z * Chunk::H * Chunk::W] = c;
-
-    if (this->generated) {
-        Chunk *c = this->world->getChunk(this->position.x + 1, this->position.y, this->position.z);
-
-        if (pos.x == Chunk::W - 1 && c != nullptr)
-            c->setUpdated(false);
-
-        c = this->world->getChunk(this->position.x - 1, this->position.y, this->position.z);
-        if (pos.x == 0 && c != nullptr)
-            c->setUpdated(false);
-
-        c = this->world->getChunk(this->position.x, this->position.y + 1, this->position.z);
-        if (pos.y == Chunk::H - 1 && c != nullptr)
-            c->setUpdated(false);
-
-        c = this->world->getChunk(this->position.x, this->position.y - 1, this->position.z);
-        if (pos.y == 0 && c != nullptr)
-            c->setUpdated(false);
-
-        c = this->world->getChunk(this->position.x, this->position.y, this->position.z + 1);
-        if (pos.z == Chunk::Z - 1 && c != nullptr)
-            c->setUpdated(false);
-
-        c = this->world->getChunk(this->position.x, this->position.y, this->position.z - 1);
-        if (pos.z == 0 && c != nullptr)
-            c->setUpdated(false);
-    }
-    this->updated = false;
-    this->mutex.unlock();
-}
-
 /// Updates the world. Gets executed in a separated thread.
 void WorldGenerator::worldUpdate(std::shared_ptr<World> world, std::shared_ptr<Player> player) {
     const int maxDist = round(game->renderDistance / 16);
@@ -218,6 +167,10 @@ void WorldGenerator::worldUpdate(std::shared_ptr<World> world, std::shared_ptr<P
         if (c == nullptr)
             continue;
         Chunk *ck = c->getChunk();
+
+        // TODO what the fuck.
+        if (ck == nullptr)
+            continue;
 
         c = world->getCube(player->getCam()->getX(),
                            player->getCam()->getY(),

@@ -6,11 +6,11 @@
 class Cube;
 
 enum CubeType {
-	air = 0,
-	stone = 1,
-	dirt = 2,
+    air = 0,
+    stone = 1,
+    dirt = 2,
     grassyDirt = 3,
-	sand = 4,
+    sand = 4,
     water = 5,
     lava = 6,
     grass = 7,

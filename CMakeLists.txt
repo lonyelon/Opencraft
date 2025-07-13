@@ -73,4 +73,4 @@ add_executable(
 target_include_directories(Opencraft PUBLIC src PRIVATE src)
 target_include_directories(Opencraft PUBLIC lib/include PRIVATE lib/include)
 
-target_link_libraries(Opencraft glfw GL GLU dl m pthread noise-static)
+target_link_libraries(Opencraft glfw GL GLU dl m pthread noise-static lz4)

@@ -6,6 +6,7 @@
 #include <game/world/cube/CubeTypes.hpp>
 #include <engine/position/Position.hpp>
 
+#include <lz4.h>
 #include <noise/noise.h>
 
 #include <cstdio>
@@ -108,13 +109,11 @@ void Chunk::getCubeVisibleSides(int x, int y, int z) {
 }
 
 void Chunk::getVisibleCubes() {
-    if (this->updated) {
+    if (this->updated)
         return;
-    }
 
-    if (this->renderedCubes.size() != 0) {
+    if (this->renderedCubes.size() != 0)
         this->renderedCubes.clear();
-    }
 
     this->world->genChunkAt(false, this->position.x + 1, this->position.y, this->position.z);
     this->world->genChunkAt(false, this->position.x - 1, this->position.y, this->position.z);
@@ -145,9 +144,8 @@ void Chunk::updateModel() {
     this->chunkModel = std::make_unique<Model>();
     std::vector<float> v;
     std::vector<int> i;
-    for (std::size_t k = 0; k < this->renderedCubes.size(); k++) {
+    for (std::size_t k = 0; k < this->renderedCubes.size(); k++)
         this->renderedCubes[k]->getVertex(&v, &i);
-    }
     this->chunkModel->setVertex(v);
     this->chunkModel->setTextureCoords(i);
     this->mutex.unlock();
@@ -166,80 +164,183 @@ void Chunk::draw() {
     }
 }
 
-void Chunk::save() const {
-    if (!this->generated) {
-        return;
-    }
-
+std::string _getChunkFilePath(Position<int>& position) {
     std::stringstream name;
-    name << "saves/" << this->world->getName() << "/world/" << this->position.x << "_"
-         << this->position.y << "_"
-         << this->position.z
-         << ".chunk";
 
-    std::ofstream file(name.str(), std::ios::out | std::ios::binary);
+    name << "saves/"
+         << game->getWorld()->getName()
+         << "/world/"
+         << position.x << "_"
+         << position.y << "_"
+         << position.z << ".chunk";
 
-    for (int i = 0; i < Chunk::W * Chunk::H * Chunk::Z; i++) {
-        file << this->cubes[i]->getType() << "\t";
-        Position<int> p = this->cubes[i]->getChunkPos();
-        file << p.x << "\t";
-        file << p.y << "\t";
-        file << p.z << "\n";
+    return name.str();
+}
+
+void Chunk::save() {
+    this->mutex.lock();
+
+    if (!this->generated)
+        return;
+
+    // TODO: This should not happen. My guess is that there is a race condition
+    //       and chunks that are being generated get saved before having any
+    //       cubes. This should do for now.
+    for (std::size_t i = 0; i < this->cubes.size(); i++) {
+        if (this->cubes[i] == nullptr) {
+            std::cerr << "Found NULL blocks in chunk ("
+                      << this->position.x << ", "
+                      << this->position.y << ", "
+                      << this->position.z << ")." << std::endl;
+            return;
+        }
     }
+
+    std::ofstream file(_getChunkFilePath(this->position), std::ios::binary);
+
+    auto bytes = this->toBytes();
+
+    this->mutex.unlock();
+
+    file.write(bytes.data(), bytes.size() * sizeof(decltype(bytes)::value_type));
 
     file.close();
 }
 
 void Chunk::load() {
-    std::stringstream name;
-    name << "saves/" << this->world->getName()
-         << "/world/"
-         << this->position.x
-         << "_"
-         << this->position.y
-         << "_"
-         << this->position.z
-         << ".chunk";
-
-    std::ifstream file(name.str(), std::ios::in | std::ios::binary);
+    std::ifstream file(_getChunkFilePath(this->position), std::ios::binary | std::ios::ate);
 
     if (file.is_open()) {
-        while (!file.eof()) {
-            int type, x, y, z;
-            file >> type >> x >> y >> z;
-            auto cubePos = Position(x, y, z);
-            switch (type) {
+        std::streamsize fileSize = file.tellg();
+        file.seekg(0, std::ios::beg);
+
+        std::vector<char> compressedBytes(fileSize);
+
+        file.read(compressedBytes.data(), compressedBytes.size());
+
+        std::vector<char> outBytes(Chunk::W * Chunk::H * Chunk::Z);
+        auto rv = LZ4_decompress_safe(compressedBytes.data(),
+                                      outBytes.data(),
+                                      compressedBytes.size(),
+                                      outBytes.size());
+
+        if (rv != outBytes.size()) {
+            std::cerr << "Chunk data from disk is not complete!" << std::endl;
+            return;
+        }
+
+        for (std::size_t i = 0; i < outBytes.size(); i++) {
+            Position<int> position(        // 0 1 2 3 4 5 6 7 8 9
+                i % Chunk::W,              // 0 1 0 1 0 1 0 1 0 1
+                (i / Chunk::W) % Chunk::H, // 0 0 1 1 0 0 1 1 0 0
+                i / Chunk::W / Chunk::H    // 0 0 0 0 1 1 1 1 2 2
+            );
+            switch ((int)outBytes[i]) {
                 case CubeType::air:
-                    this->setCube(std::make_shared<Air>(), cubePos);
+                    this->setCube(std::make_shared<Air>(), position);
                     break;
                 case CubeType::dirt:
-                    this->setCube(std::make_shared<Dirt>(), cubePos);
+                    this->setCube(std::make_shared<Dirt>(), position);
                     break;
                 case CubeType::grassyDirt:
-                    this->setCube(std::make_shared<GrassyDirt>(), cubePos);
+                    this->setCube(std::make_shared<GrassyDirt>(), position);
                     break;
                 case CubeType::sand:
-                    this->setCube(std::make_shared<Sand>(), cubePos);
+                    this->setCube(std::make_shared<Sand>(), position);
                     break;
                 case CubeType::water:
-                    this->setCube(std::make_shared<Water>(), cubePos);
+                    this->setCube(std::make_shared<Water>(), position);
                     break;
                 case CubeType::lava:
-                    this->setCube(std::make_shared<Lava>(), cubePos);
+                    this->setCube(std::make_shared<Lava>(), position);
                     break;
                 default:
-                    this->setCube(std::make_shared<Stone>(), cubePos);
+                    this->setCube(std::make_shared<Stone>(), position);
                     break;
             }
         }
 
         this->generated = true;
+
         file.close();
     }
 }
 
 World *Chunk::getWorld() {
     return this->world;
+}
+
+std::vector<char> Chunk::toBytes() const {
+    std::vector outBuffer(Chunk::W * Chunk::H * Chunk::Z, (char)0);
+    std::vector chunkBuffer(Chunk::W * Chunk::H * Chunk::Z, (char)0);
+
+    for (std::size_t i = 0; i < this->cubes.size(); i++)
+        chunkBuffer[i] = (char)this->cubes[i]->getType();
+
+    auto rv = LZ4_compress_default(chunkBuffer.data(),
+                                   outBuffer.data(),
+                                   chunkBuffer.size(),
+                                   outBuffer.size());
+
+    if (rv < 1)
+        std::cerr << "Error compressing chunk." << std::endl;
+
+    outBuffer.resize(rv);
+    return outBuffer;
+}
+
+std::shared_ptr<Cube> Chunk::getCube(Position<int> pos) {
+    /*if (pos.x >= Chunk::W || pos.y >= Chunk::H || pos.z >= Chunk::Z || pos.x < 0 ||
+        pos.y < 0 || pos.z < 0) {
+        return nullptr;
+    }*/
+    return this->cubes[pos.x + pos.y * Chunk::W + pos.z * Chunk::W * Chunk::H];
+}
+
+void Chunk::setCube(std::shared_ptr<Cube> c, Position<int> pos) {
+    if (pos.x >= this->W || pos.y >= this->H || pos.z >= this->Z)
+        return;
+
+    if (pos.x < 0 && pos.y < 0 && pos.z < 0)
+        return;
+
+    auto p = Position(pos.x + this->position.x * Chunk::W,
+                      pos.y + this->position.y * Chunk::H,
+                      pos.z + this->position.z * Chunk::Z);
+    this->mutex.lock();
+    c->setPos(p);
+    c->setChunkPos(pos);
+    c->setChunk(this);
+    this->cubes[pos.x + pos.y * Chunk::W + pos.z * Chunk::H * Chunk::W] = c;
+
+    if (this->generated) {
+        Chunk *c = this->world->getChunk(this->position.x + 1, this->position.y, this->position.z);
+
+        if (pos.x == Chunk::W - 1 && c != nullptr)
+            c->setUpdated(false);
+
+        c = this->world->getChunk(this->position.x - 1, this->position.y, this->position.z);
+        if (pos.x == 0 && c != nullptr)
+            c->setUpdated(false);
+
+        c = this->world->getChunk(this->position.x, this->position.y + 1, this->position.z);
+        if (pos.y == Chunk::H - 1 && c != nullptr)
+            c->setUpdated(false);
+
+        c = this->world->getChunk(this->position.x, this->position.y - 1, this->position.z);
+        if (pos.y == 0 && c != nullptr)
+            c->setUpdated(false);
+
+        c = this->world->getChunk(this->position.x, this->position.y, this->position.z + 1);
+        if (pos.z == Chunk::Z - 1 && c != nullptr)
+            c->setUpdated(false);
+
+        c = this->world->getChunk(this->position.x, this->position.y, this->position.z - 1);
+        if (pos.z == 0 && c != nullptr)
+            c->setUpdated(false);
+    }
+    this->updated = false;
+    this->mutex.unlock();
 }
 
 Chunk::~Chunk() {

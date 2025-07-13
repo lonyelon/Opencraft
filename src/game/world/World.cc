@@ -101,8 +101,8 @@ void World::genChunks() {
         t[i] = std::thread(WorldGenerator::genChunk, &(this->chunks), &(this->chunkCount), this->size, this, i,
                            threadCount);
 
-    for (int i = 0; i < threadCount; i++)
-        t[i].join();
+    for (auto& thread: t)
+        thread.join();
 
     std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 
@@ -111,14 +111,6 @@ void World::genChunks() {
     printf("Rendering chunks...\n");
 
     begin = std::chrono::steady_clock::now();
-
-    /*for (int i = 0; i < threadCount; i++) {
-		t[i] = boost::thread( genVAOs, &(this->chunks), i, threadCount );
-	}
-
-	for (int i = 0; i < threadCount; i++) {
-		t[i].join();
-    }*/
 
     for (int i = 0; i < threadCount; i++)
         t[i] = std::thread(WorldGenerator::genVAOs, &(this->chunks), i, threadCount);
@@ -131,15 +123,6 @@ void World::genChunks() {
     end = std::chrono::steady_clock::now();
 
     std::cout << "Took " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
-
-    /*for (auto c: this->chunks) {
-        printf("%d/%d: %p\n", i, size, c.second);
-        //c.second->getVisibleCubes();
-        //this->chunks[i]->genVao();
-        if (++i == size) {
-            break;
-        }
-    }*/
 
     this->updateWorld = true;
     this->genThread = std::make_unique<std::thread>(WorldGenerator::worldUpdate, game->getWorld(), game->getPlayer());

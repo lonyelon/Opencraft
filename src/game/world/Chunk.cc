@@ -308,31 +308,34 @@ void Chunk::setCube(std::shared_ptr<Cube> c, Position<int> pos, bool lockMutex) 
     c->setChunk(this);
     this->cubes[pos.x + pos.y * Chunk::W + pos.z * Chunk::H * Chunk::W] = c;
 
-    if (this->generated) {
-        Chunk *c = this->world->getChunk(this->position.x + 1, this->position.y, this->position.z);
+    if (pos.x == 0) {
+        Chunk* chunk = this->world->getChunk(this->position.x - 1, this->position.y, this->position.z);
+        if (chunk != nullptr)
+            chunk->setUpdated(false);
+    } else if (pos.x == Chunk::W - 1) {
+        Chunk* chunk = this->world->getChunk(this->position.x + 1, this->position.y, this->position.z);
+        if (chunk != nullptr)
+            chunk->setUpdated(false);
+    }
 
-        if (pos.x == Chunk::W - 1 && c != nullptr)
-            c->setUpdated(false);
+    if (pos.y == 0) {
+        Chunk* chunk = this->world->getChunk(this->position.x, this->position.y - 1, this->position.z);
+        if (chunk != nullptr) 
+            chunk->setUpdated(false);
+    } else if (pos.y == Chunk::H - 1) {
+        Chunk* chunk = this->world->getChunk(this->position.x, this->position.y + 1, this->position.z);
+        if (chunk != nullptr)
+            chunk->setUpdated(false);
+    }
 
-        c = this->world->getChunk(this->position.x - 1, this->position.y, this->position.z);
-        if (pos.x == 0 && c != nullptr)
-            c->setUpdated(false);
-
-        c = this->world->getChunk(this->position.x, this->position.y + 1, this->position.z);
-        if (pos.y == Chunk::H - 1 && c != nullptr)
-            c->setUpdated(false);
-
-        c = this->world->getChunk(this->position.x, this->position.y - 1, this->position.z);
-        if (pos.y == 0 && c != nullptr)
-            c->setUpdated(false);
-
-        c = this->world->getChunk(this->position.x, this->position.y, this->position.z + 1);
-        if (pos.z == Chunk::Z - 1 && c != nullptr)
-            c->setUpdated(false);
-
-        c = this->world->getChunk(this->position.x, this->position.y, this->position.z - 1);
-        if (pos.z == 0 && c != nullptr)
-            c->setUpdated(false);
+    if (pos.z == 0) {
+        Chunk* chunk = this->world->getChunk(this->position.x, this->position.y, this->position.z - 1);
+        if (chunk != nullptr)
+            chunk->setUpdated(false);
+    } else if (pos.z == Chunk::Z - 1) {
+        Chunk* chunk = this->world->getChunk(this->position.x, this->position.y, this->position.z + 1);
+        if (chunk != nullptr)
+            chunk->setUpdated(false);
     }
 
     this->updated = false;

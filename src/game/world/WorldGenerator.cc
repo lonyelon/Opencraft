@@ -24,7 +24,6 @@ void WorldGenerator::genChunkTerrain(Chunk* chunk) {
     chunk->load();
     if (chunk->generated)
         return;
-    chunk->generated = true;
 
     int heights[Chunk::W * Chunk::Z];
     for (int i = 0; i < Chunk::W * Chunk::Z; i++)
@@ -53,12 +52,12 @@ void WorldGenerator::genChunkTerrain(Chunk* chunk) {
                     caveHeightRedux = 1;
 
                 if ((game->getWorld()->caveNoise.GetValue(cX, cY, cZ) < caveProb))
-                    chunk->setCube(std::make_shared<Air>(), Position(x, y, z));
+                    chunk->setCube(std::make_shared<Air>(), Position(x, y, z), false);
                 else {
                     if (y + chunkPosition.y * Chunk::H < noiseValue)
-                        chunk->setCube(std::make_shared<Stone>(), Position(x, y, z));
+                        chunk->setCube(std::make_shared<Stone>(), Position(x, y, z), false);
                     else
-                        chunk->setCube(std::make_shared<Air>(), Position(x, y, z));
+                        chunk->setCube(std::make_shared<Air>(), Position(x, y, z), false);
                 }
             }
         }
@@ -78,7 +77,7 @@ void WorldGenerator::genChunkTerrain(Chunk* chunk) {
 
                 if (c->getType() == CubeType::air) {
                     if (y + chunkPosition.y * Chunk::H < waterHeight)
-                        chunk->setCube(std::make_shared<Water>(), cubePos);
+                        chunk->setCube(std::make_shared<Water>(), cubePos, false);
                     else
                         dirtCount = 0;
                 } else {
@@ -88,11 +87,11 @@ void WorldGenerator::genChunkTerrain(Chunk* chunk) {
                             heights[x + z * Chunk::W] = y + chunkPosition.y * Chunk::H;
                         }
                         if ((game->getWorld()->sandNoise.GetValue(noiseX, noiseY, noiseZ) * 5) / (waterHeight - y - chunkPosition.y * Chunk::H) > 1)
-                            chunk->setCube(std::make_shared<Sand>(), cubePos);
+                            chunk->setCube(std::make_shared<Sand>(), cubePos, false);
                         else if (dirtCount == 0 && y + chunkPosition.y * Chunk::H >= waterHeight - 1)
-                            chunk->setCube(std::make_shared<GrassyDirt>(), cubePos);
+                            chunk->setCube(std::make_shared<GrassyDirt>(), cubePos, false);
                         else
-                            chunk->setCube(std::make_shared<Dirt>(), cubePos);
+                            chunk->setCube(std::make_shared<Dirt>(), cubePos, false);
                         dirtCount++;
                     }
                 }
@@ -115,6 +114,8 @@ void WorldGenerator::genChunkTerrain(Chunk* chunk) {
         }
     }*/
 
+    chunk->generated = true;
+
     chunk->save();
 }
 
@@ -129,8 +130,9 @@ void WorldGenerator::genChunksAroundPoint(std::map<Position<int>, Chunk *>* chun
         for (int z = -size/2; z < size/2; z++) {
             for (int y = threadNumber - size/2; y < size/2; y += threadCount) {
                 Position p = Position<int>(x, z, y) + origin;
+                auto chunk = new Chunk(game->getWorld().get(), p);
                 game->getWorld()->chunkMutex.lock();
-                (*chunks)[p] = new Chunk(game->getWorld().get(), p);
+                (*chunks)[p] = chunk;
                 (*chunkCount)++;
                 game->getWorld()->chunkMutex.unlock();
                 WorldGenerator::genChunkTerrain((*chunks).at(p));

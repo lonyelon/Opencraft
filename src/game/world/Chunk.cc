@@ -115,13 +115,6 @@ void Chunk::getVisibleCubes() {
     if (this->renderedCubes.size() != 0)
         this->renderedCubes.clear();
 
-    this->world->genChunkAt(false, this->position.x + 1, this->position.y, this->position.z);
-    this->world->genChunkAt(false, this->position.x - 1, this->position.y, this->position.z);
-    this->world->genChunkAt(false, this->position.x, this->position.y, this->position.z + 1);
-    this->world->genChunkAt(false, this->position.x, this->position.y, this->position.z - 1);
-    this->world->genChunkAt(false, this->position.x, this->position.y - 1, this->position.z);
-    this->world->genChunkAt(false, this->position.x, this->position.y + 1, this->position.z);
-
     this->mutex.lock();
     for (int i = 0; i < this->W * this->H * this->Z; i++) {
         if (this->cubes[i]->getType() != CubeType::air && !this->isCubeCovered(this->cubes[i]->getX(), this->cubes[i]->getY(), this->cubes[i]->getZ()) == 1) {

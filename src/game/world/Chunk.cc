@@ -230,32 +230,32 @@ void Chunk::load() {
         }
 
         for (std::size_t i = 0; i < outBytes.size(); i++) {
-            Position<int> position(        // 0 1 2 3 4 5 6 7 8 9
-                i % Chunk::W,              // 0 1 0 1 0 1 0 1 0 1
-                (i / Chunk::W) % Chunk::H, // 0 0 1 1 0 0 1 1 0 0
-                i / Chunk::W / Chunk::H    // 0 0 0 0 1 1 1 1 2 2
+            Position<int> position(
+                i % Chunk::W,
+                (i / Chunk::W) % Chunk::H,
+                i / Chunk::W / Chunk::H
             );
             switch ((int)outBytes[i]) {
                 case CubeType::air:
-                    this->setCube(std::make_shared<Air>(), position);
+                    this->setCube(std::make_shared<Air>(), position, false);
                     break;
                 case CubeType::dirt:
-                    this->setCube(std::make_shared<Dirt>(), position);
+                    this->setCube(std::make_shared<Dirt>(), position, false);
                     break;
                 case CubeType::grassyDirt:
-                    this->setCube(std::make_shared<GrassyDirt>(), position);
+                    this->setCube(std::make_shared<GrassyDirt>(), position, false);
                     break;
                 case CubeType::sand:
-                    this->setCube(std::make_shared<Sand>(), position);
+                    this->setCube(std::make_shared<Sand>(), position, false);
                     break;
                 case CubeType::water:
-                    this->setCube(std::make_shared<Water>(), position);
+                    this->setCube(std::make_shared<Water>(), position, false);
                     break;
                 case CubeType::lava:
-                    this->setCube(std::make_shared<Lava>(), position);
+                    this->setCube(std::make_shared<Lava>(), position, false);
                     break;
                 default:
-                    this->setCube(std::make_shared<Stone>(), position);
+                    this->setCube(std::make_shared<Stone>(), position, false);
                     break;
             }
         }
@@ -297,7 +297,7 @@ std::shared_ptr<Cube> Chunk::getCube(Position<int> pos) {
     return this->cubes[pos.x + pos.y * Chunk::W + pos.z * Chunk::W * Chunk::H];
 }
 
-void Chunk::setCube(std::shared_ptr<Cube> c, Position<int> pos) {
+void Chunk::setCube(std::shared_ptr<Cube> c, Position<int> pos, bool lockMutex) {
     if (pos.x >= this->W || pos.y >= this->H || pos.z >= this->Z)
         return;
 
@@ -307,7 +307,9 @@ void Chunk::setCube(std::shared_ptr<Cube> c, Position<int> pos) {
     auto p = Position(pos.x + this->position.x * Chunk::W,
                       pos.y + this->position.y * Chunk::H,
                       pos.z + this->position.z * Chunk::Z);
-    this->mutex.lock();
+
+    if (lockMutex)
+        this->mutex.lock();
     c->setPos(p);
     c->setChunkPos(pos);
     c->setChunk(this);
@@ -339,8 +341,11 @@ void Chunk::setCube(std::shared_ptr<Cube> c, Position<int> pos) {
         if (pos.z == 0 && c != nullptr)
             c->setUpdated(false);
     }
+
     this->updated = false;
-    this->mutex.unlock();
+
+    if (lockMutex)
+        this->mutex.unlock();
 }
 
 Chunk::~Chunk() {

@@ -1,7 +1,21 @@
 # Updates
 
-# Dev6.0:
-* Better and cleaner code.
+# Dev6.0
+
+* No height limit!
+* Caves are now more common with depth.
+* Faster chunk generation and loading.
+* Chunks are now stored as compressed LZ4 files.
+* Removed references to Minecraft in source.
+* Water is now shorter than the rest of cubes.
+* Player position is now saved and loaded.
+* Tidy game code:
+  * Cubes are now c++ classes.
+  * BOOST was removed.
+  * Start to use c++ pointers.
+  * WorldObject is a new abstraction for classes with a position.
+  * Move terrain generation to WorldGenerator.
+* flake.nix!
 
 # Dev5.1: Graphics Update 1.2-a
 * Better renderer, at least x2 performance.

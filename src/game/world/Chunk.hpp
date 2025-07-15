@@ -38,7 +38,10 @@ public:
 
     std::shared_ptr<Cube> getCube(Position<int> pos);
 
-    void setCube(std::shared_ptr<Cube> c, Position<int> pos);
+    void setCube(std::shared_ptr<Cube> c, Position<int> pos) {
+        this->setCube(c, pos, true);
+    }
+    void setCube(std::shared_ptr<Cube> c, Position<int> pos, bool lockMutex);
 
     std::array<std::shared_ptr<Cube>, Chunk::W * Chunk::H * Chunk::Z> getCubes() const;
 

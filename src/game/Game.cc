@@ -99,8 +99,6 @@ void Game::start(std::string worldName, int seed) {
     // Create world.
     int worldSize = cf.getInt("world.size");
     this->world->setSize(worldSize);
-    world->genChunks();
-    printf("World generation completed\n");
 
     // Create player.
     std::stringstream playerDataFilePath;
@@ -114,6 +112,9 @@ void Game::start(std::string worldName, int seed) {
         this->player->getCam()->setPos(0, 25, 0);
     };
     this->player->getCam()->setRotation(glm::half_pi<float>(), glm::half_pi<float>() / 3);
+
+    world->genChunks();
+    printf("World generation completed\n");
 
     // Window.
     unsigned int windowSizeLoc = glGetUniformLocation(shaderProgram, "windowSize");

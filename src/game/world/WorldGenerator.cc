@@ -118,12 +118,17 @@ void WorldGenerator::genChunkTerrain(Chunk* chunk) {
     chunk->save();
 }
 
-void WorldGenerator::genChunk(std::map<Position<int>, Chunk *> *chunks, int *chunkCount, int size, World *w,
-                              int threadNumber, int threadCount) {
-    for (int x = 0; x < size; x++) {
-        for (int z = 0; z < size; z++) {
-            for (int y = threadNumber; y < size; y += threadCount) {
-                Position p(x - size / 2, z - size / 2, y - size / 2);
+void WorldGenerator::genChunksAroundPoint(std::map<Position<int>, Chunk *>* chunks,
+                                          int* chunkCount,
+                                          int size,
+                                          World* w,
+                                          Position<int> origin,
+                                          int threadNumber,
+                                          int threadCount) {
+    for (int x = -size/2; x < size/2; x++) {
+        for (int z = -size/2; z < size/2; z++) {
+            for (int y = threadNumber - size/2; y < size/2; y += threadCount) {
+                Position p = Position<int>(x, z, y) + origin;
                 game->getWorld()->chunkMutex.lock();
                 (*chunks)[p] = new Chunk(game->getWorld().get(), p);
                 (*chunkCount)++;

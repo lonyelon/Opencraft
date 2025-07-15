@@ -285,7 +285,7 @@ void Player::placeCube() const {
     c0->getChunk()->genVao();
 }
 
-std::shared_ptr<Camera> Player::getCam() {
+std::shared_ptr<Camera> Player::getCamera() {
     return this->cam;
 }
 

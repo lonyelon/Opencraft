@@ -11,7 +11,9 @@ public:
 
     explicit WorldObject(Position<int> pos) : position(pos) {};
 
+    [[deprecated]]
     auto getPos() const { return this->position; };
+    auto getPosition() const { return this->position; };
 
     void setPos(Position<int> newPos) { this->position = newPos; };
 

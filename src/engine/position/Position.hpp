@@ -22,6 +22,8 @@ struct Position : glm::vec<3, int, glm::packed_highp>{
     bool operator!=(Position<T> other) const;
 
     bool operator<(Position<T> other) const;
+
+    Position<T> operator+(Position<T> other) const;
 };
 
 template<typename T>
@@ -53,6 +55,11 @@ template<typename T>
 bool Position<T>::operator<(Position<T> other) const {
     return this->x < other.x || (this->x == other.x && this->y < other.y) ||
            (this->x == other.x && this->y == other.y && this->z < other.z);
+}
+
+template<typename T>
+Position<T> Position<T>::operator+(Position<T> other) const {
+    return Position<T>(this->x + other.x, this->y + other.y, this->z + other.z);
 }
 
 #endif //OPENCRAFT_POSITION_HPP

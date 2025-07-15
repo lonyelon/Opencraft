@@ -11,6 +11,7 @@
 
 #include <engine/keyboard/KeyHandler.hpp>
 #include <engine/mouse/MouseInput.hpp>
+#include <engine/position/Position.hpp>
 #include <engine/mouse/Camera.hpp>
 
 #endif

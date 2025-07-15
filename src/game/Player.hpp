@@ -24,7 +24,9 @@ public:
 
     void setSprint(bool sprint);
 
-    std::shared_ptr<Camera> getCam();
+    [[deprecated]]
+    std::shared_ptr<Camera> getCam() { return this->getCamera(); };
+    std::shared_ptr<Camera> getCamera();
 
     std::shared_ptr<Cube> getPointer(float *x, float *y, float *z) const;
 

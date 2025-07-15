@@ -96,9 +96,22 @@ void World::genChunks() {
 
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
+    auto playerPosition = game->getPlayer()->getCamera()->getPosition();
+    Position<int> playerChunkPosition(
+        (int)playerPosition.x/Chunk::W,
+        (int)playerPosition.y/Chunk::H,
+        (int)playerPosition.z/Chunk::Z
+    );
+
     std::array<std::thread, threadCount> t;
     for (int i = 0; i < threadCount; i++)
-        t[i] = std::thread(WorldGenerator::genChunk, &(this->chunks), &(this->chunkCount), this->size, this, i,
+        t[i] = std::thread(WorldGenerator::genChunksAroundPoint,
+                           &(this->chunks),
+                           &(this->chunkCount),
+                           this->size,
+                           this,
+                           playerChunkPosition,
+                           i,
                            threadCount);
 
     for (auto& thread: t)

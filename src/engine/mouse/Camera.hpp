@@ -31,6 +31,8 @@ public:
     float getX(  ) { return this->x; }
     float getY(  ) { return this->y; }
     float getZ(  ) { return this->z; } 
+
+    Position<float> getPosition() { return Position<float>(x, y, z); } 
 };
 
 #endif

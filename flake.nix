@@ -59,6 +59,7 @@
             pkgs.libGLU
             pkgs.gdb
             pkgs.lz4
+            pkgs.valgrind
           ];
         };
         defaultPackage = cmakeProject;

@@ -3,7 +3,7 @@
 #include "../../game/Player.hpp"
 
 Camera::Camera( Player * p ) {
-    this->speed = 1.0f/200.0f;
+    this->speed = 0.35f/200.0f;
     this->camRotX = 0;
     this->camRotY = 0;
     this->player = p;

@@ -159,7 +159,7 @@ void Game::loop() {
         glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
 
         world->draw();
-        this->player->gravity(0.1);
+        this->player->gravity(0.05);
 
         glBindTexture(GL_TEXTURE_2D, skyTex);
         model = glm::translate(glm::mat4(1.0f),

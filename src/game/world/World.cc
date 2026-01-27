@@ -3,6 +3,7 @@
 #include <thread>
 #include <filesystem>
 #include <memory>
+#include <iostream>
 
 #include <game/world/WorldGenerator.hpp>
 
@@ -96,11 +97,22 @@ void World::genChunks() {
 
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
-    auto playerPosition = game->getPlayer()->getCamera()->getPosition();
+    this->genChunkAt(false, 0, 0, 0);
+    auto free_space_y = Position(0, 0, 0);
+    for (int y = 0;;y++) {
+        if (this->getCube(Position(0, y + 1, 0)) == nullptr)
+            this->genChunkAt(false, 0, (y + 1)/Chunk::H, 0);
+        if (this->getCube(Position(0, y, 0))->getType() == CubeType::air && this->getCube(Position(0, y + 1, 0))->getType() == CubeType::air) {
+            free_space_y = Position(0, y + 1, 0);
+            break;
+        }
+    }
+
+    game->getPlayer()->getCamera()->setPos(0, free_space_y.y, 0);
     Position<int> playerChunkPosition(
-        (int)playerPosition.x/Chunk::W,
-        (int)playerPosition.y/Chunk::H,
-        (int)playerPosition.z/Chunk::Z
+        (int)free_space_y.x/Chunk::W,
+        (int)free_space_y.y/Chunk::H,
+        (int)free_space_y.z/Chunk::Z
     );
 
     std::array<std::thread, threadCount> t;

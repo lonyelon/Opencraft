@@ -311,5 +311,5 @@ void Player::gravity(float ammount) {
 
 void Player::jump() {
     if (this->vspd == 0)
-        this->vspd = 3;
+        this->vspd = 2.25;
 }

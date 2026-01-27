@@ -28,7 +28,7 @@ World::World(std::string name, int seed) {
     this->sandNoise.SetSeed(2*seed);
     this->sandNoise.SetLacunarity(1);
 
-    if (!std::filesystem::is_directory("saves/" + name))
+    if (!std::filesystem::is_directory("saves/" + name) && !game->debug_mode)
         std::filesystem::create_directories("saves/" + name + "/world");
 }
 
@@ -234,6 +234,9 @@ Chunk *World::getChunk(int x, int y, int z) {
 }
 
 void World::saveWorld() {
+    if (game->debug_mode)
+        return;
+    
     std::ofstream file("saves/" + this->name + "/playerData.txt");
 
     file << game->getPlayer()->getCam()->getX() << "\t" << game->getPlayer()->getCam()->getY() << "\t"

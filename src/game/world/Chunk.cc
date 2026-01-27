@@ -171,10 +171,13 @@ std::string _getChunkFilePath(Position<int>& position) {
 }
 
 void Chunk::save() {
-    this->mutex.lock();
+    if (game->debug_mode)
+        return;
 
     if (!this->generated)
         return;
+    
+    this->mutex.lock();
 
     // TODO: This should not happen. My guess is that there is a race condition
     //       and chunks that are being generated get saved before having any
@@ -201,6 +204,9 @@ void Chunk::save() {
 }
 
 void Chunk::load() {
+    if (game->debug_mode)
+        return;
+
     std::ifstream file(_getChunkFilePath(this->position), std::ios::binary | std::ios::ate);
 
     if (file.is_open()) {

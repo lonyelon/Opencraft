@@ -101,16 +101,20 @@ void Game::start(std::string worldName, int seed) {
     this->world->setSize(worldSize);
 
     // Create player.
-    std::stringstream playerDataFilePath;
-    playerDataFilePath << "saves/" << this->world->getName() << "/playerData.txt";
-    std::ifstream playerDataFile(playerDataFilePath.str());
-    if (playerDataFile.is_open()) {
-        float x, y, z;
-        playerDataFile >> x >> y >> z;
-        this->player->getCam()->setPos(x, y, z);
+    if (!this->debug_mode) {
+        std::stringstream playerDataFilePath;
+        playerDataFilePath << "saves/" << this->world->getName() << "/playerData.txt";
+        std::ifstream playerDataFile(playerDataFilePath.str());
+        if (playerDataFile.is_open()) {
+            float x, y, z;
+            playerDataFile >> x >> y >> z;
+            this->player->getCam()->setPos(x, y, z);
+        } else {
+            this->player->getCam()->setPos(0, 25, 0);
+        };
     } else {
         this->player->getCam()->setPos(0, 25, 0);
-    };
+    }
     this->player->getCam()->setRotation(glm::half_pi<float>(), glm::half_pi<float>() / 3);
 
     world->genChunks();

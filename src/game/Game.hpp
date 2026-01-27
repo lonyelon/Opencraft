@@ -36,6 +36,8 @@ public:
     GLuint dirtTex;
     GLuint skyTex;
 
+    bool debug_mode = false;
+
     Game() = default;
 
     void start(std::string worldName, int seed);

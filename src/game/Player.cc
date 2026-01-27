@@ -16,7 +16,7 @@ Player::Player(std::weak_ptr<World> world) {
     this->setSprint(false);
 }
 
-void Player::move(float mx, float my, float mz) {
+void Player::move(float movement_x, float movement_y, float movement_z) {
     const float top = 0.05;
     const float bot = 1.70;
 
@@ -28,147 +28,139 @@ void Player::move(float mx, float my, float mz) {
 
     std::shared_ptr<Cube> c;
 
-    mx *= this->movementSpeed;
-    my *= this->movementSpeed;
-    mz *= this->movementSpeed;
+    movement_x *= this->movementSpeed;
+    movement_y *= this->movementSpeed;
+    movement_z *= this->movementSpeed;
 
     //? Can fall
-    c = this->world.lock()->getCube(this->cam->getX() + right, this->cam->getY() - bot + my, this->cam->getZ() + front);
-    if (c != nullptr && !c->isTransparent() && my < 0) {
-        my = 0;
+    c = this->world.lock()->getCube(this->cam->getX() + right, this->cam->getY() - bot + movement_y, this->cam->getZ() + front);
+    if (c != nullptr && !c->isTransparent() && movement_y < 0) {
+        movement_y = 0;
         this->vspd = 0;
-        //this->cam->setPos(this->cam->getX(), c->getY() + 0.5 + bot, this->cam->getZ());
+        can_jump = true;
     }
-    c = this->world.lock()->getCube(this->cam->getX() + right, this->cam->getY() - bot + my, this->cam->getZ() - back);
-    if (c != nullptr && !c->isTransparent() && my < 0) {
-        my = 0;
+    c = this->world.lock()->getCube(this->cam->getX() + right, this->cam->getY() - bot + movement_y, this->cam->getZ() - back);
+    if (c != nullptr && !c->isTransparent() && movement_y < 0) {
+        movement_y = 0;
         this->vspd = 0;
-        //this->cam->setPos(this->cam->getX(), c->getY() + 0.5 + bot, this->cam->getZ());
+        can_jump = true;
     }
-    c = this->world.lock()->getCube(this->cam->getX() - left, this->cam->getY() - bot + my, this->cam->getZ() + front);
-    if (c != nullptr && !c->isTransparent() && my < 0) {
-        my = 0;
+    c = this->world.lock()->getCube(this->cam->getX() - left, this->cam->getY() - bot + movement_y, this->cam->getZ() + front);
+    if (c != nullptr && !c->isTransparent() && movement_y < 0) {
+        movement_y = 0;
         this->vspd = 0;
-        //this->cam->setPos(this->cam->getX(), c->getY() + 0.5 + bot, this->cam->getZ());
+        can_jump = true;
     }
-    c = this->world.lock()->getCube(this->cam->getX() - left, this->cam->getY() - bot + my, this->cam->getZ() - back);
-    if (c != nullptr && !c->isTransparent() && my < 0) {
-        my = 0;
+    c = this->world.lock()->getCube(this->cam->getX() - left, this->cam->getY() - bot + movement_y, this->cam->getZ() - back);
+    if (c != nullptr && !c->isTransparent() && movement_y < 0) {
+        movement_y = 0;
         this->vspd = 0;
-        //this->cam->setPos(this->cam->getX(), c->getY() + 0.5 + bot, this->cam->getZ());
+        can_jump = true;
     }
 
     //? Positive Y
-    c = this->world.lock()->getCube(this->cam->getX() + right, this->cam->getY() + top + my, this->cam->getZ() + front);
-    if (c != nullptr && !c->isTransparent() && my > 0) {
-        my = 0;
-        if (this->vspd > 0) this->vspd = 0;
+    c = this->world.lock()->getCube(this->cam->getX() + right, this->cam->getY() + top + movement_y, this->cam->getZ() + front);
+    if (c != nullptr && !c->isTransparent() && movement_y > 0) {
+        if (this->vspd > 0) {
+            this->vspd = 0;
+            movement_y = 0;
+        }
     }
-    c = this->world.lock()->getCube(this->cam->getX() + right, this->cam->getY() + top + my, this->cam->getZ() + front);
-    if (c != nullptr && !c->isTransparent() && my > 0) {
-        my = 0;
-        if (this->vspd > 0) this->vspd = 0;
+    c = this->world.lock()->getCube(this->cam->getX() + right, this->cam->getY() + top + movement_y, this->cam->getZ() + front);
+    if (c != nullptr && !c->isTransparent() && movement_y > 0) {
+        if (this->vspd > 0) {
+            this->vspd = 0;
+            movement_y = 0;
+        }
     }
-    c = this->world.lock()->getCube(this->cam->getX() - left, this->cam->getY() + top + my, this->cam->getZ() - back);
-    if (c != nullptr && !c->isTransparent() && my > 0) {
-        my = 0;
-        if (this->vspd > 0) this->vspd = 0;
+    c = this->world.lock()->getCube(this->cam->getX() - left, this->cam->getY() + top + movement_y, this->cam->getZ() - back);
+    if (c != nullptr && !c->isTransparent() && movement_y > 0) {
+        if (this->vspd > 0) {
+            this->vspd = 0;
+            movement_y = 0;
+        }
     }
-    c = this->world.lock()->getCube(this->cam->getX() - left, this->cam->getY() + top + my, this->cam->getZ() - back);
-    if (c != nullptr && !c->isTransparent() && my > 0) {
-        my = 0;
-        if (this->vspd > 0) this->vspd = 0;
+    c = this->world.lock()->getCube(this->cam->getX() - left, this->cam->getY() + top + movement_y, this->cam->getZ() - back);
+    if (c != nullptr && !c->isTransparent() && movement_y > 0) {
+        if (this->vspd > 0) {
+            this->vspd = 0;
+            movement_y = 0;
+        }
     }
 
     //? Positive Z
-    c = this->world.lock()->getCube(this->cam->getX() + right, this->cam->getY() - bot, this->cam->getZ() + front + mz);
-    if (c != nullptr && !c->isTransparent() && mz > 0) {
-        mz = 0;
-        //this->cam->setPos(this->cam->getX(), this->cam->getY(), c->getZ()-0.5-front);
+    c = this->world.lock()->getCube(this->cam->getX() + right, this->cam->getY() - bot, this->cam->getZ() + front + movement_z);
+    if (c != nullptr && !c->isTransparent() && movement_z > 0) {
+        movement_z = 0;
     }
-    c = this->world.lock()->getCube(this->cam->getX() - left, this->cam->getY() - bot, this->cam->getZ() + front + mz);
-    if (c != nullptr && !c->isTransparent() && mz > 0) {
-        mz = 0;
-        //this->cam->setPos(this->cam->getX(), this->cam->getY(), c->getZ()-0.5-front);
+    c = this->world.lock()->getCube(this->cam->getX() - left, this->cam->getY() - bot, this->cam->getZ() + front + movement_z);
+    if (c != nullptr && !c->isTransparent() && movement_z > 0) {
+        movement_z = 0;
     }
-    c = this->world.lock()->getCube(this->cam->getX() + right, this->cam->getY() + top, this->cam->getZ() + front + mz);
-    if (c != nullptr && !c->isTransparent() && mz > 0) {
-        mz = 0;
-        //this->cam->setPos(this->cam->getX(), this->cam->getY(), c->getZ()-0.5-front);
+    c = this->world.lock()->getCube(this->cam->getX() + right, this->cam->getY() + top, this->cam->getZ() + front + movement_z);
+    if (c != nullptr && !c->isTransparent() && movement_z > 0) {
+        movement_z = 0;
     }
-    c = this->world.lock()->getCube(this->cam->getX() - left, this->cam->getY() + top, this->cam->getZ() + front + mz);
-    if (c != nullptr && !c->isTransparent() && mz > 0) {
-        mz = 0;
-        //this->cam->setPos(this->cam->getX(), this->cam->getY(), c->getZ()-0.5-front);
+    c = this->world.lock()->getCube(this->cam->getX() - left, this->cam->getY() + top, this->cam->getZ() + front + movement_z);
+    if (c != nullptr && !c->isTransparent() && movement_z > 0) {
+        movement_z = 0;
     }
 
     //? Negative Z
-    c = this->world.lock()->getCube(this->cam->getX() + right, this->cam->getY() - bot, this->cam->getZ() - back + mz);
-    if (c != nullptr && !c->isTransparent() && mz < 0) {
-        mz = 0;
-        //this->cam->setPos(this->cam->getX(), this->cam->getY(), c->getZ()+0.5+back);
+    c = this->world.lock()->getCube(this->cam->getX() + right, this->cam->getY() - bot, this->cam->getZ() - back + movement_z);
+    if (c != nullptr && !c->isTransparent() && movement_z < 0) {
+        movement_z = 0;
     }
-    c = this->world.lock()->getCube(this->cam->getX() - left, this->cam->getY() - bot, this->cam->getZ() - back + mz);
-    if (c != nullptr && !c->isTransparent() && mz < 0) {
-        mz = 0;
-        //this->cam->setPos(this->cam->getX(), this->cam->getY(), c->getZ()+0.5+back);
+    c = this->world.lock()->getCube(this->cam->getX() - left, this->cam->getY() - bot, this->cam->getZ() - back + movement_z);
+    if (c != nullptr && !c->isTransparent() && movement_z < 0) {
+        movement_z = 0;
     }
-    c = this->world.lock()->getCube(this->cam->getX() + right, this->cam->getY() + top, this->cam->getZ() - back + mz);
-    if (c != nullptr && !c->isTransparent() && mz < 0) {
-        mz = 0;
-        //this->cam->setPos(this->cam->getX(), this->cam->getY(), c->getZ()+0.5+back);
+    c = this->world.lock()->getCube(this->cam->getX() + right, this->cam->getY() + top, this->cam->getZ() - back + movement_z);
+    if (c != nullptr && !c->isTransparent() && movement_z < 0) {
+        movement_z = 0;
     }
-    c = this->world.lock()->getCube(this->cam->getX() - left, this->cam->getY() + top, this->cam->getZ() - back + mz);
-    if (c != nullptr && !c->isTransparent() && mz < 0) {
-        mz = 0;
-        //this->cam->setPos(this->cam->getX(), this->cam->getY(), c->getZ()+0.5+back);
+    c = this->world.lock()->getCube(this->cam->getX() - left, this->cam->getY() + top, this->cam->getZ() - back + movement_z);
+    if (c != nullptr && !c->isTransparent() && movement_z < 0) {
+        movement_z = 0;
     }
 
     //? Positive X
-    c = this->world.lock()->getCube(this->cam->getX() + right + mx, this->cam->getY() - bot, this->cam->getZ() + front);
-    if (c != nullptr && !c->isTransparent() && mx > 0) {
-        mx = 0;
-        //this->cam->setPos(c->getX()-0.5-right, this->cam->getY(), this->cam->getZ());
+    c = this->world.lock()->getCube(this->cam->getX() + right + movement_x, this->cam->getY() - bot, this->cam->getZ() + front);
+    if (c != nullptr && !c->isTransparent() && movement_x > 0) {
+        movement_x = 0;
     }
-    c = this->world.lock()->getCube(this->cam->getX() + right + mx, this->cam->getY() - bot, this->cam->getZ() - back);
-    if (c != nullptr && !c->isTransparent() && mx > 0) {
-        mx = 0;
-        //this->cam->setPos(c->getX()-0.5-right, this->cam->getY(), this->cam->getZ());
+    c = this->world.lock()->getCube(this->cam->getX() + right + movement_x, this->cam->getY() - bot, this->cam->getZ() - back);
+    if (c != nullptr && !c->isTransparent() && movement_x > 0) {
+        movement_x = 0;
     }
-    c = this->world.lock()->getCube(this->cam->getX() + right + mx, this->cam->getY() + top, this->cam->getZ() + front);
-    if (c != nullptr && !c->isTransparent() && mx > 0) {
-        mx = 0;
-        //this->cam->setPos(c->getX()-0.5-right, this->cam->getY(), this->cam->getZ());
+    c = this->world.lock()->getCube(this->cam->getX() + right + movement_x, this->cam->getY() + top, this->cam->getZ() + front);
+    if (c != nullptr && !c->isTransparent() && movement_x > 0) {
+        movement_x = 0;
     }
-    c = this->world.lock()->getCube(this->cam->getX() + right + mx, this->cam->getY() + top, this->cam->getZ() - back);
-    if (c != nullptr && !c->isTransparent() && mx > 0) {
-        mx = 0;
-        //this->cam->setPos(c->getX()-0.5-right, this->cam->getY(), this->cam->getZ());
+    c = this->world.lock()->getCube(this->cam->getX() + right + movement_x, this->cam->getY() + top, this->cam->getZ() - back);
+    if (c != nullptr && !c->isTransparent() && movement_x > 0) {
+        movement_x = 0;
     }
 
     //? Negative X
-    c = this->world.lock()->getCube(this->cam->getX() - left + mx, this->cam->getY() - bot, this->cam->getZ() + front);
-    if (c != nullptr && !c->isTransparent() && mx < 0) {
-        mx = 0;
-        //this->cam->setPos(c->getX()-0.5-right, this->cam->getY(), this->cam->getZ());
+    c = this->world.lock()->getCube(this->cam->getX() - left + movement_x, this->cam->getY() - bot, this->cam->getZ() + front);
+    if (c != nullptr && !c->isTransparent() && movement_x < 0) {
+        movement_x = 0;
     }
-    c = this->world.lock()->getCube(this->cam->getX() - left + mx, this->cam->getY() - bot, this->cam->getZ() - back);
-    if (c != nullptr && !c->isTransparent() && mx < 0) {
-        mx = 0;
-        //this->cam->setPos(c->getX()-0.5-right, this->cam->getY(), this->cam->getZ());
+    c = this->world.lock()->getCube(this->cam->getX() - left + movement_x, this->cam->getY() - bot, this->cam->getZ() - back);
+    if (c != nullptr && !c->isTransparent() && movement_x < 0) {
+        movement_x = 0;
     }
-    c = this->world.lock()->getCube(this->cam->getX() - left + mx, this->cam->getY() + top, this->cam->getZ() + front);
-    if (c != nullptr && !c->isTransparent() && mx < 0) {
-        mx = 0;
-        //this->cam->setPos(c->getX()-0.5-right, this->cam->getY(), this->cam->getZ());
+    c = this->world.lock()->getCube(this->cam->getX() - left + movement_x, this->cam->getY() + top, this->cam->getZ() + front);
+    if (c != nullptr && !c->isTransparent() && movement_x < 0) {
+        movement_x = 0;
     }
-    c = this->world.lock()->getCube(this->cam->getX() - left + mx, this->cam->getY() + top, this->cam->getZ() - back);
-    if (c != nullptr && !c->isTransparent() && mx < 0) {
-        mx = 0;
-        //this->cam->setPos(c->getX()-0.5-right, this->cam->getY(), this->cam->getZ());
+    c = this->world.lock()->getCube(this->cam->getX() - left + movement_x, this->cam->getY() + top, this->cam->getZ() - back);
+    if (c != nullptr && !c->isTransparent() && movement_x < 0) {
+        movement_x = 0;
     }
 
-    this->cam->move(mx, my, mz);
+    this->cam->move(movement_x, movement_y, movement_z);
 }
 
 std::shared_ptr<Cube> Player::getPointer(float *x, float *y, float *z) const {
@@ -310,6 +302,8 @@ void Player::gravity(float ammount) {
 }
 
 void Player::jump() {
-    if (this->vspd == 0)
+    if (this->can_jump) {
         this->vspd = 2.25;
+        this->can_jump = false;
+    }
 }

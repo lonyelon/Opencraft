@@ -17,6 +17,8 @@ private:
     CubeType selectedCube;
     float vspd;
     float movementSpeed;
+    bool can_jump = false;
+
 public:
     Player(std::weak_ptr<World> world);
 

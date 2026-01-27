@@ -13,10 +13,10 @@ private:
     float camRotX;
     float camRotY;
 
-    float x, y, z;
-
     float correction = 0.01f;
 public:
+    float x, y, z;
+
     Camera(Player *p);
 
     void moveCoords( int xpos, int ypos );
@@ -28,8 +28,13 @@ public:
     void setRotation(int x, int y);
     void setPos(float x, float y, float z);
 
+    [[deprecated]]
     float getX(  ) { return this->x; }
+
+    [[deprecated]]
     float getY(  ) { return this->y; }
+
+    [[deprecated]]
     float getZ(  ) { return this->z; } 
 
     Position<float> getPosition() { return Position<float>(x, y, z); } 

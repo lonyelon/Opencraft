@@ -19,7 +19,7 @@ void WorldGenerator::genChunkTerrain(Chunk* chunk) {
 
     const int waterHeight = 40*Cube::size_reduction + heightIncrease;
 
-    Position<int> chunkPosition = chunk->getPos();
+    Position<int> chunkPosition = chunk->position;
 
     chunk->load();
     if (chunk->generated)
@@ -189,9 +189,9 @@ void WorldGenerator::worldUpdate(std::shared_ptr<World> world, std::shared_ptr<P
     const int maxDist = round(game->renderDistance / 16);
 
     while (world->isWorldUpdating()) {
-        std::shared_ptr<Cube> c = world->getCube(player->getCam()->getX(),
-                                                 player->getCam()->getY(),
-                                                 player->getCam()->getZ());
+        std::shared_ptr<Cube> c = world->get_cube(Position(player->get_camera()->x,
+                                                           player->get_camera()->y,
+                                                           player->get_camera()->z));
         if (c == nullptr)
             continue;
         Chunk *ck = c->getChunk();
@@ -200,9 +200,9 @@ void WorldGenerator::worldUpdate(std::shared_ptr<World> world, std::shared_ptr<P
         if (ck == nullptr)
             continue;
 
-        c = world->getCube(player->getCam()->getX(),
-                           player->getCam()->getY(),
-                           player->getCam()->getZ());
+        c = world->get_cube(Position(player->get_camera()->x,
+                                     player->get_camera()->y,
+                                     player->get_camera()->z));
 
         std::vector<std::tuple<int, int, int>> data;
         for (int radius = 0; radius < maxDist; radius++)
@@ -212,9 +212,9 @@ void WorldGenerator::worldUpdate(std::shared_ptr<World> world, std::shared_ptr<P
                         data.push_back({x, y, z});
 
         for (std::size_t i = 0; i < data.size(); i += 8) {
-            std::shared_ptr<Cube> cubeBelowPlayer = world->getCube(player->getCam()->getX(),
-                                                                   player->getCam()->getY(),
-                                                                   player->getCam()->getZ());
+            std::shared_ptr<Cube> cubeBelowPlayer = world->get_cube(Position(player->get_camera()->x,
+                                                                             player->get_camera()->y,
+                                                                             player->get_camera()->z));
             Chunk *chunkBelowPlayer = cubeBelowPlayer->getChunk();
 
             // Chek if player has moved to a new chunk.

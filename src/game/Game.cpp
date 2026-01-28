@@ -108,14 +108,14 @@ void Game::start(std::string worldName, int seed) {
         if (playerDataFile.is_open()) {
             float x, y, z;
             playerDataFile >> x >> y >> z;
-            this->player->getCam()->setPos(x, y, z);
+            this->player->get_camera()->setPos(x, y, z);
         } else {
-            this->player->getCam()->setPos(0, 25, 0);
+            this->player->get_camera()->setPos(0, 25, 0);
         };
     } else {
-        this->player->getCam()->setPos(0, 25, 0);
+        this->player->get_camera()->setPos(0, 25, 0);
     }
-    this->player->getCam()->setRotation(glm::half_pi<float>(), glm::half_pi<float>() / 3);
+    this->player->get_camera()->setRotation(glm::half_pi<float>(), glm::half_pi<float>() / 3);
 
     world->genChunks();
     printf("World generation completed\n");
@@ -130,7 +130,7 @@ void Game::loop() {
         processInput(window);
         keyHandler->keyHandler();
 
-        glm::mat4 view = this->player->getCam()->getViewMatrix();
+        glm::mat4 view = this->player->get_camera()->getViewMatrix();
         glm::mat4 projection = glm::perspective(glm::radians(this->fov),
                                                 (float) this->SCR_WIDTH / (float) this->SCR_HEIGHT,
                                                 0.1f,
@@ -169,9 +169,9 @@ void Game::loop() {
 
         glBindTexture(GL_TEXTURE_2D, skyTex);
         model = glm::translate(glm::mat4(1.0f),
-                               glm::vec3(this->player->getCam()->getX(),
-                                         this->player->getCam()->getY(),
-                                         this->player->getCam()->getZ()));
+                               glm::vec3(this->player->get_camera()->x,
+                                         this->player->get_camera()->y,
+                                         this->player->get_camera()->z));
         glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
         this->skybox.draw();
 

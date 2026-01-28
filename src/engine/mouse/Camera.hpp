@@ -23,19 +23,14 @@ public:
     void move(float x, float y, float z);
 
     glm::mat4 getViewMatrix();
+
     float getRotX();
+
     float getRotY();
+
     void setRotation(int x, int y);
+
     void setPos(float x, float y, float z);
-
-    [[deprecated]]
-    float getX(  ) { return this->x; }
-
-    [[deprecated]]
-    float getY(  ) { return this->y; }
-
-    [[deprecated]]
-    float getZ(  ) { return this->z; } 
 
     Position<float> getPosition() { return Position<float>(x, y, z); } 
 };

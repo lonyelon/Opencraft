@@ -4,18 +4,12 @@
 #include <engine/position/Position.hpp>
 
 class WorldObject {
-protected:
-    Position<int> position;
 public:
+    Position<int> position;
+
     WorldObject() = default;
 
-    explicit WorldObject(Position<int> pos) : position(pos) {};
-
-    [[deprecated]]
-    auto getPos() const { return this->position; };
-    auto getPosition() const { return this->position; };
-
-    void setPos(Position<int> newPos) { this->position = newPos; };
+    explicit WorldObject(Position<int> position) : position(position) {};
 
     virtual void update() = 0;
 };

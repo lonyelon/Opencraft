@@ -78,32 +78,32 @@ void KeyHandler::keyHandler() {
         }
 
         if (keyname.compare("move.forward") == 0 && k.pressed) {
-            game->getPlayer()->move(-cos(game->getPlayer()->getCam()->getRotX()), 0, sin(game->getPlayer()->getCam()->getRotX()));
+            game->getPlayer()->move(-cos(game->getPlayer()->get_camera()->getRotX()), 0, sin(game->getPlayer()->get_camera()->getRotX()));
             continue;
         }
 
         if (keyname.compare("move.left") == 0 && k.pressed) {
             game->getPlayer()->move(
-                    -cos(glm::half_pi<float>() + game->getPlayer()->getCam()->getRotX()),
+                    -cos(glm::half_pi<float>() + game->getPlayer()->get_camera()->getRotX()),
                     0,
-                    sin(glm::half_pi<float>() + game->getPlayer()->getCam()->getRotX())
+                    sin(glm::half_pi<float>() + game->getPlayer()->get_camera()->getRotX())
             );
             continue;
         }
 
         if (keyname.compare("move.backward") == 0 && k.pressed) {
             game->getPlayer()->move(
-                    cos(game->getPlayer()->getCam()->getRotX()),
+                    cos(game->getPlayer()->get_camera()->getRotX()),
                     0,
-                    -sin(game->getPlayer()->getCam()->getRotX())
+                    -sin(game->getPlayer()->get_camera()->getRotX())
             );
             continue;
         }
         if (keyname.compare("move.right") == 0 && k.pressed) {
             game->getPlayer()->move(
-                    cos(glm::half_pi<float>() + game->getPlayer()->getCam()->getRotX()),
+                    cos(glm::half_pi<float>() + game->getPlayer()->get_camera()->getRotX()),
                     0,
-                    -sin(glm::half_pi<float>() + game->getPlayer()->getCam()->getRotX())
+                    -sin(glm::half_pi<float>() + game->getPlayer()->get_camera()->getRotX())
             );
             continue;
         }

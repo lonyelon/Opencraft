@@ -31,10 +31,7 @@ public:
     
     static const int W = CHUNK_SIZE, H = CHUNK_SIZE, Z = CHUNK_SIZE;
 
-    Chunk(World *w, Position<int> pos) : WorldObject(pos), world(w) {}
-
-    Chunk(World *w, int posX, int posY, int posZ) : WorldObject(Position(posX, posY, posZ)),
-                                                                  world(w) {} // TODO delete this
+    Chunk(World *world, Position<int> position) : WorldObject(position), world(world) {}
 
     std::shared_ptr<Cube> getCube(Position<int> pos);
 

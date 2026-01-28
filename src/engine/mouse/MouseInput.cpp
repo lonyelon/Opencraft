@@ -6,7 +6,7 @@
 extern std::unique_ptr<Game> game;
 
 void getMouseInput(GLFWwindow* window, double xpos, double ypos) {
-	game->getPlayer()->getCam()->moveCoords(xpos, ypos);
+	game->getPlayer()->get_camera()->moveCoords(xpos, ypos);
 	 
 	glfwSetCursorPos(window, 0, 0);
 }

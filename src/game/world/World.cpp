@@ -44,7 +44,7 @@ void World::genChunkAt(bool draw, int x, int y, int z) {
     if (this->getChunk(x, y, z) != nullptr)
         return;
 
-    Chunk *c = new Chunk(game->getWorld().get(), x, y, z);
+    Chunk *c = new Chunk(game->getWorld().get(), Position(x, y, z));
 
     chunkMutex.lock();
     this->chunks.insert(std::make_pair(Position(x, y, z), c));
@@ -72,11 +72,11 @@ void World::addChunkToQueue(Chunk *c) {
 	Deletes a chunk from memory.
 */
 void World::deleteChunk(Chunk *c) {
-    Chunk *k = this->chunks[c->getPos()];
+    Chunk *k = this->chunks[c->position];
     chunkMutex.lock();
     if (k != nullptr) {
         delete (c);
-        this->chunks.erase(k->getPos());
+        this->chunks.erase(k->position);
         this->chunkCount--;
     }
     chunkMutex.unlock();
@@ -101,15 +101,15 @@ void World::genChunks() {
     this->genChunkAt(false, 0, 0, 0);
     auto free_space_y = Position(0, 0, 0);
     for (int y = 0;;y++) {
-        if (this->getCube(Position(0, y + 1, 0)) == nullptr)
+        if (this->get_cube(Position(0, y + 1, 0)) == nullptr)
             this->genChunkAt(false, 0, (y + 1)/Chunk::H, 0);
-        if (this->getCube(Position(0, y, 0))->getType() == CubeType::air && this->getCube(Position(0, y + 1, 0))->getType() == CubeType::air) {
+        if (this->get_cube(Position(0, y, 0))->getType() == CubeType::air && this->get_cube(Position(0, y + 1, 0))->getType() == CubeType::air) {
             free_space_y = Position(0, y + 1, 0);
             break;
         }
     }
 
-    game->getPlayer()->getCamera()->setPos(0, free_space_y.y/Cube::size_reduction, 0);
+    game->getPlayer()->get_camera()->setPos(0, free_space_y.y/Cube::size_reduction, 0);
     Position<int> playerChunkPosition(
         (int)free_space_y.x/Chunk::W,
         (int)free_space_y.y/Chunk::H,
@@ -161,7 +161,7 @@ void World::draw() {
     for (auto c: this->chunks) {
         if (c.second != nullptr) { // TODO fix whatever is causing this
 
-            if (c.first != c.second->getPos()) { // TODO fix whatever is also causing this
+            if (c.first != c.second->position) { // TODO fix whatever is also causing this
                 //std::cout << "What!" << std::endl;
                 continue;
             }
@@ -172,14 +172,7 @@ void World::draw() {
     chunkMutex.unlock();
 }
 
-/*
-	Returns a cube by it's coordinates.
-*/
-std::shared_ptr<Cube> World::getCube(int x, int y, int z) {
-    return this->getCube(Position<int>(x, y, z));
-}
-
-std::shared_ptr<Cube> World::getCube(Position<int> pos) {
+std::shared_ptr<Cube> World::get_cube(Position<int> pos) const {
     Chunk *c = nullptr;
 
     int chunkX = floor((float) pos.x / Chunk::W);
@@ -191,7 +184,8 @@ std::shared_ptr<Cube> World::getCube(Position<int> pos) {
     if (c == nullptr)
         return nullptr;
 
-    auto newPos = Position(pos.x - c->getX() * Chunk::W, pos.y - c->getY() * Chunk::H,
+    auto newPos = Position(pos.x - c->getX() * Chunk::W,
+                           pos.y - c->getY() * Chunk::H,
                            pos.z - c->getZ() * Chunk::Z);
 
     return c->getCube(newPos);
@@ -200,23 +194,21 @@ std::shared_ptr<Cube> World::getCube(Position<int> pos) {
 /*
 	Returns a cube by it's coordinates, but first it checks it's own chunk.
 */
-std::shared_ptr<Cube> World::getCube(Chunk *k, int x, int y, int z) {
-    return this->getCube(k, Position(x, y, z));
-}
 
-std::shared_ptr<Cube> World::getCube(Chunk *k, Position<int> pos) {
+std::shared_ptr<Cube> World::get_cube(Chunk *k, Position<int> pos) const {
     int chunkX = floor((float) pos.x / Chunk::W);
     int chunkY = floor((float) pos.y / Chunk::H);
     int chunkZ = floor((float) pos.z / Chunk::Z);
 
     if (k != nullptr && k->getX() == chunkX && k->getY() == chunkY && k->getZ() == chunkZ) {
-        auto cubePos = Position(pos.x - k->getX() * Chunk::W, pos.y - k->getY() * Chunk::H,
+        auto cubePos = Position(pos.x - k->getX() * Chunk::W,
+                                pos.y - k->getY() * Chunk::H,
                                 pos.z - k->getZ() * Chunk::Z);
         std::shared_ptr<Cube> cube = k->getCube(cubePos);
         return cube;
     }
 
-    return this->getCube(pos);
+    return this->get_cube(pos);
 }
 
 void World::setSeed(int seed) {
@@ -238,7 +230,7 @@ std::map<Position<int>, Chunk *> World::getChunks() const {
 /*
 	Get's a chunk by it's coordinates.
 */
-Chunk *World::getChunk(int x, int y, int z) {
+Chunk *World::getChunk(int x, int y, int z) const {
     try {
         return this->chunks.at(Position(x, y, z));
     } catch (const std::out_of_range &) {
@@ -252,8 +244,9 @@ void World::saveWorld() {
     
     std::ofstream file("saves/" + this->name + "/playerData.txt");
 
-    file << game->getPlayer()->getCam()->getX() << "\t" << game->getPlayer()->getCam()->getY() << "\t"
-         << game->getPlayer()->getCam()->getZ();
+    file << game->getPlayer()->get_camera()->x << "\t"
+         << game->getPlayer()->get_camera()->y << "\t"
+         << game->getPlayer()->get_camera()->z;
 
     for (auto c: this->chunks)
         c.second->save();
@@ -276,7 +269,11 @@ void World::setCube(std::shared_ptr<Cube> c, Position<int> pos) {
 
     Chunk *chunk = this->getChunk(x, y, z);
     if (chunk != nullptr) {
-        Position<int> newPos = pos.move(Position(-1 * x * Chunk::W, -1 * y * Chunk::H, -1 * z * Chunk::Z));
+        Position<int> newPos = pos + Position(
+            -1 * x * Chunk::W,
+            -1 * y * Chunk::H,
+            -1 * z * Chunk::Z
+        );
         chunk->setCube(c, newPos);
     }
 };

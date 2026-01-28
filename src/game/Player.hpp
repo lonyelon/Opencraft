@@ -13,7 +13,7 @@ class Cube;
 class Player {
 private:
     std::weak_ptr<World> world;
-    std::shared_ptr<Camera> cam;
+    std::shared_ptr<Camera> camera;
     CubeType selectedCube;
     float vspd;
     float movementSpeed;
@@ -26,9 +26,7 @@ public:
 
     void setSprint(bool sprint);
 
-    [[deprecated]]
-    std::shared_ptr<Camera> getCam() { return this->getCamera(); };
-    std::shared_ptr<Camera> getCamera();
+    std::shared_ptr<Camera> get_camera();
 
     std::shared_ptr<Cube> getPointer(float *x, float *y, float *z) const;
 

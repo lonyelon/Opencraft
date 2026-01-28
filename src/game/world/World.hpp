@@ -42,24 +42,14 @@ public:
 
     void setCube(std::shared_ptr<Cube> c, Position<int> pos);
 
-    std::shared_ptr<Cube> getCube(Position<int> pos);
+    std::shared_ptr<Cube> get_cube(Position<int> pos) const;
 
-    std::shared_ptr<Cube> getCube(Chunk *c, Position<int> pos);
+    std::shared_ptr<Cube> get_cube(Chunk *c, Position<int> pos) const;
 
-    [[deprecated]]
-    std::shared_ptr<Cube> getCube(int x, int y, int z);
-
-    [[deprecated]]
-    std::shared_ptr<Cube> getCube(Chunk *c, int x, int y, int z);
-
-    [[deprecated]]
-    std::shared_ptr<Cube> getCube(float x, float y, float z) {
-        return this->getCube((int) round(x*Cube::size_reduction), (int) round(y*Cube::size_reduction), (int) round(z*Cube::size_reduction));
-    };
-
-    [[deprecated]]
-    std::shared_ptr<Cube> getCube(double x, double y, double z) {
-        return this->getCube((int) round(x), (int) round(y), (int) round(z));
+    std::shared_ptr<Cube> get_cube(Position<float> position) const {
+        return this->get_cube(Position<int>((int) round(position.x*Cube::size_reduction),
+                                            (int) round(position.y*Cube::size_reduction),
+                                            (int) round(position.z*Cube::size_reduction)));
     };
 
     void setSeed(int seed);
@@ -70,7 +60,7 @@ public:
 
     std::map<Position<int>, Chunk*> getChunks() const;
 
-    Chunk *getChunk(int x, int y, int z);
+    Chunk *getChunk(int x, int y, int z) const;
 
     void deleteChunk(Chunk *c);
 

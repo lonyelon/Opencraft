@@ -11,6 +11,8 @@ uniform vec3 selectedCube;
 
 uniform vec2 windowSize;
 
+uniform float cube_size_reduction;
+
 out vec2 wSize;
 out vec2 texCoord;
 out vec3 pos;
@@ -25,13 +27,11 @@ void main() {
    texCoord = vec2( aTexCoord.x, aTexCoord.y );
    pos = aPos;
 
-   if (
-      (round(selectedCube.x) == round(aPos.x - 0.5) || round(selectedCube.x) == round(aPos.x + 0.5))
-      && (round(selectedCube.y) == round(aPos.y - 0.5) || round(selectedCube.y) == round(aPos.y + 0.5))
-      && (round(selectedCube.z) == round(aPos.z - 0.5) || round(selectedCube.z) == round(aPos.z + 0.5))
-   ) {
-      select.x = 1;
-   } else {
-      select.x = 0;
-   }
+   if ((round(selectedCube.x*cube_size_reduction) == round(aPos.x*cube_size_reduction - 0.5) || round(selectedCube.x*cube_size_reduction) == round(aPos.x*cube_size_reduction + 0.5))
+       && (round(selectedCube.y*cube_size_reduction) == round(aPos.y*cube_size_reduction - 0.5) || round(selectedCube.y*cube_size_reduction) == round(aPos.y*cube_size_reduction + 0.5))
+       && (round(selectedCube.z*cube_size_reduction) == round(aPos.z*cube_size_reduction - 0.5) || round(selectedCube.z*cube_size_reduction) == round(aPos.z*cube_size_reduction + 0.5))
+   )
+       select.x = 1;
+   else
+       select.x = 0;
 }

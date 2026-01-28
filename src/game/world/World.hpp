@@ -54,7 +54,7 @@ public:
 
     [[deprecated]]
     std::shared_ptr<Cube> getCube(float x, float y, float z) {
-        return this->getCube((int) round(x), (int) round(y), (int) round(z));
+        return this->getCube((int) round(x*Cube::size_reduction), (int) round(y*Cube::size_reduction), (int) round(z*Cube::size_reduction));
     };
 
     [[deprecated]]

@@ -21,6 +21,7 @@ World::World(std::string name, int seed) {
 
     this->terrainNoise.SetSeed(seed);
     this->terrainNoise.SetFrequency(1.5);
+    this->terrainNoise.SetLacunarity(2.1f);
 
     this->caveNoise.SetSeed(3*seed);
     this->caveNoise.SetFrequency(1.0f);
@@ -108,7 +109,7 @@ void World::genChunks() {
         }
     }
 
-    game->getPlayer()->getCamera()->setPos(0, free_space_y.y, 0);
+    game->getPlayer()->getCamera()->setPos(0, free_space_y.y/Cube::size_reduction, 0);
     Position<int> playerChunkPosition(
         (int)free_space_y.x/Chunk::W,
         (int)free_space_y.y/Chunk::H,

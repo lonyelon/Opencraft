@@ -22,9 +22,8 @@ std::vector<int> Model::getTextureCoords() {
 }
 
 int Model::genVao() {
-    if (this->vao != 0) {
+    if (this->vao != 0)
         glDeleteVertexArrays(1, &(this->vao));
-    }
 
     unsigned int VBO, EBO;
 
@@ -41,7 +40,7 @@ int Model::genVao() {
     glBufferData(GL_ARRAY_BUFFER, sizeof(float) * this->vertex.size(), vertices, GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * this->textureCoords.size(), indices, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(int) * this->textureCoords.size(), indices, GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);

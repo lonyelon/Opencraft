@@ -11,13 +11,13 @@
 extern std::unique_ptr<Game> game;
 
 void WorldGenerator::genChunkTerrain(Chunk* chunk) {
-    const float xCoordRed = 150;
-    const float yCoordRed = 150;
-    const float zCoordRed = 150;
-    const float ystrech = 60;
-    const int heightIncrease = -60;
+    const float xCoordRed = 750*Cube::size_reduction;
+    const float yCoordRed = 750*Cube::size_reduction;
+    const float zCoordRed = 750*Cube::size_reduction;
+    const float ystrech = 50*Cube::size_reduction;
+    const int heightIncrease = -60*Cube::size_reduction;
 
-    const int waterHeight = 40 + heightIncrease;
+    const int waterHeight = 40*Cube::size_reduction + heightIncrease;
 
     Position<int> chunkPosition = chunk->getPos();
 
@@ -34,10 +34,9 @@ void WorldGenerator::genChunkTerrain(Chunk* chunk) {
         float cX = static_cast<float>(chunkPosition.x * Chunk::W + x) / xCoordRed;
         for (int z = 0; z < Chunk::Z; z++) {
             float cZ = static_cast<float>(chunkPosition.z * Chunk::Z + z) / zCoordRed;
+            int noiseValue = (int) ((game->getWorld()->terrainNoise.GetValue(cX, 0, cZ) + 1.1) * ystrech) + heightIncrease;
             for (int y = 0; y < Chunk::H; y++) {
                 float cY = static_cast<float>(chunkPosition.y * Chunk::H + y) / yCoordRed;
-
-                int noiseValue = (int) ((game->getWorld()->terrainNoise.GetValue(cX, cY, cZ) + 1.1) * ystrech) + heightIncrease;
 
                 float caveProb = -(y + cY*Chunk::H + 50)/500-0.75;
                 if (caveProb > 0.0)
@@ -86,7 +85,7 @@ void WorldGenerator::genChunkTerrain(Chunk* chunk) {
                             heights[x + z * Chunk::W] == -1) {
                             heights[x + z * Chunk::W] = y + chunkPosition.y * Chunk::H;
                         }
-                        if ((game->getWorld()->sandNoise.GetValue(noiseX, noiseY, noiseZ) * 5) / (waterHeight - y - chunkPosition.y * Chunk::H) > 1)
+                        if (Cube::size_reduction*(game->getWorld()->sandNoise.GetValue(noiseX, noiseY, noiseZ) * 5) / (waterHeight - y - chunkPosition.y * Chunk::H) > 1)
                             chunk->setCube(std::make_shared<Sand>(), cubePos, false);
                         else if (dirtCount == 0 && y + chunkPosition.y * Chunk::H >= waterHeight - 1)
                             chunk->setCube(std::make_shared<GrassyDirt>(), cubePos, false);

@@ -171,9 +171,9 @@ std::shared_ptr<Cube> Player::getPointer(float *x, float *y, float *z) const {
     float ry = this->cam->getRotY();
 
     for (int i = 0; i < iter * maxdist; i++) {
-        int xx = round(this->cam->getX() - i * cos(rx) * cos(ry) / iter);
-        int yy = round(this->cam->getY() + i * sin(ry) / iter);
-        int zz = round(this->cam->getZ() + i * sin(rx) * cos(ry) / iter);
+        float xx = this->cam->getX() - i * cos(rx) * cos(ry) / iter;
+        float yy = this->cam->getY() + i * sin(ry) / iter;
+        float zz = this->cam->getZ() + i * sin(rx) * cos(ry) / iter;
 
         std::shared_ptr<Cube> c = this->world.lock()->getCube(xx, yy, zz);
         if (c != nullptr && !c->isTransparent()) {

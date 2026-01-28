@@ -142,13 +142,19 @@ void Game::loop() {
         unsigned int projectionLoc = glGetUniformLocation(shaderProgram, "projection");
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
-        unsigned int selCubeLoc = glGetUniformLocation(shaderProgram, "selectedCube");
-        std::shared_ptr<Cube> selectedCube = game->getPlayer()->getPointedCube();
+        unsigned int shader_cube_size_reduction = glGetUniformLocation(shaderProgram, "cube_size_reduction");
+        glUniform1f(shader_cube_size_reduction,
+                    Cube::size_reduction);
 
-        if (selectedCube != nullptr)
-            glUniform3f(selCubeLoc, selectedCube->getX(), selectedCube->getY(), selectedCube->getZ());
+        unsigned int shader_selected_cube = glGetUniformLocation(shaderProgram, "selectedCube");
+        std::shared_ptr<Cube> player_selected_cube = game->getPlayer()->getPointedCube();
+        if (player_selected_cube != nullptr)
+            glUniform3f(shader_selected_cube,
+                        player_selected_cube->getX()/Cube::size_reduction,
+                        player_selected_cube->getY()/Cube::size_reduction,
+                        player_selected_cube->getZ()/Cube::size_reduction);
         else
-            glUniform3f(selCubeLoc, 0, 0, 0);
+            glUniform3f(shader_selected_cube, 0, 0, 0);
 
         glClear(GL_COLOR_BUFFER_BIT);
         glClear(GL_DEPTH_BUFFER_BIT);

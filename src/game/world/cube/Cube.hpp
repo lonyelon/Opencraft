@@ -22,6 +22,8 @@ protected:
     bool transparent = true;
 
 public:
+    static constexpr float size_reduction = 4.0f;
+
     Cube() = default;
 
     Cube(Chunk *c, int x, int y, int z) : WorldObject(Position(x, y, z)), chunk(c) {};

@@ -13,3 +13,9 @@ nix develop
 cmake .
 make
 ```
+
+## License
+
+Please check the [LICENSE].
+
+Textures are based on the Faithful resource pack and their own license applies for the textures file.

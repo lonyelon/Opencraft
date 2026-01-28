@@ -1,38 +1,47 @@
 # Updates
 
-# Dev6.0
+## Dev6.0
 
-* No height limit!
-* Caves are now more common with depth.
-* Faster chunk generation and loading.
-* Chunks are now stored as compressed LZ4 files.
-* Removed references to Minecraft in source.
-* Water is now shorter than the rest of cubes.
-* Player position is now saved and loaded.
+* Removed **height limit** in both directions.
+* **Caves** are now more common with depth.
+* Faster **chunk generation** and loading.
+* Chunks are now stored as compressed **LZ4** files.
+* Removed references to **Minecraft** in source.
+* Water is now a bit shorter than the rest of cubes.
+* **Player position** is now saved and loaded.
 * Tidy game code:
-  * Cubes are now c++ classes.
+  * Cubes are now C++ classes.
+  * Move memory safe C++ pointers.
   * BOOST was removed.
-  * Start to use c++ pointers.
   * WorldObject is a new abstraction for classes with a position.
   * Move terrain generation to WorldGenerator.
-* flake.nix!
+* **flake.nix** for reproducibility.
+* Blocks are now **1/4th** the size in the spirit of CubeWorld.
+* Player **jump fixed** (collisions still need a rework).
+* Payer now can't spawn inside blocks.
+* Added '**--quick-debug**' mode, where the world will not be saved.
+* Increase **chunk size** to **32*32*32**.
 
-# Dev5.1: Graphics Update 1.2-a
+## Dev5.1: Graphics Update 1.2-a
+
 * Better renderer, at least x2 performance.
 * Model loader.
 
-# Dev5.0 World Gen Update 2.0-a
+## Dev5.0 World Gen Update 2.0-a
+
 * Infinite world
 
 *Bugs will now be listed on docs/Bugs.md*
 
-# Dev4.0: Gameplay Update 1.0-a
+## Dev4.0: Gameplay Update 1.0-a
+
 * Placing blocks
 * Removing blocks
 * Player camera
 * Sprint
 
-# Dev3.2: Graphics Update 1.1-a
+## Dev3.2: Graphics Update 1.1-a
+
 * Textures rework
   * New grass texture
   * Block sides
@@ -41,7 +50,8 @@
 *Bugs Solved*
 * 0x5
 
-# Dev3.1: Graphics Update 1.0-b
+## Dev3.1: Graphics Update 1.0-b
+
 * Keybindigs
 * Mipmaps
 * CMake
@@ -56,6 +66,7 @@ The windows port needs:
 * 0x6: Mipmap fails at cube borders
 
 ## Dev3.0: Graphics Update 1.0-a
+
 * Config file
 * Textures
   * Grass, Dirt, Water, Lava, Stone and Sand
@@ -68,14 +79,17 @@ The windows port needs:
 * 0x5: Textures seem badly placed
 
 ## Dev2.4: World Gen Update 1.2-a
+
 * Caves
   * Lava
 * x6 faster chunk rendering
 
 ## Dev2.3: World Gen Update 1.1-b
+
 * Sand
 
 ## Dev2.2: World Gen Update 1.1-a
+
 * Better world generation
   * Dirt
   * Stone
@@ -85,6 +99,7 @@ The windows port needs:
 * 0x1, the firts bug
 
 ## Dev2.1: World Gen Update 1.0-b
+
 * Crosshair
 * Multithread chunk generation (temporal)
 * Chunk customization (biomes?)
@@ -97,6 +112,7 @@ The windows port needs:
 * 0x4: Crosshair cant be seen in the sky
 
 ## Dev2.0: World Gen Update 1.0-a
+
 * New render engine, over x1000 performance increase!
 * Brown dirt
 * Better world gen
@@ -107,10 +123,12 @@ The windows port needs:
 * 0x3: Cubes below water don't render
 
 ## Dev1.1
+
 * Better performance
 * Documentation
 
 ## Dev1.0
+
 * Free camera
 * World generation
   * Cubes

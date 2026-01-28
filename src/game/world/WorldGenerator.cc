@@ -25,16 +25,38 @@ void WorldGenerator::genChunkTerrain(Chunk* chunk) {
     if (chunk->generated)
         return;
 
+    // Precalculate terrain height.
     int heights[Chunk::W * Chunk::Z];
-    for (int i = 0; i < Chunk::W * Chunk::Z; i++)
-        heights[i] = -1;
-
-    // Generate stone world and water
     for (int x = 0; x < Chunk::W; x++) {
         float cX = static_cast<float>(chunkPosition.x * Chunk::W + x) / xCoordRed;
         for (int z = 0; z < Chunk::Z; z++) {
             float cZ = static_cast<float>(chunkPosition.z * Chunk::Z + z) / zCoordRed;
-            int noiseValue = (int) ((game->getWorld()->terrainNoise.GetValue(cX, 0, cZ) + 1.1) * ystrech) + heightIncrease;
+            heights[x + z*Chunk::W] = (int) ((game->getWorld()->terrainNoise.GetValue(cX, 0, cZ) + 1.1) * ystrech) + heightIncrease;
+        }
+    }
+
+    // If the height is lower than the chunk size just fill it with Air and skip generation.
+    bool skip = true;
+    for (int i = 0; i < Chunk::W*Chunk::Z; i++) {
+        if (heights[i] < chunkPosition.y) {
+            skip = false;
+            break;
+        }
+    }
+    if (skip) {
+        for (int x = 0; x < Chunk::W; x++)
+            for (int z = 0; z < Chunk::Z; z++)
+                for (int y = 0; y < Chunk::H; y++)
+                    chunk->setCube(std::make_shared<Air>(), Position(x, y, z), false);
+        return;
+    }
+
+    // Generate stone world and water.
+    for (int x = 0; x < Chunk::W; x++) {
+        float cX = static_cast<float>(chunkPosition.x * Chunk::W + x) / xCoordRed;
+        for (int z = 0; z < Chunk::Z; z++) {
+            float cZ = static_cast<float>(chunkPosition.z * Chunk::Z + z) / zCoordRed;
+            int noiseValue = heights[x + z * Chunk::Z];
             for (int y = 0; y < Chunk::H; y++) {
                 float cY = static_cast<float>(chunkPosition.y * Chunk::H + y) / yCoordRed;
 
@@ -80,7 +102,7 @@ void WorldGenerator::genChunkTerrain(Chunk* chunk) {
                     else
                         dirtCount = 0;
                 } else {
-                    if (dirtCount < 4) {
+                    if (dirtCount < 8*Cube::size_reduction) {
                         if (y + chunkPosition.y * Chunk::H < heights[x + z * Chunk::W] ||
                             heights[x + z * Chunk::W] == -1) {
                             heights[x + z * Chunk::W] = y + chunkPosition.y * Chunk::H;
